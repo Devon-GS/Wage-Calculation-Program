@@ -1,6 +1,7 @@
 from datetime import datetime
 import pandas as pd
 from openpyxl import Workbook
+from openpyxl import load_workbook
 import re
 import sqlite3
 
@@ -68,8 +69,6 @@ c = con.cursor()
 #          wed TEXT
 #          )""")
 
-
-
 # for week in week_one:
 #     x = (week[0], week[1],week[2],week[3],week[4],week[5],week[6],week[7])
 #     week1 = """INSERT INTO roster (
@@ -84,20 +83,13 @@ c = con.cursor()
 #          )
 #          VALUES (?, ?, ?, ?, ? ,? ,?, ?)"""
 
-    c.execute(week1, (x))
-    con.commit()
-
-
-
+    # c.execute(week1, (x))
+    # con.commit()
 
 c.execute('SELECT name FROM roster')
 name_records = c.fetchall()
 
 con.close()
-
-# print(records[0][0])
-# print(records[0][1])
-# print(records[0][2])
 
 # ==============================================================================
 # TEST CODE START
@@ -117,7 +109,7 @@ wb = Workbook()
 ws = wb.active
 ws.title = 'Wages Calculator'
 
-# Create Cloumn Headings
+# Create Column Headings
 ws['A1'] = 'Name'
 ws['B1'] = 'Badge Number'
 ws['C1'] = 'Date'
@@ -125,16 +117,6 @@ ws['D1'] = 'Week Day'
 ws['E1'] = 'Time In'
 ws['F1'] = 'Time Out'
 ws['G1'] = 'Hours'
-
-# # Start from the first cell. Rows and columns are zero indexed.
-# row = 2
-# col = 3
-
-# # Iterate over the data and write it out row by row
-# for date, dayname in week1_dates.items():
-#     ws.cell(row, col, value=date)
-#     ws.cell(row, col + 1, value=dayname)
-#     row += 1
 
 # Get Time in / Time Out
 # Start row and col
@@ -149,9 +131,6 @@ i_row_d = 0
 i_row_n = 0
 # Row continue
 i_row = 0 
-
-
-
 
 # Loop through database and save to excel sheet
 for record in name_records:
@@ -524,3 +503,4 @@ for record in name_records:
 
 # Close workbook
 wb.save('Wage Times.xlsx')
+wb.close()
