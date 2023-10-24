@@ -204,6 +204,9 @@ t_col = 1
 # Date and day start row and col
 d_row = 2
 d_col = 3
+# Badge number start row nnd col
+b_row = 2
+b_col = 2
 # Date and day continue
 i_row_d = 0
 # Name contine row
@@ -214,6 +217,7 @@ i_row = 0
 # Loop through database and save to excel sheet
 for r in week_one_data[1:]:
     name = r[0][0]
+    badge = r[0][1]
     thur = r[0][2]
     fri = r[0][3]
     sat = r[0][4]
@@ -242,6 +246,8 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Thursday')
         ws.cell(d_row + i_row_d, d_col + 1, value=thursday)
+        # Add badge number to column B
+        ws.cell(b`_row, b_col, value=badge)
     
     elif first(thur) == 18:
         thur_s = first(thur)
