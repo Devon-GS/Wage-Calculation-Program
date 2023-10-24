@@ -25,7 +25,7 @@ def second(weekday):
         return second
 
 # ==============================================================================
-# IMPORT ROSTER TIMES AND DATES (ATTENDENTS)
+# IMPORT ROSTER TIMES AND DATES AND BADGE (ATTENDENTS)
 # ==============================================================================
 file = '../Attendant_Carwash_Roster.xls'
 
@@ -52,44 +52,123 @@ for x in week_one_data.to_numpy().tolist():
         if x[0] != 0:
             week_one.append(x)
 
+# Get badges for badges.xlsx and convert to dict
+badge_file = 'Badge Numbers/badges.xlsx'
+bf = pd.read_excel(badge_file, header=None)
+badge = bf.values.tolist()
+
+badges = {}
+for x, y in badge:
+    badges[x] = y
+
 # ==============================================================================
 # CREATE DATABASE SQLITE
 # ==============================================================================
 
-con = sqlite3.connect("test.db")
+def db_init():
+    # Connect to database
+    con = sqlite3.connect("weekOne.db")
+    c = con.cursor()
+    # Create table
+    c.execute("""CREATE TABLE IF NOT EXISTS roster (
+            name TEXT,
+            badge TEXT,
+            thur TEXT,
+            fri TEXT,
+            sat TEXT,
+            sun TEXT,
+            mon TEXT,
+            tue TEXT,
+            wed TEXT
+            )""")
+
+    # Add week one data to table
+    week1 = """INSERT INTO roster (
+            name,
+            badge,
+            thur,
+            fri,
+            sat,
+            sun,
+            mon,
+            tue,
+            wed
+            )
+            VALUES (?, ?, ?, ?, ? ,? ,?, ?, ?)"""
+
+    c.execute(week1, ('Date', '999', 0, 0, 0, 0, 0, 0, 0))
+
+    for week in week_one:
+        x = (week[0], 0, week[1],week[2],week[3],week[4],week[5],week[6],week[7])
+        c.execute(week1, (x))
+
+        con.commit()
+    con.close()
+
+def db_update_dates():
+    # Update table with roster dates
+    con = sqlite3.connect("weekOne.db")
+    c = con.cursor()
+
+    query = ("""UPDATE roster SET
+            thur = ?,
+            fri = ?,
+            sat = ?,
+            sun = ?,
+            mon = ?,
+            tue = ?,
+            wed = ?
+            WHERE badge = ?
+            """)
+    thursday = weekone_dates['Thursday']
+    friday = weekone_dates['Friday']
+    saturday = weekone_dates['Saturday']
+    sunday = weekone_dates['Sunday']
+    monday = weekone_dates['Monday']
+    tuesday = weekone_dates['Tuesday']
+    wednesday = weekone_dates['Wednesday']
+
+    c.execute(query, (thursday, friday, saturday, sunday, monday, tuesday, wednesday, 999))
+    con.commit()
+    con.close()
+
+def db_update_badges():
+    # Update table with badge numbers
+    con = sqlite3.connect("weekOne.db")
+    c = con.cursor()
+
+    query = ("""UPDATE roster SET badge = ? WHERE name = ?""")
+
+    for x in badges:
+        c.execute(query, (badges[x], x))
+        con.commit()
+
+    con.close()
+
+
+# db_init()
+# db_update_dates()
+# db_update_badges()
+
+
+
+# Grab data from table for excel workbook
+con = sqlite3.connect("weekOne.db")
 c = con.cursor()
-# c.execute("""CREATE TABLE IF NOT EXISTS roster (
-#          name TEXT,
-#          thur TEXT,
-#         fri TEXT,
-#         sat TEXT,
-#          sun TEXT,
-#         mon TEXT,
-#          tue TEXT,
-#          wed TEXT
-#          )""")
-
-# for week in week_one:
-#     x = (week[0], week[1],week[2],week[3],week[4],week[5],week[6],week[7])
-#     week1 = """INSERT INTO roster (
-#          name,
-#          thur,
-#          fri,
-#          sat,
-#          sun,
-#          mon,
-#          tue,
-#          wed
-#          )
-#          VALUES (?, ?, ?, ?, ? ,? ,?, ?)"""
-
-    # c.execute(week1, (x))
-    # con.commit()
 
 c.execute('SELECT name FROM roster')
 name_records = c.fetchall()
 
+week_one_data = []
+
+for record in name_records:
+    # Grab data from database using name of person
+    c.execute('SELECT * FROM roster where name=?', (record[0],))
+    r = c.fetchall()
+    week_one_data.append(r)
+
 con.close()
+
 
 # ==============================================================================
 # TEST CODE START
@@ -133,23 +212,17 @@ i_row_n = 0
 i_row = 0 
 
 # Loop through database and save to excel sheet
-for record in name_records:
-    con = sqlite3.connect("test.db")
-    c = con.cursor()
-
-    # Grab data from database using name of person
-    c.execute('SELECT * FROM roster where name=?', (record[0],))
-    r = c.fetchall()
-    
+for r in week_one_data[1:]:
     name = r[0][0]
-    thur = r[0][1]
-    fri = r[0][2]
-    sat = r[0][3]
-    sun = r[0][4]
-    mon = r[0][5]
-    tue = r[0][6]
-    wed = r[0][7]
+    thur = r[0][2]
+    fri = r[0][3]
+    sat = r[0][4]
+    sun = r[0][5]
+    mon = r[0][6]
+    tue = r[0][7]
+    wed = r[0][8]
 
+    # Get day and date from dict
     thursday = weekone_dates['Thursday']
     friday = weekone_dates['Friday']
     saturday = weekone_dates['Saturday']
@@ -504,3 +577,6 @@ for record in name_records:
 # Close workbook
 wb.save('Wage Times.xlsx')
 wb.close()
+
+# wb = load_workbook('Wage Times.xlsx')
+# ws = wb.active
