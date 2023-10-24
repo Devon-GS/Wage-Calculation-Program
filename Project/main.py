@@ -211,6 +211,8 @@ b_col = 2
 i_row_d = 0
 # Name contine row
 i_row_n = 0
+# badge row contine
+i_row_b = 0
 # Row continue
 i_row = 0 
 
@@ -247,7 +249,7 @@ for r in week_one_data[1:]:
         ws.cell(d_row + i_row_d, d_col, value='Thursday')
         ws.cell(d_row + i_row_d, d_col + 1, value=thursday)
         # Add badge number to column B
-        ws.cell(b`_row, b_col, value=badge)
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     elif first(thur) == 18:
         thur_s = first(thur)
@@ -265,10 +267,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D and shift row down by 1
         ws.cell(d_row + i_row_d + 1, d_col, value='Thursday')
         ws.cell(d_row + i_row_d + 1, d_col + 1, value=thursday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
+        ws.cell(b_row + i_row_b + 1, b_col, value=badge)
         # Add one to shift rows down for next days info
         i_row_n += 1
         i_row += 1
         i_row_d += 1
+        i_row_b += 1
     else:
         thur_s = first(thur)
         thur_e = second(thur)
@@ -279,11 +285,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Thursday')
         ws.cell(d_row + i_row_d, d_col + 1, value=thursday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
 
-    # Add one to shift rows down for next dayd info
+    # Add one to shift rows down for next day info
     i_row_n += 1
     i_row += 1
     i_row_d += 1 
+    i_row_b += 1
     
     # Friday
     if fri == 'AF':
@@ -296,6 +305,8 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Friday')
         ws.cell(d_row + i_row_d, d_col + 1, value=friday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     elif first(fri) == 18:
         fri_s = first(fri)
@@ -313,10 +324,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D and shift row down by 1
         ws.cell(d_row + i_row_d + 1, d_col, value='Friday')
         ws.cell(d_row + i_row_d + 1, d_col + 1, value=friday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
+        ws.cell(b_row + i_row_b + 1, b_col, value=badge)
         # Add one to shift rows down for next days info
         i_row_n += 1
         i_row += 1
         i_row_d += 1
+        i_row_b += 1
     else:
         fri_s = first(fri)
         fri_e = second(fri)
@@ -327,11 +342,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Friday')
         ws.cell(d_row + i_row_d, d_col + 1, value=friday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
 
     # Add one to shift rows down for next dayd info
     i_row_n += 1
     i_row += 1
     i_row_d += 1 
+    i_row_b += 1
 
     # Saturday
     if sat == 'AF':
@@ -344,6 +362,8 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Saturday')
         ws.cell(d_row + i_row_d, d_col + 1, value=saturday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     elif first(sat) == 18:
         sat_s = first(sat)
@@ -361,10 +381,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D and shift row down by 1
         ws.cell(d_row + i_row_d + 1, d_col, value='Saturday')
         ws.cell(d_row + i_row_d + 1, d_col + 1, value=saturday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
+        ws.cell(b_row + i_row_b + 1, b_col, value=badge)
         # Add one to shift rows down for next days info
         i_row_n += 1
         i_row += 1
         i_row_d += 1
+        i_row_b += 1
     else:
         sat_s = first(sat)
         sat_e = second(sat)
@@ -375,11 +399,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Saturday')
         ws.cell(d_row + i_row_d, d_col + 1, value=saturday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     # Add one to shift rows down for next dayd info
     i_row_n += 1
     i_row += 1
     i_row_d += 1 
+    i_row_b += 1
 
     # Sunday
     if sun == 'AF':
@@ -392,6 +419,8 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Sunday')
         ws.cell(d_row + i_row_d, d_col + 1, value=sunday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     elif first(sun) == 18:
         sun_s = first(sun)
@@ -409,10 +438,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D and shift row down by 1
         ws.cell(d_row + i_row_d + 1, d_col, value='Sunday')
         ws.cell(d_row + i_row_d + 1, d_col + 1, value=sunday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
+        ws.cell(b_row + i_row_b + 1, b_col, value=badge)
         # Add one to shift rows down for next days info
         i_row_n += 1
         i_row += 1
         i_row_d += 1
+        i_row_b += 1
     else:
         sun_s = first(sun)
         sun_e = second(sun)
@@ -423,11 +456,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Sunday')
         ws.cell(d_row + i_row_d, d_col + 1, value=sunday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     # Add one to shift rows down for next dayd info
     i_row_n += 1
     i_row += 1
     i_row_d += 1
+    i_row_b += 1
 
     # Monday
     if mon == 'AF':
@@ -440,6 +476,8 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Monday')
         ws.cell(d_row + i_row_d, d_col + 1, value=monday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     elif first(mon) == 18:
         mon_s = first(mon)
@@ -457,10 +495,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D and shift row down by 1
         ws.cell(d_row + i_row_d + 1, d_col, value='Monday')
         ws.cell(d_row + i_row_d + 1, d_col + 1, value=monday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
+        ws.cell(b_row + i_row_b + 1, b_col, value=badge)
         # Add one to shift rows down for next days info
         i_row_n += 1
         i_row += 1
         i_row_d += 1
+        i_row_b += 1
     else:
         mon_s = first(mon)
         mon_e = second(mon)
@@ -471,11 +513,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Monday')
         ws.cell(d_row + i_row_d, d_col + 1, value=monday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     # Add one to shift rows down for next dayd info
     i_row_n += 1
     i_row += 1
     i_row_d += 1
+    i_row_b += 1
 
     # Tueday
     if tue == 'AF':
@@ -488,6 +533,8 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Tuesday')
         ws.cell(d_row + i_row_d, d_col + 1, value=tuesday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     elif first(tue) == 18:
         tue_s = first(tue)
@@ -505,10 +552,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D and shift row down by 1
         ws.cell(d_row + i_row_d + 1, d_col, value='Tuesday')
         ws.cell(d_row + i_row_d + 1, d_col + 1, value=tuesday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
+        ws.cell(b_row + i_row_b + 1, b_col, value=badge)
         # Add one to shift rows down for next days info
         i_row_n += 1
         i_row += 1
         i_row_d += 1
+        i_row_b += 1
     else:
         tue_s = first(tue)
         tue_e = second(tue)
@@ -519,11 +570,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Tuesday')
         ws.cell(d_row + i_row_d, d_col + 1, value=tuesday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     # Add one to shift rows down for next dayd info
     i_row_n += 1
     i_row += 1
     i_row_d += 1
+    i_row_b += 1
 
     # Wednesday
     if wed == 'AF':
@@ -536,6 +590,8 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Wednesday')
         ws.cell(d_row + i_row_d, d_col + 1, value=wednesday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     elif first(wed) == 18:
         wed_s = first(wed)
@@ -553,10 +609,14 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D and shift row down by 1
         ws.cell(d_row + i_row_d + 1, d_col, value='Wednesday')
         ws.cell(d_row + i_row_d + 1, d_col + 1, value=wednesday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
+        ws.cell(b_row + i_row_b + 1, b_col, value=badge)
         # Add one to shift rows down for next days info
         i_row_n += 1
         i_row += 1
         i_row_d += 1
+        i_row_b += 1
     else:
         wed_s = first(wed)
         wed_e = second(wed)
@@ -567,17 +627,21 @@ for r in week_one_data[1:]:
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Wednesday')
         ws.cell(d_row + i_row_d, d_col + 1, value=wednesday)
+        # Add badge number to column B
+        ws.cell(b_row + i_row_b, b_col, value=badge)
     
     # Add one to shift rows down for next dayd info
     i_row_n += 1
     i_row += 1
-    i_row_d += 1 
+    i_row_d += 1
+    i_row_b += 1 
     
     
     # Add one to shift rows down for next dayd info
     i_row_n += 2
     i_row += 2
     i_row_d += 2
+    i_row_b += 2
     con.close()
 
 # Close workbook
