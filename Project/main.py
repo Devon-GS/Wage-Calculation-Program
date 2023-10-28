@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl import load_workbook
@@ -195,7 +195,8 @@ ws['C1'] = 'Date'
 ws['D1'] = 'Week Day'
 ws['E1'] = 'Time In'
 ws['F1'] = 'Time Out'
-ws['G1'] = 'Hours'
+ws['G1'] = 'Clock Time In'
+ws['H1'] = 'Clock Time Out'
 
 # Get Time in / Time Out
 # Start row and col
@@ -236,6 +237,7 @@ for r in week_one_data[1:]:
     monday = weekone_dates['Monday']
     tuesday = weekone_dates['Tuesday']
     wednesday = weekone_dates['Wednesday']
+    thursday_s = datetime.strptime(weekone_dates['Wednesday'], '%d/%m/%y') + timedelta(days=1)
     
     # Thursday
     if thur == 'AF':
@@ -257,16 +259,18 @@ for r in week_one_data[1:]:
         # Add name to column A and start time to column E
         ws.cell(t_row + i_row_n, t_col, value=name)
         ws.cell(t_row + i_row, t_col + 4, value=thur_s)
+        ws.cell(t_row + i_row, t_col + 5, value=0)
         # Add name to column A and shift row down by one and
         # Add end time to column F
         ws.cell(t_row + i_row_n + 1, t_col, value=name)
         ws.cell(t_row + i_row + 1, t_col + 5, value=thur_e)
+        ws.cell(t_row + i_row + 1, t_col + 4, value=0)
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Thursday')
         ws.cell(d_row + i_row_d, d_col + 1, value=thursday)
         # Add dates to columns C and D and shift row down by 1
-        ws.cell(d_row + i_row_d + 1, d_col, value='Thursday')
-        ws.cell(d_row + i_row_d + 1, d_col + 1, value=thursday)
+        ws.cell(d_row + i_row_d + 1, d_col, value='Friday')
+        ws.cell(d_row + i_row_d + 1, d_col + 1, value=friday)
         # Add badge number to column B
         ws.cell(b_row + i_row_b, b_col, value=badge)
         ws.cell(b_row + i_row_b + 1, b_col, value=badge)
@@ -314,16 +318,18 @@ for r in week_one_data[1:]:
         # Add name to column A and start time to column E
         ws.cell(t_row + i_row_n, t_col, value=name)
         ws.cell(t_row + i_row, t_col + 4, value=fri_s)
+        ws.cell(t_row + i_row, t_col + 5, value=0)
         # Add name to column A and shift row down by one and
         # Add end time to column F
         ws.cell(t_row + i_row_n + 1, t_col, value=name)
         ws.cell(t_row + i_row + 1, t_col + 5, value=fri_e)
+        ws.cell(t_row + i_row + 1, t_col + 4, value=0)
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Friday')
         ws.cell(d_row + i_row_d, d_col + 1, value=friday)
         # Add dates to columns C and D and shift row down by 1
-        ws.cell(d_row + i_row_d + 1, d_col, value='Friday')
-        ws.cell(d_row + i_row_d + 1, d_col + 1, value=friday)
+        ws.cell(d_row + i_row_d + 1, d_col, value='Saturday')
+        ws.cell(d_row + i_row_d + 1, d_col + 1, value=saturday)
         # Add badge number to column B
         ws.cell(b_row + i_row_b, b_col, value=badge)
         ws.cell(b_row + i_row_b + 1, b_col, value=badge)
@@ -371,16 +377,18 @@ for r in week_one_data[1:]:
         # Add name to column A and start time to column E
         ws.cell(t_row + i_row_n, t_col, value=name)
         ws.cell(t_row + i_row, t_col + 4, value=sat_s)
+        ws.cell(t_row + i_row, t_col + 5, value=0)
         # Add name to column A and shift row down by one and
         # Add end time to column F
         ws.cell(t_row + i_row_n + 1, t_col, value=name)
         ws.cell(t_row + i_row + 1, t_col + 5, value=sat_e)
+        ws.cell(t_row + i_row + 1, t_col + 4, value=0)
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Saturday')
         ws.cell(d_row + i_row_d, d_col + 1, value=saturday)
         # Add dates to columns C and D and shift row down by 1
-        ws.cell(d_row + i_row_d + 1, d_col, value='Saturday')
-        ws.cell(d_row + i_row_d + 1, d_col + 1, value=saturday)
+        ws.cell(d_row + i_row_d + 1, d_col, value='Sunday')
+        ws.cell(d_row + i_row_d + 1, d_col + 1, value=sunday)
         # Add badge number to column B
         ws.cell(b_row + i_row_b, b_col, value=badge)
         ws.cell(b_row + i_row_b + 1, b_col, value=badge)
@@ -428,16 +436,18 @@ for r in week_one_data[1:]:
         # Add name to column A and start time to column E
         ws.cell(t_row + i_row_n, t_col, value=name)
         ws.cell(t_row + i_row, t_col + 4, value=sun_s)
+        ws.cell(t_row + i_row, t_col + 5, value=0)
         # Add name to column A and shift row down by one and
         # Add end time to column F
         ws.cell(t_row + i_row_n + 1, t_col, value=name)
         ws.cell(t_row + i_row + 1, t_col + 5, value=sun_e)
+        ws.cell(t_row + i_row + 1, t_col + 4, value=0)
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Sunday')
         ws.cell(d_row + i_row_d, d_col + 1, value=sunday)
         # Add dates to columns C and D and shift row down by 1
-        ws.cell(d_row + i_row_d + 1, d_col, value='Sunday')
-        ws.cell(d_row + i_row_d + 1, d_col + 1, value=sunday)
+        ws.cell(d_row + i_row_d + 1, d_col, value='Monday')
+        ws.cell(d_row + i_row_d + 1, d_col + 1, value=monday)
         # Add badge number to column B
         ws.cell(b_row + i_row_b, b_col, value=badge)
         ws.cell(b_row + i_row_b + 1, b_col, value=badge)
@@ -485,16 +495,18 @@ for r in week_one_data[1:]:
         # Add name to column A and start time to column E
         ws.cell(t_row + i_row_n, t_col, value=name)
         ws.cell(t_row + i_row, t_col + 4, value=mon_s)
+        ws.cell(t_row + i_row, t_col + 5, value=0)
         # Add name to column A and shift row down by one and
         # Add end time to column F
         ws.cell(t_row + i_row_n + 1, t_col, value=name)
         ws.cell(t_row + i_row + 1, t_col + 5, value=mon_e)
+        ws.cell(t_row + i_row + 1, t_col + 4, value=0)
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Monday')
         ws.cell(d_row + i_row_d, d_col + 1, value=monday)
         # Add dates to columns C and D and shift row down by 1
-        ws.cell(d_row + i_row_d + 1, d_col, value='Monday')
-        ws.cell(d_row + i_row_d + 1, d_col + 1, value=monday)
+        ws.cell(d_row + i_row_d + 1, d_col, value='Tuesday')
+        ws.cell(d_row + i_row_d + 1, d_col + 1, value=tuesday)
         # Add badge number to column B
         ws.cell(b_row + i_row_b, b_col, value=badge)
         ws.cell(b_row + i_row_b + 1, b_col, value=badge)
@@ -542,16 +554,18 @@ for r in week_one_data[1:]:
         # Add name to column A and start time to column E
         ws.cell(t_row + i_row_n, t_col, value=name)
         ws.cell(t_row + i_row, t_col + 4, value=tue_s)
+        ws.cell(t_row + i_row, t_col + 5, value=0)
         # Add name to column A and shift row down by one and
         # Add end time to column F
         ws.cell(t_row + i_row_n + 1, t_col, value=name)
         ws.cell(t_row + i_row + 1, t_col + 5, value=tue_e)
+        ws.cell(t_row + i_row + 1, t_col + 4, value=0)
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Tuesday')
         ws.cell(d_row + i_row_d, d_col + 1, value=tuesday)
         # Add dates to columns C and D and shift row down by 1
-        ws.cell(d_row + i_row_d + 1, d_col, value='Tuesday')
-        ws.cell(d_row + i_row_d + 1, d_col + 1, value=tuesday)
+        ws.cell(d_row + i_row_d + 1, d_col, value='Wednesday')
+        ws.cell(d_row + i_row_d + 1, d_col + 1, value=wednesday)
         # Add badge number to column B
         ws.cell(b_row + i_row_b, b_col, value=badge)
         ws.cell(b_row + i_row_b + 1, b_col, value=badge)
@@ -599,16 +613,18 @@ for r in week_one_data[1:]:
         # Add name to column A and start time to column E
         ws.cell(t_row + i_row_n, t_col, value=name)
         ws.cell(t_row + i_row, t_col + 4, value=wed_s)
+        ws.cell(t_row + i_row, t_col + 5, value=0)
         # Add name to column A and shift row down by one and
         # Add end time to column F
         ws.cell(t_row + i_row_n + 1, t_col, value=name)
         ws.cell(t_row + i_row + 1, t_col + 5, value=wed_e)
+        ws.cell(t_row + i_row + 1, t_col + 4, value=0)
         # Add dates to columns C and D
         ws.cell(d_row + i_row_d, d_col, value='Wednesday')
         ws.cell(d_row + i_row_d, d_col + 1, value=wednesday)
         # Add dates to columns C and D and shift row down by 1
-        ws.cell(d_row + i_row_d + 1, d_col, value='Wednesday')
-        ws.cell(d_row + i_row_d + 1, d_col + 1, value=wednesday)
+        ws.cell(d_row + i_row_d + 1, d_col, value='Thursday')
+        ws.cell(d_row + i_row_d + 1, d_col + 1, value=thursday_s)
         # Add badge number to column B
         ws.cell(b_row + i_row_b, b_col, value=badge)
         ws.cell(b_row + i_row_b + 1, b_col, value=badge)
@@ -638,15 +654,13 @@ for r in week_one_data[1:]:
     
     
     # Add one to shift rows down for next dayd info
-    i_row_n += 2
-    i_row += 2
-    i_row_d += 2
-    i_row_b += 2
+    i_row_n += 1
+    i_row += 1
+    i_row_d += 1
+    i_row_b += 1
     con.close()
 
 # Close workbook
 wb.save('Wage Times.xlsx')
 wb.close()
 
-# wb = load_workbook('Wage Times.xlsx')
-# ws = wb.active
