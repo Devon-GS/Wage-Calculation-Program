@@ -29,29 +29,35 @@ for file in recent:
         date_times.append(x)
 
 # # Push all info in date_times list to database
-# for dt in date_times:
-#     con = sqlite3.connect("test.db")
-#     c = con.cursor()
-#     c.execute("""CREATE TABLE IF NOT EXISTS clockTime (badge TEXT, date TEXT, time TEXT)""")
+def clock_times_collector():
+    for dt in date_times:
+        con = sqlite3.connect("test.db")
+        c = con.cursor()
+        c.execute("""CREATE TABLE IF NOT EXISTS clockTime (badge TEXT, date TEXT, time TEXT)""")
 
-#     query = """INSERT INTO clockTime (badge, date, time) VALUES (?, ?, ?)"""
+        query = """INSERT INTO clockTime (badge, date, time) VALUES (?, ?, ?)"""
 
-#     c.execute(query, (dt[0], dt[1], dt[2]))
+        c.execute(query, (dt[0], dt[1], dt[2]))
 
-#     con.commit()
+        con.commit()
 
-# con.close()
+    con.close()
+
+# clock_times_collector()
 
 # ###############################################################################################
-# WORKING
+# COPY CLOCK TIMES TO WAGES TIME SHEET
 # ###############################################################################################
 
+# Connect to database
 con = sqlite3.connect("test.db")
 c = con.cursor()
 
+# Load Wage Times workbook 
 wb = load_workbook('Wage Times.xlsx')
 ws = wb.active
 
+# For each day copy actual clock in and out time
 i = 0
 
 for x in range(ws.max_row + 1):
@@ -61,53 +67,52 @@ for x in range(ws.max_row + 1):
     times_out_before = []
     times_out_late = []
     
-    
+    # Collect badge and date from excel sheet
     badge = ws.cell(row=2 + i, column=2).value
     date = ws.cell(row=2 + i, column=4).value
+
+    # badge = '86'
+    # date = '28/09/23'
     
+    # loop through each employee and find actual clock in for day
     if badge != None and date != None:
         c.execute('SELECT time FROM clockTime WHERE badge = ? AND date = ?', (badge, date))
         clock_times = c.fetchall()
+       
+        # Convert tuple to list 
+        clock_times_list = []
+        for x in clock_times:
+            clock_times_list.append(x[0])
 
-        times = []
-        if len(clock_times) >= 3:
-            for x in clock_times:
-                times.append(x[0])
-        else:
-            for x in clock_times:
-                times.append(x[0])
-            
-        for x in times:
-            format = "%H:%M"
-            t = ws.cell(row=2 + i, column=5).value
+        # Copy actual clock times to excel 
+        for x in clock_times_list:
+            ti = ws.cell(row=2 + i, column=5).value
             to = ws.cell(row=2 + i, column=6).value
-        
-            time_in = time(t, 0, 0).strftime(format)
-            time_out = time(to, 0, 0).strftime(format)
 
-            if x <= time_in:
-                times_in_before.append(x)
-            elif x > time_in:
-                times_in_late.append(x)
+            # Check clock in times vs roster
+            if ti == 18:
+                time_r = max(clock_times_list)
+                t = time.fromisoformat(time_r).strftime('%H:%M')
+                ws.cell(row=2+ i, column=7, value=t)
+            elif ti == 0:
+                ws.cell(row=2 + i, column=7, value='')
+            else:
+                time_r = min(clock_times_list)
+                t = time.fromisoformat(time_r).strftime('%H:%M')
+                ws.cell(row=2 + i, column=7, value=t)
 
-            if x <= time_out:
-                times_out_before.append(x)
-            elif x > time_in:
-                times_out_late.append(x)
-
-        if times_in_before:
-            time_r = max(times_in_before)
-            ws.cell(row=2+ i, column=7, value=time_r)
-        elif times_in_late:
-            time_r = min(times_in_late)
-            ws.cell(row=2 + i, column=7, value=time_r)
-
+            # Check clock out times vs roster
+            if to == 6:
+                time_r = min(clock_times_list)
+                t = time.fromisoformat(time_r).strftime('%H:%M')
+                ws.cell(row=2 + i, column=8, value=t)
+            elif to == 0:
+                ws.cell(row=2 + i, column=8, value='')
+            else:
+                time_r = max(clock_times_list)
+                t = time.fromisoformat(time_r).strftime('%H:%M')
+                ws.cell(row=2 + i, column=8, value=t)
     i += 1
-    
+
 wb.save('Wage Times.xlsx')
 wb.close()
-
-
-# loop through excel and search database for time that match
-# then past to clock time to excel
-# handle double clocks

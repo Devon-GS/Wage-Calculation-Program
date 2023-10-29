@@ -11,7 +11,7 @@ import sqlite3
 
 # Get Time in / Time Out
 def first(weekday):
-    if weekday == 'AF' or weekday == ' ' or weekday == '0':
+    if weekday == 'AF' or weekday == ' ' or weekday == '0' or weekday == 0:
         return 0.0
     else:
         first = float(re.findall('[0-9]+(?=.*\-)', weekday)[0])
@@ -169,17 +169,6 @@ for record in name_records:
 
 con.close()
 
-
-# ==============================================================================
-# TEST CODE START
-# ==============================================================================
-
-
-
-# ==============================================================================
-# TEST CODE END
-# ==============================================================================
-
 # ==============================================================================
 # CREATE TIME EXCEL FILE
 # ==============================================================================
@@ -299,7 +288,13 @@ for r in week_one_data[1:]:
     i_row_b += 1
     
     # Friday
-    if fri == 'AF':
+    if fri == 'AF' and first(thur) == 18.0:
+        i_row_n -= 1
+        i_row -= 1
+        i_row_d -= 1
+        i_row_b -= 1
+
+    elif fri == 'AF':
         fri = 0
         # Add name to column A
         ws.cell(t_row + i_row_n, t_col, value=name)
@@ -310,8 +305,8 @@ for r in week_one_data[1:]:
         ws.cell(d_row + i_row_d, d_col, value='Friday')
         ws.cell(d_row + i_row_d, d_col + 1, value=friday)
         # Add badge number to column B
-        ws.cell(b_row + i_row_b, b_col, value=badge)
-    
+        ws.cell(b_row + i_row_b, b_col, value=badge)\
+        
     elif first(fri) == 18:
         fri_s = first(fri)
         fri_e = second(fri)
@@ -358,7 +353,13 @@ for r in week_one_data[1:]:
     i_row_b += 1
 
     # Saturday
-    if sat == 'AF':
+    if sat == 'AF' and first(fri) == 18.0:
+        i_row_n -= 1
+        i_row -= 1
+        i_row_d -= 1
+        i_row_b -= 1
+
+    elif sat == 'AF':
         sat = 0
         # Add name to column A
         ws.cell(t_row + i_row_n, t_col, value=name)
@@ -417,7 +418,13 @@ for r in week_one_data[1:]:
     i_row_b += 1
 
     # Sunday
-    if sun == 'AF':
+    if sun == 'AF' and first(sat) == 18.0:
+        i_row_n -= 1
+        i_row -= 1
+        i_row_d -= 1
+        i_row_b -= 1
+
+    elif sun == 'AF':
         sun = 0
         # Add name to column A
         ws.cell(t_row + i_row_n, t_col, value=name)
@@ -476,7 +483,13 @@ for r in week_one_data[1:]:
     i_row_b += 1
 
     # Monday
-    if mon == 'AF':
+    if mon == 'AF' and first(sun) == 18.0:
+        i_row_n -= 1
+        i_row -= 1
+        i_row_d -= 1
+        i_row_b -= 1
+
+    elif mon == 'AF':
         mon = 0
         # Add name to column A
         ws.cell(t_row + i_row_n, t_col, value=name)
@@ -535,7 +548,13 @@ for r in week_one_data[1:]:
     i_row_b += 1
 
     # Tueday
-    if tue == 'AF':
+    if tue == 'AF' and first(mon) == 18.0:
+        i_row_n -= 1
+        i_row -= 1
+        i_row_d -= 1
+        i_row_b -= 1
+
+    elif tue == 'AF':
         tue = 0
         # Add name to column A
         ws.cell(t_row + i_row_n, t_col, value=name)
@@ -594,7 +613,13 @@ for r in week_one_data[1:]:
     i_row_b += 1
 
     # Wednesday
-    if wed == 'AF':
+    if wed == 'AF' and first(tue) == 18.0:
+        i_row_n -= 1
+        i_row -= 1
+        i_row_d -= 1
+        i_row_b -= 1
+
+    elif wed == 'AF':
         wed = 0
         # Add name to column A
         ws.cell(t_row + i_row_n, t_col, value=name)
