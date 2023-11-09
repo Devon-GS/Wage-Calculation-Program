@@ -690,10 +690,10 @@ def db_to_excel():
         i_row_b += 1
 
         # Add one to shift rows down for next dayd info
-        i_row_n += 1
-        i_row += 1
-        i_row_d += 1
-        i_row_b += 1
+        i_row_n += 2
+        i_row += 2
+        i_row_d += 2
+        i_row_b += 2
         con.close()
 
     # Close workbook

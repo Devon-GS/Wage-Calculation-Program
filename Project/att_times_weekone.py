@@ -238,3 +238,52 @@ def att_times_weekone():
 
     wb.save("Wage Times.xlsx")
     wb.close()
+
+
+
+
+
+
+
+# Calculate total hours for week add to excel
+wb = load_workbook("Wage Times.xlsx")
+ws = wb.active
+
+i = 0
+total = 0
+total_s = 0
+
+# print(ws.max_row)
+for x in range(ws.max_row):
+    name = ws.cell(row=2 + i, column=1).value
+    n = ws.cell(row=2 + i - 1, column=1).value
+    day = ws.cell(row=2 + i, column=3).value
+    hours = ws.cell(row=2 + i, column=9).value
+    hours_s = ws.cell(row=2 + i, column=10).value
+    
+    # Check if name is true
+    if name:
+        if day == 'Sunday':
+            total_s += hours_s
+        elif hours == None:
+            total += 0
+        else:
+            total += hours
+        
+        i += 1
+    
+    elif "Total" in n:
+        i += 1
+
+    else:
+        ws.cell(row=2 + i, column=1, value= n + " " + "Total")
+        ws.cell(row=2 + i, column=9, value=total)
+        ws.cell(row=2 + i, column=10, value=total_s)
+        
+        total = 0            
+        total_s = 0  
+
+        i += 1
+
+wb.save("Wage Times.xlsx")
+wb.close()
