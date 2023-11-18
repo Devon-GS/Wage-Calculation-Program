@@ -1,8 +1,8 @@
 from os import path
 import database as db
-import att_roster_times as awo
-import att_clock_times as cwo
-import att_cal_hours as atwo
+import att_roster_times as ar
+import att_clock_times as ac
+import att_cal_hours as ath
 
 # database_file = path.exists('wageTimes.db')
 
@@ -45,32 +45,69 @@ import att_cal_hours as atwo
 db.clean_db()
 print('Database Cleaned')
 
-# ATTENDENT WEEKONE ROSTER
-awo.db_init()
-awo.db_update_dates()
-awo.db_update_badges()
-awo.db_to_excel()
+# ##########################################
+#               ATTENDENT
+# ##########################################
+
+# ATTENDENT ROSTER
+# Week One
+ar.db_init()
+ar.db_update_dates()
+ar.db_update_badges()
+ar.db_to_excel()
 print('Attendent Weekone Finnished')
 
-# ATTENDENT WEEKTWO ROSTER
-awo.db_atwo_init()
-awo.db_atwo_update_dates()
-awo.db_atwo_update_badges()
-awo.db_atwo_to_excel()
+# Week Two
+ar.db_atwo_init()
+ar.db_atwo_update_dates()
+ar.db_atwo_update_badges()
+ar.db_atwo_to_excel()
+
 print('Attendent Weektwo Finnished')
 
-# ATTENDENT WEEKONE CLOCK TIMES
-cwo.recent_clock()
-cwo.clock_times_collector()
-cwo.att_clock_excel()
+# ATTENDENT CLOCK TIMES
+# Week One
+ac.recent_clock()
+ac.clock_times_collector()
+ac.att_clock_excel()
+
+# Week two
+ac.att_clock_excel_wt()
+
 print('Attendent Weekone Clock Times Finnished')
 
-# ATTENDENT WEEKTWO CLOCK TIMES
 
-# ATTENDENT WEEKONE TIMES CALCULATION
-atwo.att_times_weekone()
-atwo.att_public_weekone()
-atwo.att_total_wo_hours()
+# ATTENDENT TIMES CALCULATION
+# Week One
+ath.att_times_weekone()
+ath.att_public_weekone()
+ath.att_total_wo_hours()
+
+# Week Two
+ath.att_times_weektwo()
+ath.att_public_weektwo()
+ath.att_total_wt_hours()
+
+# ATTENDENT TOTAL TIMES
+ath.att_total_wo_db()   
+ath.att_total_wt_db()
+ath.att_fortnight_total()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 print('Attendent Weekone Times Finnished')
 
 print('Wage Times.xlsx had printed and is ready for viewing')

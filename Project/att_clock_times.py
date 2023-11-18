@@ -48,7 +48,7 @@ def clock_times_collector():
 
     con.close()
 
-# COPY CLOCK TIMES TO WAGES TIME SHEET
+# COPY CLOCK TIMES TO WAGES TIME SHEET WEEK ONE
 def att_clock_excel():
     # Connect to database
     con = sqlite3.connect("wageTimes.db")
@@ -112,55 +112,17 @@ def att_clock_excel():
 # ###############################################################################################
 # ATTENDENTS WEEK 2 - ACTUAL CLOCK TIMES TO EXCEL
 # ###############################################################################################
-date_times = []
+date_times_two = []
 
-def recent_clock():
-    # Loop through clock files and collect last 30 files
-    clock_list = []
-    for filename in os.listdir('../Uniclox/'):
-        file = filename.replace(" ","")
-        if 'TL' in file and file[-7:-4] != '000':
-            clock_list.append(filename)
-            
-    recent = clock_list[-50:]
-
-    # Loop though each clock file by line and append badge and times to dat_times list
-    for file in recent:    
-        f = open('../Uniclox/' + file, 'r')
-        for line in f:
-            line = line.strip()
-            line = line.split(',')
-            badge = int(line[0])
-            dated = line[1]
-            timestamp = datetime.strptime(dated, '%Y-%m-%d %H:%M:%S').strftime("%d/%m/%y %H:%M:%S")
-            split_timestamp = timestamp.split()
-            x = [badge, split_timestamp[0], split_timestamp[1]]
-            date_times.append(x)
-
-def clock_times_collector():
-    # # Push all info in date_times list to database
-    for dt in date_times:
-        con = sqlite3.connect("wageTimes.db")
-        c = con.cursor()
-        c.execute("""CREATE TABLE IF NOT EXISTS ClockTimeAWO (badge TEXT, date TEXT, time TEXT)""")
-
-        query = """INSERT INTO clockTimeAWO (badge, date, time) VALUES (?, ?, ?)"""
-
-        c.execute(query, (dt[0], dt[1], dt[2]))
-
-        con.commit()
-
-    con.close()
-
-# COPY CLOCK TIMES TO WAGES TIME SHEET
-def att_clock_excel():
+# COPY CLOCK TIMES TO WAGES TIME SHEET WEEK TWO
+def att_clock_excel_wt():
     # Connect to database
     con = sqlite3.connect("wageTimes.db")
     c = con.cursor()
 
     # Load Wage Times workbook 
     wb = load_workbook('Wage Times.xlsx')
-    ws = wb.active
+    ws = wb['Att Week Two']
 
     # For each day copy actual clock in and out time
     i = 0
