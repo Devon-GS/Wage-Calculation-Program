@@ -59,15 +59,15 @@ def att_times_weekone():
                 ci = clock_in
 
                 if ci > ti:
-                    if ci[-2:] < "05":
+                    if ci[-2:] <= "05":
                         tti = 24.0 - float(ci[0:2])
-                    elif ci[-2:] < "15":
+                    elif ci[-2:] <= "15":
                         tti = 24.0 - (float(ci[0:2]) + 0.25)
-                    elif ci[-2:] < "30":
+                    elif ci[-2:] <= "30":
                         tti = 24.0 - (float(ci[0:2]) + 0.30)
-                    elif ci[-2:] < "45":
+                    elif ci[-2:] <= "45":
                         tti = 24.0 - (float(ci[0:2]) + 0.75)
-                    elif ci[-2:] > "45":
+                    elif ci[-2:] >= "45":
                         tti = 24.0 - (float(ci[0:2]) + 1.0)
                 else:
                     tti = 24.0 - float(time_in)
@@ -89,15 +89,15 @@ def att_times_weekone():
                 co = clock_out
 
                 if co < to:
-                    if co[-2:] < "05":
+                    if co[-2:] <= "05":
                         tto = float(co[0:2]) + 0.00
-                    elif co[-2:] < "15":
+                    elif co[-2:] <= "15":
                         tto = float(co[0:2]) + 0.25
-                    elif co[-2:] < "30":
+                    elif co[-2:] <= "30":
                         tto = float(co[0:2]) + 0.30
-                    elif co[-2:] < "45":
+                    elif co[-2:] <= "45":
                         tto = float(co[0:2]) + 0.75
-                    elif co[-2:] > "45":
+                    elif co[-2:] >= "45":
                         tto = (float(co[0:2]) + 1) + 0.00
                 else:
                     tto = int(time_out)
@@ -116,30 +116,30 @@ def att_times_weekone():
 
                 # Calculate time in
                 if ci > ti:
-                    if ci[-2:] < "05":
+                    if ci[-2:] <= "05":
                         tti = float(ci[0:2])
-                    elif ci[-2:] < "15":
+                    elif ci[-2:] <= "15":
                         tti = float(ci[0:2]) + 0.25
-                    elif ci[-2:] < "30":
+                    elif ci[-2:] <= "30":
                         tti = float(ci[0:2]) + 0.30
-                    elif ci[-2:] < "45":
+                    elif ci[-2:] <= "45":
                         tti = float(ci[0:2]) + 0.75
-                    elif ci[-2:] > "45":
+                    elif ci[-2:] >= "45":
                         tti = (float(ci[0:2]) + 1) + 0.00
                 else:
                     tti = float(time_in)
 
                 # Calculate time out
                 if co < to:
-                    if co[-2:] < "05":
+                    if co[-2:] <= "05":
                         tto = float(co[0:2]) + 0.00
-                    elif co[-2:] < "15":
+                    elif co[-2:] <= "15":
                         tto = float(co[0:2]) + 0.25
-                    elif co[-2:] < "30":
+                    elif co[-2:] <= "30":
                         tto = float(co[0:2]) + 0.30
-                    elif co[-2:] < "45":
+                    elif co[-2:] <= "45":
                         tto = float(co[0:2]) + 0.75
-                    elif co[-2:] > "45":
+                    elif co[-2:] >= "45":
                         tto = (float(co[0:2]) + 1) + 0.00
                 else:
                     tto = int(time_out)
@@ -161,15 +161,15 @@ def att_times_weekone():
             ci = clock_in
 
             if ci > ti:
-                if ci[-2:] < "05":
+                if ci[-2:] <= "05":
                     tti = 24.0 - float(ci[0:2])
-                elif ci[-2:] < "15":
+                elif ci[-2:] <= "15":
                     tti = 24.0 - (float(ci[0:2]) + 0.25)
-                elif ci[-2:] < "30":
+                elif ci[-2:] <= "30":
                     tti = 24.0 - (float(ci[0:2]) + 0.30)
-                elif ci[-2:] < "45":
+                elif ci[-2:] <= "45":
                     tti = 24.0 - (float(ci[0:2]) + 0.75)
-                elif ci[-2:] > "45":
+                elif ci[-2:] >= "45":
                     tti = 24.0 - (float(ci[0:2]) + 1.0)
             else:
                 tti = 24.0 - float(time_in)
@@ -185,15 +185,15 @@ def att_times_weekone():
             co = clock_out
 
             if co < to:
-                if co[-2:] < "05":
+                if co[-2:] <= "05":
                     tto = float(co[0:2]) + 0.00
-                elif co[-2:] < "15":
+                elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
-                elif co[-2:] < "30":
+                elif co[-2:] <= "30":
                     tto = float(co[0:2]) + 0.30
-                elif co[-2:] < "45":
+                elif co[-2:] <= "45":
                     tto = float(co[0:2]) + 0.75
-                elif co[-2:] > "45":
+                elif co[-2:] >= "45":
                     tto = (float(co[0:2]) + 1) + 0.00
             else:
                 tto = int(time_out)
@@ -212,30 +212,30 @@ def att_times_weekone():
 
             # Calculate time in
             if ci > ti:
-                if ci[-2:] < "05":
+                if ci[-2:] <= "05":
                     tti = float(ci[0:2])
-                elif ci[-2:] < "15":
+                elif ci[-2:] <= "15":
                     tti = float(ci[0:2]) + 0.25
-                elif ci[-2:] < "30":
+                elif ci[-2:] <= "30":
                     tti = float(ci[0:2] + 0.30)
-                elif ci[-2:] < "45":
+                elif ci[-2:] <= "45":
                     tti = float(ci[0:2]) + 0.75
-                elif ci[-2:] > "45":
+                elif ci[-2:] >= "45":
                     tti = (float(ci[0:2]) + 1) + 0.00
             else:
                 tti = float(time_in)
 
             # Calculate time out
             if co < to:
-                if co[-2:] < "05":
+                if co[-2:] <= "05":
                     tto = float(co[0:2]) + 0.00
-                elif co[-2:] < "15":
+                elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
-                elif co[-2:] < "30":
+                elif co[-2:] <= "30":
                     tto = float(co[0:2]) + 0.30
-                elif co[-2:] < "45":
+                elif co[-2:] <= "45":
                     tto = float(co[0:2]) + 0.75
-                elif co[-2:] > "45":
+                elif co[-2:] >= "45":
                     tto = (float(co[0:2]) + 1) + 0.00
             else:
                 tto = int(time_out)
@@ -358,15 +358,15 @@ def att_times_weektwo():
                 ci = clock_in
 
                 if ci > ti:
-                    if ci[-2:] < "05":
+                    if ci[-2:] <= "05":
                         tti = 24.0 - float(ci[0:2])
-                    elif ci[-2:] < "15":
+                    elif ci[-2:] <= "15":
                         tti = 24.0 - (float(ci[0:2]) + 0.25)
-                    elif ci[-2:] < "30":
+                    elif ci[-2:] <= "30":
                         tti = 24.0 - (float(ci[0:2]) + 0.30)
-                    elif ci[-2:] < "45":
+                    elif ci[-2:] <= "45":
                         tti = 24.0 - (float(ci[0:2]) + 0.75)
-                    elif ci[-2:] > "45":
+                    elif ci[-2:] >= "45":
                         tti = 24.0 - (float(ci[0:2]) + 1.0)
                 else:
                     tti = 24.0 - float(time_in)
@@ -388,15 +388,15 @@ def att_times_weektwo():
                 co = clock_out
 
                 if co < to:
-                    if co[-2:] < "05":
+                    if co[-2:] <= "05":
                         tto = float(co[0:2]) + 0.00
-                    elif co[-2:] < "15":
+                    elif co[-2:] <= "15":
                         tto = float(co[0:2]) + 0.25
-                    elif co[-2:] < "30":
+                    elif co[-2:] <= "30":
                         tto = float(co[0:2]) + 0.30
-                    elif co[-2:] < "45":
+                    elif co[-2:] <= "45":
                         tto = float(co[0:2]) + 0.75
-                    elif co[-2:] > "45":
+                    elif co[-2:] >= "45":
                         tto = (float(co[0:2]) + 1) + 0.00
                 else:
                     tto = int(time_out)
@@ -415,30 +415,30 @@ def att_times_weektwo():
 
                 # Calculate time in
                 if ci > ti:
-                    if ci[-2:] < "05":
+                    if ci[-2:] <= "05":
                         tti = float(ci[0:2])
-                    elif ci[-2:] < "15":
+                    elif ci[-2:] <= "15":
                         tti = float(ci[0:2]) + 0.25
-                    elif ci[-2:] < "30":
+                    elif ci[-2:] <= "30":
                         tti = float(ci[0:2] + 0.30)
-                    elif ci[-2:] < "45":
+                    elif ci[-2:] <= "45":
                         tti = float(ci[0:2]) + 0.75
-                    elif ci[-2:] > "45":
+                    elif ci[-2:] >= "45":
                         tti = (float(ci[0:2]) + 1) + 0.00
                 else:
                     tti = float(time_in)
 
                 # Calculate time out
                 if co < to:
-                    if co[-2:] < "05":
+                    if co[-2:] <= "05":
                         tto = float(co[0:2]) + 0.00
-                    elif co[-2:] < "15":
+                    elif co[-2:] <= "15":
                         tto = float(co[0:2]) + 0.25
-                    elif co[-2:] < "30":
+                    elif co[-2:] <= "30":
                         tto = float(co[0:2]) + 0.30
-                    elif co[-2:] < "45":
+                    elif co[-2:] <= "45":
                         tto = float(co[0:2]) + 0.75
-                    elif co[-2:] > "45":
+                    elif co[-2:] >= "45":
                         tto = (float(co[0:2]) + 1) + 0.00
                 else:
                     tto = int(time_out)
@@ -460,15 +460,15 @@ def att_times_weektwo():
             ci = clock_in
 
             if ci > ti:
-                if ci[-2:] < "05":
+                if ci[-2:] <= "05":
                     tti = 24.0 - float(ci[0:2])
-                elif ci[-2:] < "15":
+                elif ci[-2:] <= "15":
                     tti = 24.0 - (float(ci[0:2]) + 0.25)
-                elif ci[-2:] < "30":
+                elif ci[-2:] <= "30":
                     tti = 24.0 - (float(ci[0:2]) + 0.30)
-                elif ci[-2:] < "45":
+                elif ci[-2:] <= "45":
                     tti = 24.0 - (float(ci[0:2]) + 0.75)
-                elif ci[-2:] > "45":
+                elif ci[-2:] >= "45":
                     tti = 24.0 - (float(ci[0:2]) + 1.0)
             else:
                 tti = 24.0 - float(time_in)
@@ -484,15 +484,15 @@ def att_times_weektwo():
             co = clock_out
 
             if co < to:
-                if co[-2:] < "05":
+                if co[-2:] <= "05":
                     tto = float(co[0:2]) + 0.00
-                elif co[-2:] < "15":
+                elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
-                elif co[-2:] < "30":
+                elif co[-2:] <= "30":
                     tto = float(co[0:2]) + 0.30
-                elif co[-2:] < "45":
+                elif co[-2:] <= "45":
                     tto = float(co[0:2]) + 0.75
-                elif co[-2:] > "45":
+                elif co[-2:] >= "45":
                     tto = (float(co[0:2]) + 1) + 0.00
             else:
                 tto = int(time_out)
@@ -511,30 +511,30 @@ def att_times_weektwo():
 
             # Calculate time in
             if ci > ti:
-                if ci[-2:] < "05":
+                if ci[-2:] <= "05":
                     tti = float(ci[0:2])
-                elif ci[-2:] < "15":
+                elif ci[-2:] <= "15":
                     tti = float(ci[0:2]) + 0.25
-                elif ci[-2:] < "30":
+                elif ci[-2:] <= "30":
                     tti = float(ci[0:2]) + 0.30
-                elif ci[-2:] < "45":
+                elif ci[-2:] <= "45":
                     tti = float(ci[0:2]) + 0.75
-                elif ci[-2:] > "45":
+                elif ci[-2:] >= "45":
                     tti = (float(ci[0:2]) + 1) + 0.00
             else:
                 tti = float(time_in)
 
             # Calculate time out
             if co < to:
-                if co[-2:] < "05":
+                if co[-2:] <= "05":
                     tto = float(co[0:2]) + 0.00
-                elif co[-2:] < "15":
+                elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
-                elif co[-2:] < "30":
+                elif co[-2:] <= "30":
                     tto = float(co[0:2]) + 0.30
-                elif co[-2:] < "45":
+                elif co[-2:] <= "45":
                     tto = float(co[0:2]) + 0.75
-                elif co[-2:] > "45":
+                elif co[-2:] >= "45":
                     tto = (float(co[0:2]) + 1) + 0.00
             else:
                 tto = int(time_out)
@@ -742,9 +742,9 @@ def att_fortnight_total():
     i = 0
     for r in records:
         name = r[0].replace('Total','')
-        normal = r[2]
-        sunday = r[3]
-        public = r[4]
+        normal = float(r[2])
+        sunday = float(r[3])
+        public = float(r[4])
 
         ws.cell(row=2 + i, column=1, value=name)
         ws.cell(row=2 + i, column=2, value=normal)

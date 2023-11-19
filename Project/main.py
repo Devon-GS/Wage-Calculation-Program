@@ -4,6 +4,8 @@ import att_roster_times as ar
 import att_clock_times as ac
 import att_cal_hours as ath
 
+import excel_format as format
+
 # database_file = path.exists('wageTimes.db')
 
 # user_input = ''
@@ -93,22 +95,10 @@ ath.att_total_wo_db()
 ath.att_total_wt_db()
 ath.att_fortnight_total()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 print('Attendent Weekone Times Finnished')
+
+# FORMAT EXCEL WOORKBOOK
+format.excel_format()
 
 print('Wage Times.xlsx had printed and is ready for viewing')
 
