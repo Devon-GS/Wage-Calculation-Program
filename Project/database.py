@@ -14,10 +14,10 @@ def clean_db():
     con.close()
 
 
-# con = sqlite3.connect("wageTimes.db")
-# c = con.cursor()
+con = sqlite3.connect("wageTimes.db")
+c = con.cursor()
 
-# c.execute('DROP TABLE attTotal')
+c.execute('DROP TABLE rosterCashierWeekOne')
 
-# con.commit()
-# con.close()
+con.commit()
+con.close()

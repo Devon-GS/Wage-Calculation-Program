@@ -16,14 +16,12 @@ def first(weekday):
         first = float(re.findall("[0-9]+(?=.*\-)", weekday)[0])
         return first
 
-
 def second(weekday):
     if weekday == "AF" or weekday == " " or weekday == "" or weekday == "0":
         return 0.0
     else:
         second = float(re.findall("\-(.*)", weekday)[0])
         return second
-
 
 # ==============================================================================
 # IMPORT ROSTER TIMES AND DATES AND BADGE WEEK 1 (ATTENDENTS)
@@ -107,7 +105,6 @@ def db_init():
         con.commit()
     con.close()
 
-
 def db_update_dates():
     # Update table with roster dates
     con = sqlite3.connect("wageTimes.db")
@@ -137,7 +134,6 @@ def db_update_dates():
     con.commit()
     con.close()
 
-
 def db_update_badges():
     # Update table with badge numbers
     con = sqlite3.connect("wageTimes.db")
@@ -150,7 +146,6 @@ def db_update_badges():
         con.commit()
 
     con.close()
-
 
 def db_to_excel():
     # Grab data from table for excel workbook
