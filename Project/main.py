@@ -1,3 +1,4 @@
+import os
 from os import path
 import database as db
 import att_roster_times as ar
@@ -41,7 +42,11 @@ import excel_format as format
 #             break
 #         break
         
+# REMOVE WAGES TIMES.XLSX
+wage_times = path.exists('Wage Times.xlsx')
 
+if wage_times == True:
+    os.remove('Wage Times.xlsx')
 
 # CLEAN DATABASE
 db.clean_db()
@@ -96,6 +101,17 @@ ath.att_total_wt_db()
 ath.att_fortnight_total()
 
 print('Attendent Weekone Times Finnished')
+
+# ##########################################
+#               CASHIER
+# ##########################################
+
+
+
+
+
+
+
 
 # FORMAT EXCEL WOORKBOOK
 format.excel_format()

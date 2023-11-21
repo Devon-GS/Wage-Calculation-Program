@@ -277,8 +277,8 @@ def att_total_wo_hours():
     total = 0
     total_s = 0
     total_p = 0
+    total_nc = 0
 
-    # print(ws.max_row)
     for x in range(ws.max_row):
         name = ws.cell(row=2 + i, column=1).value
         n = ws.cell(row=2 + i - 1, column=1).value
@@ -287,10 +287,13 @@ def att_total_wo_hours():
         hours = ws.cell(row=2 + i, column=9).value
         hours_s = ws.cell(row=2 + i, column=10).value
         hours_p = ws.cell(row=2 + i, column=11).value
+        nc = ws.cell(row=2 + i, column=12).value
 
         # Check if name is true
         if name:
-            if day == 'Sunday':
+            if nc != None:
+                total_nc = 1
+            elif day == 'Sunday':
                 total_s += hours_s
             elif hours_p != None:
                 total_p += hours_p
@@ -310,10 +313,12 @@ def att_total_wo_hours():
             ws.cell(row=2 + i, column=9, value=total)
             ws.cell(row=2 + i, column=10, value=total_s)
             ws.cell(row=2 + i, column=11, value=total_p)
+            ws.cell(row=2 + i, column=12, value=total_nc)
             
             total = 0            
             total_s = 0  
             total_p = 0  
+            total_nc = 0  
 
             i += 1
 
@@ -576,6 +581,7 @@ def att_total_wt_hours():
     total = 0
     total_s = 0
     total_p = 0
+    total_nc = 0
 
     # print(ws.max_row)
     for x in range(ws.max_row):
@@ -583,13 +589,16 @@ def att_total_wt_hours():
         n = ws.cell(row=2 + i - 1, column=1).value
         badge = ws.cell(row=2 + i - 1, column=2).value
         day = ws.cell(row=2 + i, column=3).value
+        nc = ws.cell(row=2 + i, column=12).value
         hours = ws.cell(row=2 + i, column=9).value
         hours_s = ws.cell(row=2 + i, column=10).value
         hours_p = ws.cell(row=2 + i, column=11).value
         
         # Check if name is true
         if name:
-            if day == 'Sunday':
+            if nc != None:
+                total_nc = 1
+            elif day == 'Sunday':
                 total_s += hours_s
             elif hours_p != None:
                 total_p += hours_p
@@ -609,10 +618,12 @@ def att_total_wt_hours():
             ws.cell(row=2 + i, column=9, value=total)
             ws.cell(row=2 + i, column=10, value=total_s)
             ws.cell(row=2 + i, column=11, value=total_p)
+            ws.cell(row=2 + i, column=12, value=total_nc)
             
             total = 0            
             total_s = 0  
             total_p = 0  
+            total_nc = 0  
 
             i += 1
 
@@ -639,7 +650,8 @@ def att_total_wo_db():
                 badge TEXT,
                 normal TEXT,
                 sunday TEXT,
-                public TEXT
+                public TEXT,
+                noClock TEXT
                 )""")
 
     # Add week one data to table
@@ -648,9 +660,10 @@ def att_total_wo_db():
                 badge,
                 normal,
                 sunday,
-                public
+                public,
+                noClock
                 )
-                VALUES (?, ?, ?, ?, ?)"""
+                VALUES (?, ?, ?, ?, ?, ?)"""
 
     i = 0
     for x in range(ws.max_row):
@@ -659,10 +672,11 @@ def att_total_wo_db():
         normal = ws.cell(row=2 + i, column=9).value
         sunday = ws.cell(row=2 + i, column=10).value
         public = ws.cell(row=2 + i, column=11).value
+        nc = ws.cell(row=2 + i, column=12).value
 
         if name != None:
             if 'Total' in name:
-                c.execute(query, (name, badge, normal, sunday, public))
+                c.execute(query, (name, badge, normal, sunday, public, nc))
         
         i += 1
 
@@ -689,7 +703,8 @@ def att_total_wt_db():
             SET
                 normal = normal + ?,
                 sunday = sunday + ?,
-                public = public + ?
+                public = public + ?,
+                noClock = noClock + ?
             WHERE
                 badge = ?
                 """)
@@ -701,10 +716,11 @@ def att_total_wt_db():
         normal = ws.cell(row=2 + i, column=9).value
         sunday = ws.cell(row=2 + i, column=10).value
         public = ws.cell(row=2 + i, column=11).value
+        nc = ws.cell(row=2 + i, column=12).value
 
         if name != None:
             if 'Total' in name:
-                c.execute(query, (normal, sunday, public, badge))
+                c.execute(query, (normal, sunday, public, nc, badge))
         
         i += 1
 
@@ -738,6 +754,7 @@ def att_fortnight_total():
     ws["B1"] = 'Total Normal Hours'
     ws["C1"] = 'Total Sunday Hours'
     ws["D1"] = 'Total Public Holiday Hours'
+    ws["E1"] = 'No Clock'
 
     i = 0
     for r in records:
@@ -745,13 +762,17 @@ def att_fortnight_total():
         normal = float(r[2])
         sunday = float(r[3])
         public = float(r[4])
+        no_clock = float(r[5])
 
         ws.cell(row=2 + i, column=1, value=name)
         ws.cell(row=2 + i, column=2, value=normal)
         ws.cell(row=2 + i, column=3, value=sunday)
         ws.cell(row=2 + i, column=4, value=public)
+        if no_clock == 1 or no_clock == 2:
+            ws.cell(row=2 + i, column=5, value='No Clock')
 
         i += 1
 
     wb.save("Wage Times.xlsx")
     wb.close()
+
