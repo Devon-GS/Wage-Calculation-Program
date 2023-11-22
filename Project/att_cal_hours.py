@@ -75,13 +75,9 @@ def att_times_weekone():
                 hours = tti
                 ws.cell(row=2 + i, column=10, value=hours)
 
-                i += 1
-            
             elif clock_in == None and clock_out == None:
                 hours = 0
                 ws.cell(row=2 + i, column=10, value=hours)
-
-                i += 1
 
             elif clock_in == None:
                 # Calculate time out
@@ -104,8 +100,6 @@ def att_times_weekone():
 
                 hours = float(tto)
                 ws.cell(row=2 + i, column=10, value=hours)
-
-                i += 1
 
             else:
                 ti = time(time_in).strftime("%H:%M")
@@ -147,8 +141,8 @@ def att_times_weekone():
                 # calculate hours worked
                 hours = float(tto) - float(tti)
                 ws.cell(row=2 + i, column=10, value=hours)
-
-            i += 1
+            
+            i   += 1
 
         elif clock_in == None and clock_out == None:
             hours = 0
@@ -209,7 +203,7 @@ def att_times_weekone():
 
             to = time(time_out).strftime("%H:%M")
             co = clock_out
-
+        
             # Calculate time in
             if ci > ti:
                 if ci[-2:] <= "05":
@@ -325,6 +319,7 @@ def att_total_wo_hours():
     wb.save("Wage Times.xlsx")
     wb.close()
 
+
 # ==============================================================================
 # CALCULATE CLOCK IN AND CLOCK OUT TIMES WEEK TWO
 # ==============================================================================
@@ -379,13 +374,9 @@ def att_times_weektwo():
                 hours = tti
                 ws.cell(row=2 + i, column=10, value=hours)
 
-                i += 1
-            
             elif clock_in == None and clock_out == None:
                 hours = 0
                 ws.cell(row=2 + i, column=10, value=hours)
-
-                i += 1
 
             elif clock_in == None:
                 # Calculate time out
@@ -408,8 +399,6 @@ def att_times_weektwo():
 
                 hours = float(tto)
                 ws.cell(row=2 + i, column=10, value=hours)
-
-                i += 1
 
             else:
                 ti = time(time_in).strftime("%H:%M")

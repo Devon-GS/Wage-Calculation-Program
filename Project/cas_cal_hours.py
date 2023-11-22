@@ -75,13 +75,9 @@ def cas_times_weekone():
                 hours = tti
                 ws.cell(row=2 + i, column=10, value=hours)
 
-                i += 1
-            
             elif clock_in == None and clock_out == None:
                 hours = 0
                 ws.cell(row=2 + i, column=10, value=hours)
-
-                i += 1
 
             elif clock_in == None:
                 # Calculate time out
@@ -104,8 +100,6 @@ def cas_times_weekone():
 
                 hours = float(tto)
                 ws.cell(row=2 + i, column=10, value=hours)
-
-                i += 1
 
             else:
                 ti = time(time_in).strftime("%H:%M")
@@ -379,13 +373,9 @@ def cas_times_weektwo():
                 hours = tti
                 ws.cell(row=2 + i, column=10, value=hours)
 
-                i += 1
-            
             elif clock_in == None and clock_out == None:
                 hours = 0
                 ws.cell(row=2 + i, column=10, value=hours)
-
-                i += 1
 
             elif clock_in == None:
                 # Calculate time out
@@ -408,8 +398,6 @@ def cas_times_weektwo():
 
                 hours = float(tto)
                 ws.cell(row=2 + i, column=10, value=hours)
-
-                i += 1
 
             else:
                 ti = time(time_in).strftime("%H:%M")
@@ -451,7 +439,7 @@ def cas_times_weektwo():
                 # calculate hours worked
                 hours = float(tto) - float(tti)
                 ws.cell(row=2 + i, column=10, value=hours)
-
+            
             i += 1
 
         elif clock_in == None and clock_out == None:
