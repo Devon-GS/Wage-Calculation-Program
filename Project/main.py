@@ -7,6 +7,7 @@ import att_cal_hours as ath
 
 import cas_roster_times as cr
 import cas_clock_times as cc
+import cas_cal_hours as cth
 
 import excel_format as format
 
@@ -133,6 +134,23 @@ cc.cashier_clock_excel_wt()
 
 print('Cashier Clock Times Finnished')
 
+# ATTENDENT TOTAL TIMES CALCULATION
+# Week One
+cth.cas_times_weekone()
+cth.cas_public_weekone()
+cth.cas_total_wo_hours()
+
+# Week Two
+cth.cas_times_weektwo()
+cth.cas_public_weektwo()
+cth.cas_total_wt_hours()
+
+# ATTENDENT TOTAL TIMES
+cth.cas_total_wo_db()
+cth.cas_total_wt_db()
+cth.cas_fortnight_total()
+
+print('Cashier Total Times Finnished')
 
 
 
@@ -142,5 +160,5 @@ print('Cashier Clock Times Finnished')
 format.excel_format()
 print('Excel Workbook Formated')
 
-print('Wage Times.xlsx had printed and is ready for viewing')
+print('Wage Times.xlsx has printed and is ready for viewing')
 

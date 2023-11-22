@@ -175,12 +175,3 @@ def cashier_clock_excel_wt():
     wb.save('Wage Times.xlsx')
     wb.close()
 
-
-
-
-
-
-
-
-
-

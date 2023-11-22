@@ -13,7 +13,7 @@ def clean_db():
     c.execute('DELETE FROM rosterCashierWeekOne')
     c.execute('DELETE FROM rosterCashierWeekTwo')
     c.execute('DELETE FROM ClockTimeCashier')
-    # c.execute('DELETE FROM casTotal')
+    c.execute('DELETE FROM cashierTotal')
 
 
     con.commit()
