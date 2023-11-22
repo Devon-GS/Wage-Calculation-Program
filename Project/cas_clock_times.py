@@ -1,5 +1,5 @@
 # ###############################################################################################
-# ATTENDENTS WEEK 1 - ACTUAL CLOCK TIMES TO EXCEL
+# CASHIERS WEEK 1 - ACTUAL CLOCK TIMES TO EXCEL
 # ###############################################################################################
 import os
 from datetime import datetime, time
@@ -18,7 +18,7 @@ def recent_clock():
         if 'TL' in file and file[-7:-4] != '000':
             clock_list.append(filename)
             
-    recent = clock_list[-50:]
+    recent = clock_list[-20:]
 
     # Loop though each clock file by line and append badge and times to dat_times list
     for file in recent:    
@@ -38,25 +38,24 @@ def clock_times_collector():
     for dt in date_times:
         con = sqlite3.connect("wageTimes.db")
         c = con.cursor()
-        c.execute("""CREATE TABLE IF NOT EXISTS ClockTimeAttendent (badge TEXT, date TEXT, time TEXT)""")
+        c.execute("""CREATE TABLE IF NOT EXISTS ClockTimeCashier (badge TEXT, date TEXT, time TEXT)""")
 
-        query = """INSERT INTO ClockTimeAttendent (badge, date, time) VALUES (?, ?, ?)"""
+        query = """INSERT INTO clockTimeCashier (badge, date, time) VALUES (?, ?, ?)"""
 
         c.execute(query, (dt[0], dt[1], dt[2]))
 
         con.commit()
-
     con.close()
 
 # COPY CLOCK TIMES TO WAGES TIME SHEET WEEK ONE
-def att_clock_excel():
+def cashier_clock_excel():
     # Connect to database
     con = sqlite3.connect("wageTimes.db")
     c = con.cursor()
 
     # Load Wage Times workbook 
     wb = load_workbook('Wage Times.xlsx')
-    ws = wb.active
+    ws = wb['Cashier Week One']
 
     # For each day copy actual clock in and out time
     i = 0
@@ -68,7 +67,7 @@ def att_clock_excel():
 
         # loop through each employee and find actual clock in for day
         if badge != None and date != None:
-            c.execute('SELECT time FROM ClockTimeAttendent WHERE badge = ? AND date = ?', (badge, date))
+            c.execute('SELECT time FROM clockTimeCashier WHERE badge = ? AND date = ?', (badge, date))
             clock_times = c.fetchall()
         
             # Convert tuple to list 
@@ -110,19 +109,20 @@ def att_clock_excel():
     wb.close()
 
 # ###############################################################################################
-# ATTENDENTS WEEK 2 - ACTUAL CLOCK TIMES TO EXCEL
+# CASHIER WEEK 2 - ACTUAL CLOCK TIMES TO EXCEL
 # ###############################################################################################
+
 date_times_two = []
 
 # COPY CLOCK TIMES TO WAGES TIME SHEET WEEK TWO
-def att_clock_excel_wt():
+def cashier_clock_excel_wt():
     # Connect to database
     con = sqlite3.connect("wageTimes.db")
     c = con.cursor()
 
     # Load Wage Times workbook 
     wb = load_workbook('Wage Times.xlsx')
-    ws = wb['Att Week Two']
+    ws = wb['Cashier Week Two']
 
     # For each day copy actual clock in and out time
     i = 0
@@ -134,7 +134,7 @@ def att_clock_excel_wt():
 
         # loop through each employee and find actual clock in for day
         if badge != None and date != None:
-            c.execute('SELECT time FROM ClockTimeAttendent WHERE badge = ? AND date = ?', (badge, date))
+            c.execute('SELECT time FROM clockTimeCashier WHERE badge = ? AND date = ?', (badge, date))
             clock_times = c.fetchall()
         
             # Convert tuple to list 
@@ -174,3 +174,13 @@ def att_clock_excel_wt():
 
     wb.save('Wage Times.xlsx')
     wb.close()
+
+
+
+
+
+
+
+
+
+

@@ -5,6 +5,9 @@ import att_roster_times as ar
 import att_clock_times as ac
 import att_cal_hours as ath
 
+import cas_roster_times as cr
+import cas_clock_times as cc
+
 import excel_format as format
 
 # database_file = path.exists('wageTimes.db')
@@ -69,7 +72,6 @@ ar.db_atwo_init()
 ar.db_atwo_update_dates()
 ar.db_atwo_update_badges()
 ar.db_atwo_to_excel()
-
 print('Attendent Weektwo Finnished')
 
 # ATTENDENT CLOCK TIMES
@@ -81,10 +83,9 @@ ac.att_clock_excel()
 # Week two
 ac.att_clock_excel_wt()
 
-print('Attendent Weekone Clock Times Finnished')
+print('Attendent Clock Times Finnished')
 
-
-# ATTENDENT TIMES CALCULATION
+# ATTENDENT TOTAL TIMES CALCULATION
 # Week One
 ath.att_times_weekone()
 ath.att_public_weekone()
@@ -100,13 +101,37 @@ ath.att_total_wo_db()
 ath.att_total_wt_db()
 ath.att_fortnight_total()
 
-print('Attendent Weekone Times Finnished')
+print('Attendent Total Times Finnished')
 
 # ##########################################
 #               CASHIER
 # ##########################################
 
+# CASHIER ROSTER
+# Week One
+cr.db_cas_init()
+cr.db_update_cas_dates()
+cr.db_update_cas_badges()
+cr.db_to_excel()
+print('Cashier Weekone Finnished')
 
+# Week Two
+cr.db_ctwo_init()
+cr.db_ctwo_update_dates()
+cr.db_ctwo_update_badges()
+cr.db_ctwo_to_excel()
+print('Cashier Weektwo Finnished')
+
+# CASHIER CLOCK TIMES
+# Week One
+cc.recent_clock()
+cc.clock_times_collector()
+cc.cashier_clock_excel()
+
+# Week two
+cc.cashier_clock_excel_wt()
+
+print('Cashier Clock Times Finnished')
 
 
 
@@ -115,6 +140,7 @@ print('Attendent Weekone Times Finnished')
 
 # FORMAT EXCEL WOORKBOOK
 format.excel_format()
+print('Excel Workbook Formated')
 
 print('Wage Times.xlsx had printed and is ready for viewing')
 
