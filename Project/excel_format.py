@@ -23,6 +23,10 @@ def excel_format():
     wso = wb['Att Week Two']
     wst = wb['Att Total']
 
+    wsc = wb['Cashier Week One']
+    wsco = wb['Cashier Week Two']
+    wsct = wb['Cashier Total']
+    
     for col, size in columns_att.items():
         ws.column_dimensions[col].width = size + col_diff
         wso.column_dimensions[col].width = size + col_diff
@@ -31,6 +35,15 @@ def excel_format():
         wst.column_dimensions[col].width = size + col_diff
 
     cell_center(wst)
+
+    for col, size in columns_att.items():
+        wsc.column_dimensions[col].width = size + col_diff
+        wsco.column_dimensions[col].width = size + col_diff
+
+    for col, size in columns_total.items():
+        wsct.column_dimensions[col].width = size + col_diff
+
+    cell_center(wsct)
 
 
     wb.save("Wage Times.xlsx")
