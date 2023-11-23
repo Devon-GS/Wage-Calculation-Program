@@ -46,11 +46,18 @@ import excel_format as format
 #             break
 #         break
         
+print('Please select')
+user_input = input        
 # REMOVE WAGES TIMES.XLSX
 wage_times = path.exists('Wage Times.xlsx')
 
 if wage_times == True:
     os.remove('Wage Times.xlsx')
+
+
+# db.db_init()
+
+
 
 # CLEAN DATABASE
 db.clean_db()
