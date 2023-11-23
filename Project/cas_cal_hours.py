@@ -7,7 +7,8 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 import pandas as pd
 import sqlite3
-# ADD CALULATIONS OF HOURS FOR WEEK AND SUNDAY HOURS
+
+# Load public holidays date
 wb = load_workbook("Public Holidays/Public Holidays.xlsx", data_only=True)
 ws = wb.active
 
@@ -18,6 +19,22 @@ for row in ws.iter_rows(min_row=2, max_col=1, max_row=20, values_only=True):
         holiday_date = f'{x.day}/{x.month}/{str(x.year)[-2:]}'
         dateobj = datetime.strptime(holiday_date, '%d/%m/%y').date().strftime('%d/%m/%y')
         public_holidays.append(dateobj)
+
+wb.close()
+
+# Load baker cashier hours
+wb = load_workbook("Baker Cashier/Baker Cashier Work.xlsx", data_only=True)
+ws = wb.active
+
+bc_working = []
+for row in ws.iter_rows(min_row=2, max_col=2, max_row=20, values_only=True):
+    x = row
+    if x[0] != None:
+        name = x[0]
+        cashier_date = f'{x[1].day}/{x[1].month}/{str(x[1].year)[-2:]}'
+        dateobj = datetime.strptime(cashier_date, '%d/%m/%y').date().strftime('%d/%m/%y')
+        bc = [name, dateobj]
+        bc_working.append(bc)
 
 wb.close()
 
@@ -262,6 +279,27 @@ def cas_public_weekone():
     wb.save("Wage Times.xlsx")
     wb.close()
 
+def bak_cas_work():
+    wb = load_workbook("Wage Times.xlsx")
+    ws = wb['Cashier Week One']
+
+    i = 0
+
+    for x in range(ws.max_row):
+        name = ws.cell(row=2 + i, column=1).value
+        date = ws.cell(row=2 + i, column=4).value
+        hours = ws.cell(row=2 + i, column=9).value
+
+        for x in bc_working:
+            if name == x[0] and date == x[1]:
+                ws.cell(row=2 + i, column=13, value=hours)
+                ws.cell(row=2 + i, column=9, value='')
+        
+        i += 1
+
+    wb.save("Wage Times.xlsx")
+    wb.close()
+
 def cas_total_wo_hours():
     # Calculate total hours for week add to excel
     wb = load_workbook("Wage Times.xlsx")
@@ -272,6 +310,7 @@ def cas_total_wo_hours():
     total_s = 0
     total_p = 0
     total_nc = 0
+    total_bc = 0
 
     for x in range(ws.max_row):
         name = ws.cell(row=2 + i, column=1).value
@@ -282,11 +321,14 @@ def cas_total_wo_hours():
         hours_s = ws.cell(row=2 + i, column=10).value
         hours_p = ws.cell(row=2 + i, column=11).value
         nc = ws.cell(row=2 + i, column=12).value
+        bc_hours = ws.cell(row=2 + i, column=13).value
 
         # Check if name is true
         if name:
             if nc != None:
                 total_nc = 1
+            elif bc_hours !=None:
+                total_bc += bc_hours
             elif day == 'Sunday':
                 total_s += hours_s
             elif hours_p != None:
@@ -308,11 +350,13 @@ def cas_total_wo_hours():
             ws.cell(row=2 + i, column=10, value=total_s)
             ws.cell(row=2 + i, column=11, value=total_p)
             ws.cell(row=2 + i, column=12, value=total_nc)
+            ws.cell(row=2 + i, column=13, value=total_bc)
             
             total = 0            
             total_s = 0  
             total_p = 0  
             total_nc = 0  
+            total_bc = 0  
 
             i += 1
 
@@ -560,6 +604,27 @@ def cas_public_weektwo():
     wb.save("Wage Times.xlsx")
     wb.close()
 
+def bak_cas_work_wt():
+    wb = load_workbook("Wage Times.xlsx")
+    ws = wb['Cashier Week Two']
+
+    i = 0
+
+    for x in range(ws.max_row):
+        name = ws.cell(row=2 + i, column=1).value
+        date = ws.cell(row=2 + i, column=4).value
+        hours = ws.cell(row=2 + i, column=9).value
+
+        for x in bc_working:
+            if name == x[0] and date == x[1]:
+                ws.cell(row=2 + i, column=13, value=hours)
+                ws.cell(row=2 + i, column=9, value='')
+        
+        i += 1
+
+    wb.save("Wage Times.xlsx")
+    wb.close()
+
 def cas_total_wt_hours():
     # Calculate total hours for week add to excel
     wb = load_workbook("Wage Times.xlsx")
@@ -570,6 +635,7 @@ def cas_total_wt_hours():
     total_s = 0
     total_p = 0
     total_nc = 0
+    total_bc = 0
 
     # print(ws.max_row)
     for x in range(ws.max_row):
@@ -581,11 +647,14 @@ def cas_total_wt_hours():
         hours = ws.cell(row=2 + i, column=9).value
         hours_s = ws.cell(row=2 + i, column=10).value
         hours_p = ws.cell(row=2 + i, column=11).value
+        bc_hours = ws.cell(row=2 + i, column=13).value
         
         # Check if name is true
         if name:
             if nc != None:
                 total_nc = 1
+            elif bc_hours != None:
+                total_bc += bc_hours
             elif day == 'Sunday':
                 total_s += hours_s
             elif hours_p != None:
@@ -607,11 +676,13 @@ def cas_total_wt_hours():
             ws.cell(row=2 + i, column=10, value=total_s)
             ws.cell(row=2 + i, column=11, value=total_p)
             ws.cell(row=2 + i, column=12, value=total_nc)
+            ws.cell(row=2 + i, column=13, value=total_bc)
             
             total = 0            
             total_s = 0  
             total_p = 0  
             total_nc = 0  
+            total_bc = 0  
 
             i += 1
 
@@ -639,7 +710,8 @@ def cas_total_wo_db():
                 normal TEXT,
                 sunday TEXT,
                 public TEXT,
-                noClock TEXT
+                noClock TEXT,
+                cashier TEST
                 )""")
 
     # Add week one data to table
@@ -649,9 +721,10 @@ def cas_total_wo_db():
                 normal,
                 sunday,
                 public,
-                noClock
+                noClock,
+                cashier
                 )
-                VALUES (?, ?, ?, ?, ?, ?)"""
+                VALUES (?, ?, ?, ?, ?, ?, ?)"""
 
     i = 0
     for x in range(ws.max_row):
@@ -661,10 +734,11 @@ def cas_total_wo_db():
         sunday = ws.cell(row=2 + i, column=10).value
         public = ws.cell(row=2 + i, column=11).value
         nc = ws.cell(row=2 + i, column=12).value
+        bc = ws.cell(row=2 + i, column=13).value
 
         if name != None:
             if 'Total' in name:
-                c.execute(query, (name, badge, normal, sunday, public, nc))
+                c.execute(query, (name, badge, normal, sunday, public, nc, bc))
         
         i += 1
 
@@ -692,7 +766,8 @@ def cas_total_wt_db():
                 normal = normal + ?,
                 sunday = sunday + ?,
                 public = public + ?,
-                noClock = noClock + ?
+                noClock = noClock + ?,
+                cashier = cashier + ?
             WHERE
                 badge = ?
                 """)
@@ -705,10 +780,11 @@ def cas_total_wt_db():
         sunday = ws.cell(row=2 + i, column=10).value
         public = ws.cell(row=2 + i, column=11).value
         nc = ws.cell(row=2 + i, column=12).value
+        bc = ws.cell(row=2 + i, column=13).value
 
         if name != None:
             if 'Total' in name:
-                c.execute(query, (normal, sunday, public, nc, badge))
+                c.execute(query, (normal, sunday, public, nc, bc, badge))
         
         i += 1
 
@@ -743,6 +819,7 @@ def cas_fortnight_total():
     ws["C1"] = 'Total Sunday Hours'
     ws["D1"] = 'Total Public Holiday Hours'
     ws["E1"] = 'No Clock'
+    ws["F1"] = 'Baker/Cashier Hours'
 
     i = 0
     for r in records:
@@ -751,11 +828,13 @@ def cas_fortnight_total():
         sunday = float(r[3])
         public = float(r[4])
         no_clock = float(r[5])
+        bc = float(r[6])
 
         ws.cell(row=2 + i, column=1, value=name)
         ws.cell(row=2 + i, column=2, value=normal)
         ws.cell(row=2 + i, column=3, value=sunday)
         ws.cell(row=2 + i, column=4, value=public)
+        ws.cell(row=2 + i, column=6, value=bc)
         if no_clock == 1 or no_clock == 2:
             ws.cell(row=2 + i, column=5, value='No Clock')
 

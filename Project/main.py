@@ -138,11 +138,13 @@ print('Cashier Clock Times Finnished')
 # Week One
 cth.cas_times_weekone()
 cth.cas_public_weekone()
+cth.bak_cas_work()
 cth.cas_total_wo_hours()
 
 # Week Two
 cth.cas_times_weektwo()
 cth.cas_public_weektwo()
+cth.bak_cas_work_wt()
 cth.cas_total_wt_hours()
 
 # ATTENDENT TOTAL TIMES
@@ -152,12 +154,9 @@ cth.cas_fortnight_total()
 
 print('Cashier Total Times Finnished')
 
-
-
-
-
 # FORMAT EXCEL WOORKBOOK
 format.excel_format()
+
 print('Excel Workbook Formated')
 
 print('Wage Times.xlsx has printed and is ready for viewing')

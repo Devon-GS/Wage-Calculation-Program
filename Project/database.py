@@ -23,7 +23,7 @@ def clean_db():
 # con = sqlite3.connect("wageTimes.db")
 # c = con.cursor()
 
-# c.execute('DROP TABLE clockTimeAWO')
+# c.execute('DROP TABLE cashierTotal')
 
 
 # con.commit()

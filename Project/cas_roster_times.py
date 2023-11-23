@@ -193,6 +193,7 @@ def db_to_excel():
     ws["J1"] = "Sunday Hours"
     ws["K1"] = "Public Hours"
     ws["L1"] = "No Clock"
+    ws["M1"] = "Baker/Cashier"
 
     # Get Time in / Time Out
     # Start row and col
@@ -857,6 +858,7 @@ def db_ctwo_to_excel():
     ws["J1"] = "Sunday Hours"
     ws["K1"] = "Public Hours"
     ws["L1"] = "No Clock"
+    ws["M1"] = "Baker/Cashier"
 
     # Get Time in / Time Out
     # Start row and col
