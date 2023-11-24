@@ -211,7 +211,7 @@ def att_times_weekone():
                 elif ci[-2:] <= "15":
                     tti = float(ci[0:2]) + 0.25
                 elif ci[-2:] <= "30":
-                    tti = float(ci[0:2] + 0.30)
+                    tti = float(ci[0:2]) + 0.30
                 elif ci[-2:] <= "45":
                     tti = float(ci[0:2]) + 0.75
                 elif ci[-2:] >= "45":
@@ -414,7 +414,7 @@ def att_times_weektwo():
                     elif ci[-2:] <= "15":
                         tti = float(ci[0:2]) + 0.25
                     elif ci[-2:] <= "30":
-                        tti = float(ci[0:2] + 0.30)
+                        tti = float(ci[0:2]) + 0.30
                     elif ci[-2:] <= "45":
                         tti = float(ci[0:2]) + 0.75
                     elif ci[-2:] >= "45":

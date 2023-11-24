@@ -11,160 +11,143 @@ import cas_cal_hours as cth
 
 import excel_format as format
 
-# database_file = path.exists('wageTimes.db')
+# ##########################################################
+# START PROGRAM QUESTIONS   
+# ##########################################################   
 
-# user_input = ''
+print('Please select one of following options:')
+print('1: Running program for first time')
+print('2: Run fortnight wages')
 
-# while True:
+user_input = input('Select option by typing number: ')
 
-#     print('Select one of the following to proceed:')
-#     print('Type 1: Initiate Database')
-#     print('Type 2: New Fortnight Hour Calculation')
-#     print()
+if user_input == '1':
+    db.db_init()
+elif user_input == '2':
+    print('===========================================')
+    print('Have You Checked Public holiday Times')
+    print('Have You Checked All Badge Numbers Upto Date')
+    print('Have You Updated Cashier Baker Dates')
+    print('Have You Updated Attendent and Cashier Roster Times Plus Delete Sheets')
+    
+    user = input("Please type 'y' to contine or any other button to exit: ").lower()
 
-#     user_input = input('Selection = ')
+    if user == 'y':
+        # REMOVE WAGES TIMES.XLSX
+        wage_times = path.exists('Wage Times.xlsx')
 
-#     if user_input == '1':
-#         if database_file:
-#             user = input('Database already exists...type y to continue or n to exit: ')
-#             if user == 'y':
-#                 print('yes database is init')
-#             elif user == 'n':
-#                 break
-#             else:
-#                 print('database created')
-#                 continue
-#     elif user_input == '2':
-#         print('##########################################################################')
-#         print('Have you edited the Attend and Cashier roster to current fortnight?')
-#         print('Are all public holidays up todate?')
-#         print('Are all badges up todate?')
-#         print()
-#         user = input('If you are ready to proceed type y or n if you are not ready: ')
-#         if user == 'y':
-#             print('ready')
-#             break
-#         break
-        
-print('Please select')
-user_input = input        
-# REMOVE WAGES TIMES.XLSX
-wage_times = path.exists('Wage Times.xlsx')
+        if wage_times == True:
+            os.remove('Wage Times.xlsx')
 
-if wage_times == True:
-    os.remove('Wage Times.xlsx')
+        # CLEAN DATABASE
+        db.clean_db()
+        print('===========================================')
+        print('Database Cleaned')
 
+        # ##########################################
+        #               ATTENDENT
+        # ##########################################
 
-# db.db_init()
+        # ATTENDENT ROSTER
+        # Week One
+        ar.db_init()
+        ar.db_update_dates()
+        ar.db_update_badges()
+        ar.db_to_excel()
+        print('Attendent Weekone Finnished')
 
+        # Week Two
+        ar.db_atwo_init()
+        ar.db_atwo_update_dates()
+        ar.db_atwo_update_badges()
+        ar.db_atwo_to_excel()
+        print('Attendent Weektwo Finnished')
 
+        # ATTENDENT CLOCK TIMES
+        # Week One
+        ac.recent_clock()
+        ac.clock_times_collector()
+        ac.att_clock_excel()
 
-# CLEAN DATABASE
-db.clean_db()
-print('Database Cleaned')
+        # Week two
+        ac.att_clock_excel_wt()
 
-# ##########################################
-#               ATTENDENT
-# ##########################################
+        print('Attendent Clock Times Finnished')
 
-# ATTENDENT ROSTER
-# Week One
-ar.db_init()
-ar.db_update_dates()
-ar.db_update_badges()
-ar.db_to_excel()
-print('Attendent Weekone Finnished')
+        # ATTENDENT TOTAL TIMES CALCULATION
+        # Week One
+        ath.att_times_weekone()
+        ath.att_public_weekone()
+        ath.att_total_wo_hours()
 
-# Week Two
-ar.db_atwo_init()
-ar.db_atwo_update_dates()
-ar.db_atwo_update_badges()
-ar.db_atwo_to_excel()
-print('Attendent Weektwo Finnished')
+        # Week Two
+        ath.att_times_weektwo()
+        ath.att_public_weektwo()
+        ath.att_total_wt_hours()
 
-# ATTENDENT CLOCK TIMES
-# Week One
-ac.recent_clock()
-ac.clock_times_collector()
-ac.att_clock_excel()
+        # ATTENDENT TOTAL TIMES
+        ath.att_total_wo_db()   
+        ath.att_total_wt_db()
+        ath.att_fortnight_total()
 
-# Week two
-ac.att_clock_excel_wt()
+        print('Attendent Total Times Finnished')
 
-print('Attendent Clock Times Finnished')
+        # ##########################################
+        #               CASHIER
+        # ##########################################
 
-# ATTENDENT TOTAL TIMES CALCULATION
-# Week One
-ath.att_times_weekone()
-ath.att_public_weekone()
-ath.att_total_wo_hours()
+        # CASHIER ROSTER
+        # Week One
+        cr.db_cas_init()
+        cr.db_update_cas_dates()
+        cr.db_update_cas_badges()
+        cr.db_to_excel()
+        print('Cashier Weekone Finnished')
 
-# Week Two
-ath.att_times_weektwo()
-ath.att_public_weektwo()
-ath.att_total_wt_hours()
+        # Week Two
+        cr.db_ctwo_init()
+        cr.db_ctwo_update_dates()
+        cr.db_ctwo_update_badges()
+        cr.db_ctwo_to_excel()
+        print('Cashier Weektwo Finnished')
 
-# ATTENDENT TOTAL TIMES
-ath.att_total_wo_db()   
-ath.att_total_wt_db()
-ath.att_fortnight_total()
+        # CASHIER CLOCK TIMES
+        # Week One
+        cc.recent_clock()
+        cc.clock_times_collector()
+        cc.cashier_clock_excel()
 
-print('Attendent Total Times Finnished')
+        # Week two
+        cc.cashier_clock_excel_wt()
 
-# ##########################################
-#               CASHIER
-# ##########################################
+        print('Cashier Clock Times Finnished')
 
-# CASHIER ROSTER
-# Week One
-cr.db_cas_init()
-cr.db_update_cas_dates()
-cr.db_update_cas_badges()
-cr.db_to_excel()
-print('Cashier Weekone Finnished')
+        # ATTENDENT TOTAL TIMES CALCULATION
+        # Week One
+        cth.cas_times_weekone()
+        cth.cas_public_weekone()
+        cth.bak_cas_work()
+        cth.cas_total_wo_hours()
 
-# Week Two
-cr.db_ctwo_init()
-cr.db_ctwo_update_dates()
-cr.db_ctwo_update_badges()
-cr.db_ctwo_to_excel()
-print('Cashier Weektwo Finnished')
+        # Week Two
+        cth.cas_times_weektwo()
+        cth.cas_public_weektwo()
+        cth.bak_cas_work_wt()
+        cth.cas_total_wt_hours()
 
-# CASHIER CLOCK TIMES
-# Week One
-cc.recent_clock()
-cc.clock_times_collector()
-cc.cashier_clock_excel()
+        # ATTENDENT TOTAL TIMES
+        cth.cas_total_wo_db()
+        cth.cas_total_wt_db()
+        cth.cas_fortnight_total()
 
-# Week two
-cc.cashier_clock_excel_wt()
+        print('Cashier Total Times Finnished')
 
-print('Cashier Clock Times Finnished')
+        # FORMAT EXCEL WOORKBOOK
+        format.excel_format()
 
-# ATTENDENT TOTAL TIMES CALCULATION
-# Week One
-cth.cas_times_weekone()
-cth.cas_public_weekone()
-cth.bak_cas_work()
-cth.cas_total_wo_hours()
+        print('Excel Workbook Formated')
 
-# Week Two
-cth.cas_times_weektwo()
-cth.cas_public_weektwo()
-cth.bak_cas_work_wt()
-cth.cas_total_wt_hours()
-
-# ATTENDENT TOTAL TIMES
-cth.cas_total_wo_db()
-cth.cas_total_wt_db()
-cth.cas_fortnight_total()
-
-print('Cashier Total Times Finnished')
-
-# FORMAT EXCEL WOORKBOOK
-format.excel_format()
-
-print('Excel Workbook Formated')
-
-print('Wage Times.xlsx has printed and is ready for viewing')
+        print('===========================================')
+        print('Wage Times.xlsx has printed and is ready for viewing')
+        input('Press any button to continue: ')
 

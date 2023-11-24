@@ -18,7 +18,7 @@ def recent_clock():
         if 'TL' in file and file[-7:-4] != '000':
             clock_list.append(filename)
             
-    recent = clock_list[-50:]
+    recent = clock_list[-20:]
 
     # Loop though each clock file by line and append badge and times to dat_times list
     for file in recent:    

@@ -26,7 +26,7 @@ def second(weekday):
 # ==============================================================================
 # IMPORT ROSTER TIMES AND DATES AND BADGE WEEK 1 (ATTENDENTS)
 # ==============================================================================
-file = '../Attendant_Carwash_Roster.xls'
+file = 'Rosters/Attendant_Carwash_Roster.xlsx'
 
 # Get Columns
 columns = ['idx','ATTENDANTS', 'THURS', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED']
