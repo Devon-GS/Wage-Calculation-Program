@@ -12,27 +12,17 @@ import cas_cal_hours as cth
 import excel_format as format
 
 # ##########################################################
-# START PROGRAM QUESTIONS   
-# ##########################################################   
+# FUNCTIONS  
+# ##########################################################
 
-print('Please select one of following options:')
-print('1: Running program for first time')
-print('2: Run fortnight wages')
-
-user_input = input('Select option by typing number: ')
-
-if user_input == '1':
-    db.db_init()
-elif user_input == '2':
+def user_input_two():
     print('===========================================')
     print('Have You Checked Public holiday Times')
     print('Have You Checked All Badge Numbers Upto Date')
     print('Have You Updated Cashier Baker Dates')
     print('Have You Updated Attendent and Cashier Roster Times Plus Delete Sheets')
-    
-    user = input("Please type 'y' to contine or any other button to exit: ").lower()
-
-    if user == 'y':
+      
+def wages_time_main_program():
         # REMOVE WAGES TIMES.XLSX
         wage_times = path.exists('Wage Times.xlsx')
 
@@ -147,6 +137,24 @@ elif user_input == '2':
 
         print('Excel Workbook Formated')
 
+# ##########################################################
+# START PROGRAM QUESTIONS   
+# ##########################################################   
+
+print('Please select one of following options:')
+print('1: Running program for first time')
+print('2: Run fortnight wages')
+
+user_input = input('Select option by typing number: ')
+
+if user_input == '1':
+    db.db_init()
+elif user_input == '2':
+    user_input_two()
+    user = input("Please type 'y' to contine or any other button to exit: ").lower()
+
+    if user == 'y':
+        wages_time_main_program()
         print('===========================================')
         print('Wage Times.xlsx has printed and is ready for viewing')
         input('Press any button to continue: ')
