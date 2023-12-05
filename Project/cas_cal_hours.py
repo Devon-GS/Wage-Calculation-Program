@@ -81,7 +81,7 @@ def cas_times_weekone():
                     elif ci[-2:] <= "15":
                         tti = 24.0 - (float(ci[0:2]) + 0.25)
                     elif ci[-2:] <= "30":
-                        tti = 24.0 - (float(ci[0:2]) + 0.30)
+                        tti = 24.0 - (float(ci[0:2]) + 0.50)
                     elif ci[-2:] <= "45":
                         tti = 24.0 - (float(ci[0:2]) + 0.75)
                     elif ci[-2:] >= "45":
@@ -107,7 +107,7 @@ def cas_times_weekone():
                     elif co[-2:] <= "15":
                         tto = float(co[0:2]) + 0.25
                     elif co[-2:] <= "30":
-                        tto = float(co[0:2]) + 0.30
+                        tto = float(co[0:2]) + 0.50
                     elif co[-2:] <= "45":
                         tto = float(co[0:2]) + 0.75
                     elif co[-2:] >= "45":
@@ -132,7 +132,7 @@ def cas_times_weekone():
                     elif ci[-2:] <= "15":
                         tti = float(ci[0:2]) + 0.25
                     elif ci[-2:] <= "30":
-                        tti = float(ci[0:2]) + 0.30
+                        tti = float(ci[0:2]) + 0.50
                     elif ci[-2:] <= "45":
                         tti = float(ci[0:2]) + 0.75
                     elif ci[-2:] >= "45":
@@ -147,7 +147,7 @@ def cas_times_weekone():
                     elif co[-2:] <= "15":
                         tto = float(co[0:2]) + 0.25
                     elif co[-2:] <= "30":
-                        tto = float(co[0:2]) + 0.30
+                        tto = float(co[0:2]) + 0.50
                     elif co[-2:] <= "45":
                         tto = float(co[0:2]) + 0.75
                     elif co[-2:] >= "45":
@@ -177,7 +177,7 @@ def cas_times_weekone():
                 elif ci[-2:] <= "15":
                     tti = 24.0 - (float(ci[0:2]) + 0.25)
                 elif ci[-2:] <= "30":
-                    tti = 24.0 - (float(ci[0:2]) + 0.30)
+                    tti = 24.0 - (float(ci[0:2]) + 0.50)
                 elif ci[-2:] <= "45":
                     tti = 24.0 - (float(ci[0:2]) + 0.75)
                 elif ci[-2:] >= "45":
@@ -201,7 +201,7 @@ def cas_times_weekone():
                 elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
                 elif co[-2:] <= "30":
-                    tto = float(co[0:2]) + 0.30
+                    tto = float(co[0:2]) + 0.50
                 elif co[-2:] <= "45":
                     tto = float(co[0:2]) + 0.75
                 elif co[-2:] >= "45":
@@ -228,7 +228,7 @@ def cas_times_weekone():
                 elif ci[-2:] <= "15":
                     tti = float(ci[0:2]) + 0.25
                 elif ci[-2:] <= "30":
-                    tti = float(ci[0:2] + 0.30)
+                    tti = float(ci[0:2]) + 0.50
                 elif ci[-2:] <= "45":
                     tti = float(ci[0:2]) + 0.75
                 elif ci[-2:] >= "45":
@@ -243,7 +243,7 @@ def cas_times_weekone():
                 elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
                 elif co[-2:] <= "30":
-                    tto = float(co[0:2]) + 0.30
+                    tto = float(co[0:2]) + 0.50
                 elif co[-2:] <= "45":
                     tto = float(co[0:2]) + 0.75
                 elif co[-2:] >= "45":
@@ -406,7 +406,7 @@ def cas_times_weektwo():
                     elif ci[-2:] <= "15":
                         tti = 24.0 - (float(ci[0:2]) + 0.25)
                     elif ci[-2:] <= "30":
-                        tti = 24.0 - (float(ci[0:2]) + 0.30)
+                        tti = 24.0 - (float(ci[0:2]) + 0.50)
                     elif ci[-2:] <= "45":
                         tti = 24.0 - (float(ci[0:2]) + 0.75)
                     elif ci[-2:] >= "45":
@@ -432,7 +432,7 @@ def cas_times_weektwo():
                     elif co[-2:] <= "15":
                         tto = float(co[0:2]) + 0.25
                     elif co[-2:] <= "30":
-                        tto = float(co[0:2]) + 0.30
+                        tto = float(co[0:2]) + 0.50
                     elif co[-2:] <= "45":
                         tto = float(co[0:2]) + 0.75
                     elif co[-2:] >= "45":
@@ -457,7 +457,7 @@ def cas_times_weektwo():
                     elif ci[-2:] <= "15":
                         tti = float(ci[0:2]) + 0.25
                     elif ci[-2:] <= "30":
-                        tti = float(ci[0:2] + 0.30)
+                        tti = float(ci[0:2]) + 0.50
                     elif ci[-2:] <= "45":
                         tti = float(ci[0:2]) + 0.75
                     elif ci[-2:] >= "45":
@@ -472,7 +472,7 @@ def cas_times_weektwo():
                     elif co[-2:] <= "15":
                         tto = float(co[0:2]) + 0.25
                     elif co[-2:] <= "30":
-                        tto = float(co[0:2]) + 0.30
+                        tto = float(co[0:2]) + 0.50
                     elif co[-2:] <= "45":
                         tto = float(co[0:2]) + 0.75
                     elif co[-2:] >= "45":
@@ -502,7 +502,7 @@ def cas_times_weektwo():
                 elif ci[-2:] <= "15":
                     tti = 24.0 - (float(ci[0:2]) + 0.25)
                 elif ci[-2:] <= "30":
-                    tti = 24.0 - (float(ci[0:2]) + 0.30)
+                    tti = 24.0 - (float(ci[0:2]) + 0.50)
                 elif ci[-2:] <= "45":
                     tti = 24.0 - (float(ci[0:2]) + 0.75)
                 elif ci[-2:] >= "45":
@@ -526,7 +526,7 @@ def cas_times_weektwo():
                 elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
                 elif co[-2:] <= "30":
-                    tto = float(co[0:2]) + 0.30
+                    tto = float(co[0:2]) + 0.50
                 elif co[-2:] <= "45":
                     tto = float(co[0:2]) + 0.75
                 elif co[-2:] >= "45":
@@ -553,7 +553,7 @@ def cas_times_weektwo():
                 elif ci[-2:] <= "15":
                     tti = float(ci[0:2]) + 0.25
                 elif ci[-2:] <= "30":
-                    tti = float(ci[0:2]) + 0.30
+                    tti = float(ci[0:2]) + 0.50
                 elif ci[-2:] <= "45":
                     tti = float(ci[0:2]) + 0.75
                 elif ci[-2:] >= "45":
@@ -568,7 +568,7 @@ def cas_times_weektwo():
                 elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
                 elif co[-2:] <= "30":
-                    tto = float(co[0:2]) + 0.30
+                    tto = float(co[0:2]) + 0.50
                 elif co[-2:] <= "45":
                     tto = float(co[0:2]) + 0.75
                 elif co[-2:] >= "45":
