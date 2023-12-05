@@ -52,7 +52,7 @@ def att_times_weekone():
             ws.cell(row=2 + i, column=12, value=hours)
 
             i += 1
-
+        # Calculate Sunday 
         elif day == "Sunday":
             if time_in == 18:
                 ti = time(time_in).strftime("%H:%M")
@@ -79,6 +79,7 @@ def att_times_weekone():
                 hours = 0
                 ws.cell(row=2 + i, column=10, value=hours)
 
+            # Calculate clock in
             elif clock_in == None:
                 # Calculate time out
                 to = time(time_out).strftime("%H:%M")
