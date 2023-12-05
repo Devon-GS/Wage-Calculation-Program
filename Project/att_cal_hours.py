@@ -59,9 +59,18 @@ def att_times_weekone():
                 ci = clock_in
 
                 if ci > ti:
-                    if ci[-2:] <= "05":
-                        tti = 24.0 - float(ci[0:2])
-                    elif ci[-2:] <= "15":
+                    # if ci[-2:] <= "05":
+                    #     tti = 24.0 - float(ci[0:2])
+                    # elif ci[-2:] <= "15":
+                    #     tti = 24.0 - (float(ci[0:2]) + 0.25)
+                    # elif ci[-2:] <= "30":
+                    #     tti = 24.0 - (float(ci[0:2]) + 0.50)
+                    # elif ci[-2:] <= "45":
+                    #     tti = 24.0 - (float(ci[0:2]) + 0.75)
+                    # elif ci[-2:] >= "45":
+                    #     tti = 24.0 - (float(ci[0:2]) + 1.0)
+
+                    if ci[-2:] <= "15":
                         tti = 24.0 - (float(ci[0:2]) + 0.25)
                     elif ci[-2:] <= "30":
                         tti = 24.0 - (float(ci[0:2]) + 0.50)
@@ -111,9 +120,18 @@ def att_times_weekone():
 
                 # Calculate time in
                 if ci > ti:
-                    if ci[-2:] <= "05":
-                        tti = float(ci[0:2])
-                    elif ci[-2:] <= "15":
+                    # if ci[-2:] <= "05":
+                    #     tti = float(ci[0:2])
+                    # elif ci[-2:] <= "15":
+                    #     tti = float(ci[0:2]) + 0.25
+                    # elif ci[-2:] <= "30":
+                    #     tti = float(ci[0:2]) + 0.50
+                    # elif ci[-2:] <= "45":
+                    #     tti = float(ci[0:2]) + 0.75
+                    # elif ci[-2:] >= "45":
+                    #     tti = (float(ci[0:2]) + 1) + 0.00
+
+                    if ci[-2:] <= "15":
                         tti = float(ci[0:2]) + 0.25
                     elif ci[-2:] <= "30":
                         tti = float(ci[0:2]) + 0.50
