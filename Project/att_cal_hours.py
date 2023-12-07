@@ -98,13 +98,17 @@ def att_times_weekone():
                     if co[-2:] <= "05":
                         tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "15":
-                        tto = float(co[0:2]) + 0.25
+                        # tto = float(co[0:2]) + 0.25
+                        tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "30":
-                        tto = float(co[0:2]) + 0.50
+                        # tto = float(co[0:2]) + 0.50
+                        tto = float(co[0:2]) + 0.25
                     elif co[-2:] <= "45":
-                        tto = float(co[0:2]) + 0.75
+                        # tto = float(co[0:2]) + 0.75
+                        tto = float(co[0:2]) + 0.50
                     elif co[-2:] >= "45":
-                        tto = (float(co[0:2]) + 1) + 0.00
+                        # tto = (float(co[0:2]) + 1) + 0.00
+                        tto = float(co[0:2]) + 0.75
                 else:
                     tto = int(time_out)
 
@@ -147,13 +151,17 @@ def att_times_weekone():
                     if co[-2:] <= "05":
                         tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "15":
-                        tto = float(co[0:2]) + 0.25
+                        # tto = float(co[0:2]) + 0.25
+                        tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "30":
-                        tto = float(co[0:2]) + 0.50
+                        # tto = float(co[0:2]) + 0.50
+                        tto = float(co[0:2]) + 0.25
                     elif co[-2:] <= "45":
-                        tto = float(co[0:2]) + 0.75
+                        # tto = float(co[0:2]) + 0.75
+                        tto = float(co[0:2]) + 0.50
                     elif co[-2:] >= "45":
-                        tto = (float(co[0:2]) + 1) + 0.00
+                        # tto = (float(co[0:2]) + 1) + 0.00
+                        tto = float(co[0:2]) + 0.75
                 else:
                     tto = int(time_out)
 
@@ -243,13 +251,17 @@ def att_times_weekone():
                 if co[-2:] <= "05":
                     tto = float(co[0:2]) + 0.00
                 elif co[-2:] <= "15":
-                    tto = float(co[0:2]) + 0.25
+                    # tto = float(co[0:2]) + 0.25
+                    tto = float(co[0:2]) + 0.00
                 elif co[-2:] <= "30":
-                    tto = float(co[0:2]) + 0.50
+                    # tto = float(co[0:2]) + 0.50
+                    tto = float(co[0:2]) + 0.25
                 elif co[-2:] <= "45":
-                    tto = float(co[0:2]) + 0.75
+                    # tto = float(co[0:2]) + 0.75
+                    tto = float(co[0:2]) + 0.50
                 elif co[-2:] >= "45":
-                    tto = (float(co[0:2]) + 1) + 0.00
+                    # tto = (float(co[0:2]) + 1) + 0.00
+                    tto = float(co[0:2]) + 0.75
             else:
                 tto = int(time_out)
 
@@ -377,9 +389,18 @@ def att_times_weektwo():
                 ci = clock_in
 
                 if ci > ti:
-                    if ci[-2:] <= "05":
-                        tti = 24.0 - float(ci[0:2])
-                    elif ci[-2:] <= "15":
+                    # if ci[-2:] <= "05":
+                    #     tti = 24.0 - float(ci[0:2])
+                    # elif ci[-2:] <= "15":
+                    #     tti = 24.0 - (float(ci[0:2]) + 0.25)
+                    # elif ci[-2:] <= "30":
+                    #     tti = 24.0 - (float(ci[0:2]) + 0.50)
+                    # elif ci[-2:] <= "45":
+                    #     tti = 24.0 - (float(ci[0:2]) + 0.75)
+                    # elif ci[-2:] >= "45":
+                    #     tti = 24.0 - (float(ci[0:2]) + 1.0)
+
+                    if ci[-2:] <= "15":
                         tti = 24.0 - (float(ci[0:2]) + 0.25)
                     elif ci[-2:] <= "30":
                         tti = 24.0 - (float(ci[0:2]) + 0.50)
@@ -396,7 +417,8 @@ def att_times_weektwo():
             elif clock_in == None and clock_out == None:
                 hours = 0
                 ws.cell(row=2 + i, column=10, value=hours)
-
+            
+            # Calculate clock in
             elif clock_in == None:
                 # Calculate time out
                 to = time(time_out).strftime("%H:%M")
@@ -406,13 +428,17 @@ def att_times_weektwo():
                     if co[-2:] <= "05":
                         tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "15":
-                        tto = float(co[0:2]) + 0.25
+                        # tto = float(co[0:2]) + 0.25
+                        tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "30":
-                        tto = float(co[0:2]) + 0.50
+                        # tto = float(co[0:2]) + 0.50
+                        tto = float(co[0:2]) + 0.25
                     elif co[-2:] <= "45":
-                        tto = float(co[0:2]) + 0.75
+                        # tto = float(co[0:2]) + 0.75
+                        tto = float(co[0:2]) + 0.50
                     elif co[-2:] >= "45":
-                        tto = (float(co[0:2]) + 1) + 0.00
+                        # tto = (float(co[0:2]) + 1) + 0.00
+                        tto = float(co[0:2]) + 0.75
                 else:
                     tto = int(time_out)
 
@@ -428,9 +454,18 @@ def att_times_weektwo():
 
                 # Calculate time in
                 if ci > ti:
-                    if ci[-2:] <= "05":
-                        tti = float(ci[0:2])
-                    elif ci[-2:] <= "15":
+                    # if ci[-2:] <= "05":
+                    #     tti = float(ci[0:2])
+                    # elif ci[-2:] <= "15":
+                    #     tti = float(ci[0:2]) + 0.25
+                    # elif ci[-2:] <= "30":
+                    #     tti = float(ci[0:2]) + 0.50
+                    # elif ci[-2:] <= "45":
+                    #     tti = float(ci[0:2]) + 0.75
+                    # elif ci[-2:] >= "45":
+                    #     tti = (float(ci[0:2]) + 1) + 0.00
+
+                    if ci[-2:] <= "15":
                         tti = float(ci[0:2]) + 0.25
                     elif ci[-2:] <= "30":
                         tti = float(ci[0:2]) + 0.50
@@ -446,13 +481,17 @@ def att_times_weektwo():
                     if co[-2:] <= "05":
                         tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "15":
-                        tto = float(co[0:2]) + 0.25
+                        # tto = float(co[0:2]) + 0.25
+                        tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "30":
-                        tto = float(co[0:2]) + 0.50
+                        # tto = float(co[0:2]) + 0.50
+                        tto = float(co[0:2]) + 0.25
                     elif co[-2:] <= "45":
-                        tto = float(co[0:2]) + 0.75
+                        # tto = float(co[0:2]) + 0.75
+                        tto = float(co[0:2]) + 0.50
                     elif co[-2:] >= "45":
-                        tto = (float(co[0:2]) + 1) + 0.00
+                        # tto = (float(co[0:2]) + 1) + 0.00
+                        tto = float(co[0:2]) + 0.75
                 else:
                     tto = int(time_out)
 
@@ -542,13 +581,17 @@ def att_times_weektwo():
                 if co[-2:] <= "05":
                     tto = float(co[0:2]) + 0.00
                 elif co[-2:] <= "15":
-                    tto = float(co[0:2]) + 0.25
+                    # tto = float(co[0:2]) + 0.25
+                    tto = float(co[0:2]) + 0.00
                 elif co[-2:] <= "30":
-                    tto = float(co[0:2]) + 0.50
+                    # tto = float(co[0:2]) + 0.50
+                    tto = float(co[0:2]) + 0.25
                 elif co[-2:] <= "45":
-                    tto = float(co[0:2]) + 0.75
+                    # tto = float(co[0:2]) + 0.75
+                    tto = float(co[0:2]) + 0.50
                 elif co[-2:] >= "45":
-                    tto = (float(co[0:2]) + 1) + 0.00
+                    # tto = (float(co[0:2]) + 1) + 0.00
+                    tto = float(co[0:2]) + 0.75
             else:
                 tto = int(time_out)
 
