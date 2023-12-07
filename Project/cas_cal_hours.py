@@ -112,7 +112,7 @@ def cas_times_weekone():
                 co = clock_out
 
                 if co < to:
-                    if co[-2:] <= "05":
+                    if co[-2:] <= "04":
                         tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "15":
                         # tto = float(co[0:2]) + 0.25
@@ -165,7 +165,7 @@ def cas_times_weekone():
 
                 # Calculate time out
                 if co < to:
-                    if co[-2:] <= "05":
+                    if co[-2:] <= "04":
                         tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "15":
                         # tto = float(co[0:2]) + 0.25
@@ -199,7 +199,7 @@ def cas_times_weekone():
             ci = clock_in
 
             if ci > ti:
-                if ci[-2:] <= "05":
+                if ci[-2:] <= "04":
                     tti = 24.0 - float(ci[0:2])
                 elif ci[-2:] <= "15":
                     tti = 24.0 - (float(ci[0:2]) + 0.25)
@@ -223,7 +223,7 @@ def cas_times_weekone():
             co = clock_out
 
             if co < to:
-                if co[-2:] <= "05":
+                if co[-2:] <= "04":
                     tto = float(co[0:2]) + 0.00
                 elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
@@ -250,7 +250,7 @@ def cas_times_weekone():
 
             # Calculate time in
             if ci > ti:
-                if ci[-2:] <= "05":
+                if ci[-2:] <= "04":
                     tti = float(ci[0:2])
                 elif ci[-2:] <= "15":
                     tti = float(ci[0:2]) + 0.25
@@ -265,7 +265,7 @@ def cas_times_weekone():
 
             # Calculate time out
             if co < to:
-                if co[-2:] <= "05":
+                if co[-2:] <= "04":
                     tto = float(co[0:2]) + 0.00
                 elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
@@ -464,7 +464,7 @@ def cas_times_weektwo():
                 co = clock_out
 
                 if co < to:
-                    if co[-2:] <= "05":
+                    if co[-2:] <= "04":
                         tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "15":
                         # tto = float(co[0:2]) + 0.25
@@ -517,7 +517,7 @@ def cas_times_weektwo():
 
                 # Calculate time out
                 if co < to:
-                    if co[-2:] <= "05":
+                    if co[-2:] <= "04":
                         tto = float(co[0:2]) + 0.00
                     elif co[-2:] <= "15":
                         # tto = float(co[0:2]) + 0.25
@@ -551,7 +551,7 @@ def cas_times_weektwo():
             ci = clock_in
 
             if ci > ti:
-                if ci[-2:] <= "05":
+                if ci[-2:] <= "04":
                     tti = 24.0 - float(ci[0:2])
                 elif ci[-2:] <= "15":
                     tti = 24.0 - (float(ci[0:2]) + 0.25)
@@ -575,7 +575,7 @@ def cas_times_weektwo():
             co = clock_out
 
             if co < to:
-                if co[-2:] <= "05":
+                if co[-2:] <= "04":
                     tto = float(co[0:2]) + 0.00
                 elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
@@ -602,7 +602,7 @@ def cas_times_weektwo():
 
             # Calculate time in
             if ci > ti:
-                if ci[-2:] <= "05":
+                if ci[-2:] <= "04":
                     tti = float(ci[0:2])
                 elif ci[-2:] <= "15":
                     tti = float(ci[0:2]) + 0.25
@@ -617,7 +617,7 @@ def cas_times_weektwo():
 
             # Calculate time out
             if co < to:
-                if co[-2:] <= "05":
+                if co[-2:] <= "04":
                     tto = float(co[0:2]) + 0.00
                 elif co[-2:] <= "15":
                     tto = float(co[0:2]) + 0.25
