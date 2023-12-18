@@ -21,6 +21,7 @@ def user_input_two():
     print('Have You Checked All Badge Numbers Upto Date')
     print('Have You Updated Cashier Baker Dates')
     print('Have You Updated Attendent and Cashier Roster Times Plus Delete Sheets')
+    print('Have You Updated Uniclock Files')
       
 def wages_time_main_program():
         # REMOVE WAGES TIMES.XLSX
@@ -112,7 +113,7 @@ def wages_time_main_program():
 
         print('Cashier Clock Times Finnished')
 
-        # ATTENDENT TOTAL TIMES CALCULATION
+        # CASHIER TOTAL TIMES CALCULATION
         # Week One
         cth.cas_times_weekone()
         cth.cas_public_weekone()
@@ -125,7 +126,7 @@ def wages_time_main_program():
         cth.bak_cas_work_wt()
         cth.cas_total_wt_hours()
 
-        # ATTENDENT TOTAL TIMES
+        # CASHIER TOTAL TIMES
         cth.cas_total_wo_db()
         cth.cas_total_wt_db()
         cth.cas_fortnight_total()
@@ -137,6 +138,46 @@ def wages_time_main_program():
 
         print('Excel Workbook Formated')
 
+def recal_hours():
+    # clean Totals table
+    db.clean_db_recal()
+    print('Database Cleaned')
+
+    # Recalculate hours and push the db (Attendents)
+    ath.att_times_weekone()
+    ath.att_public_weekone()
+    ath.att_total_wo_hours('yes')
+
+    ath.att_times_weektwo()
+    ath.att_public_weektwo()
+    ath.att_total_wt_hours('yes')
+
+    ath.att_total_wo_db()   
+    ath.att_total_wt_db()
+    ath.att_fortnight_total()
+    print('Attendent Hours Updated')
+
+    # Recalculate hours and push the db (Cashiers)
+    cth.cas_times_weekone()
+    cth.cas_public_weekone()
+    cth.bak_cas_work()
+    cth.cas_total_wo_hours('yes')
+
+    cth.cas_times_weektwo()
+    cth.cas_public_weektwo()
+    cth.bak_cas_work_wt()
+    cth.cas_total_wt_hours('yes')
+
+    cth.cas_total_wo_db()
+    cth.cas_total_wt_db()
+    cth.cas_fortnight_total()
+    print('Cashier Hours Updated')
+
+    print('Finished')
+
+def weelky_wage_sheet():
+     pass
+
 # ##########################################################
 # START PROGRAM QUESTIONS   
 # ##########################################################   
@@ -144,6 +185,8 @@ def wages_time_main_program():
 print('Please select one of following options:')
 print('1: Running program for first time')
 print('2: Run fortnight wages')
+print('3: Recalculate Total Hours')
+print('4: Convert to Weekly Wage Sheet')
 
 user_input = input('Select option by typing number: ')
 
@@ -159,3 +202,10 @@ elif user_input == '2':
         print('Wage Times.xlsx has printed and is ready for viewing')
         input('Press any button to continue: ')
 
+elif user_input == '3':
+    recal_hours()
+    # Ask for date of wages - put in file name
+    # Change date inside sheet
+    # copy total times across
+    # ask if sheet updates
+    # save template to file and the save complete file to main folder

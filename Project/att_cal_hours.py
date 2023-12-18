@@ -27,7 +27,7 @@ wb.close()
 
 def att_times_weekone():
     wb = load_workbook("Wage Times.xlsx")
-    ws = wb.active
+    ws = wb['Att Week One']
 
     i = 0
     for x in range(ws.max_row + 1):
@@ -44,7 +44,19 @@ def att_times_weekone():
         time_out = ws.cell(row=2 + i, column=6).value
         clock_out = ws.cell(row=2 + i, column=8).value
 
-        if name == None:
+        # For recal check if time was inserted manualy 
+        if isinstance(clock_out, str) == False:
+            if clock_out != None:                
+                timestamp = clock_out.strftime("%H:%M")
+                clock_out = timestamp
+
+        if isinstance(clock_in, str) == False:
+            if clock_in != None:
+                timestamp = clock_in.strftime("%H:%M")
+                clock_in = timestamp
+
+        # Start of work out times
+        if name == None or 'Total' in name:
             i += 1
 
         elif time_in > 0 and clock_in == None or time_out > 0 and clock_out == None:
@@ -293,59 +305,111 @@ def att_public_weekone():
     wb.save("Wage Times.xlsx")
     wb.close()
 
-def att_total_wo_hours():
+def att_total_wo_hours(recalculate='no'):
     # Calculate total hours for week add to excel
     wb = load_workbook("Wage Times.xlsx")
-    ws = wb.active
+    ws = wb['Att Week One']
 
-    i = 0
-    total = 0
-    total_s = 0
-    total_p = 0
-    total_nc = 0
+    if recalculate == 'no':
+        i = 0
+        total = 0
+        total_s = 0
+        total_p = 0
+        total_nc = 0
 
-    for x in range(ws.max_row):
-        name = ws.cell(row=2 + i, column=1).value
-        n = ws.cell(row=2 + i - 1, column=1).value
-        badge = ws.cell(row=2 + i - 1, column=2).value
-        day = ws.cell(row=2 + i, column=3).value
-        hours = ws.cell(row=2 + i, column=9).value
-        hours_s = ws.cell(row=2 + i, column=10).value
-        hours_p = ws.cell(row=2 + i, column=11).value
-        nc = ws.cell(row=2 + i, column=12).value
+        for x in range(ws.max_row):
+            name = ws.cell(row=2 + i, column=1).value
+            n = ws.cell(row=2 + i - 1, column=1).value
+            badge = ws.cell(row=2 + i - 1, column=2).value
+            day = ws.cell(row=2 + i, column=3).value
+            hours = ws.cell(row=2 + i, column=9).value
+            hours_s = ws.cell(row=2 + i, column=10).value
+            hours_p = ws.cell(row=2 + i, column=11).value
+            nc = ws.cell(row=2 + i, column=12).value
 
-        # Check if name is true
-        if name:
-            if nc != None:
-                total_nc = 1
-            elif day == 'Sunday':
-                total_s += hours_s
-            elif hours_p != None:
-                total_p += hours_p
-            elif hours == None:
-                total += 0
+            # Check if name is true
+            if name:
+                if nc != None:
+                    total_nc = 1
+                elif day == 'Sunday':
+                    total_s += hours_s
+                elif hours_p != None:
+                    total_p += hours_p
+                elif hours == None:
+                    total += 0
+                else:
+                    total += hours
+                
+                i += 1
+            
+            elif "Total" in n:
+                i += 1
+
             else:
-                total += hours
-            
-            i += 1
-        
-        elif "Total" in n:
-            i += 1
+                ws.cell(row=2 + i, column=1, value= n + " " + "Total")
+                ws.cell(row=2 + i, column=2, value=badge)
+                ws.cell(row=2 + i, column=9, value=total)
+                ws.cell(row=2 + i, column=10, value=total_s)
+                ws.cell(row=2 + i, column=11, value=total_p)
+                ws.cell(row=2 + i, column=12, value=total_nc)
+                
 
-        else:
-            ws.cell(row=2 + i, column=1, value= n + " " + "Total")
-            ws.cell(row=2 + i, column=2, value=badge)
-            ws.cell(row=2 + i, column=9, value=total)
-            ws.cell(row=2 + i, column=10, value=total_s)
-            ws.cell(row=2 + i, column=11, value=total_p)
-            ws.cell(row=2 + i, column=12, value=total_nc)
-            
-            total = 0            
-            total_s = 0  
-            total_p = 0  
-            total_nc = 0  
+                total = 0            
+                total_s = 0  
+                total_p = 0  
+                total_nc = 0  
 
-            i += 1
+                i += 1
+    else:
+        i = 0
+        total = 0
+        total_s = 0
+        total_p = 0
+        total_nc = 0
+
+        for x in range(ws.max_row):
+            name = ws.cell(row=2 + i, column=1).value
+            n = ws.cell(row=2 + i - 1, column=1).value
+            badge = ws.cell(row=2 + i - 1, column=2).value
+            day = ws.cell(row=2 + i, column=3).value
+            hours = ws.cell(row=2 + i, column=9).value
+            hours_s = ws.cell(row=2 + i, column=10).value
+            hours_p = ws.cell(row=2 + i, column=11).value
+            nc = ws.cell(row=2 + i, column=12).value
+
+            # Check if name is true
+            if name:
+                if 'Total' not in name:
+                    if nc != None:
+                        total_nc = 1
+                    elif day == 'Sunday':
+                        total_s += hours_s
+                    elif hours_p != None:
+                        total_p += hours_p
+                    elif hours == None:
+                        total += 0
+                    else:
+                        total += hours
+                    
+                    i += 1
+            
+                else:
+                    # ws.cell(row=2 + i, column=1, value= n + " " + "Total")
+                    # ws.cell(row=2 + i, column=2, value=badge)
+                    ws.cell(row=2 + i, column=9, value=total)
+                    ws.cell(row=2 + i, column=10, value=total_s)
+                    ws.cell(row=2 + i, column=11, value=total_p)
+                    ws.cell(row=2 + i, column=12, value=total_nc)
+                    
+                    total = 0            
+                    total_s = 0  
+                    total_p = 0  
+                    total_nc = 0  
+
+                    i += 1
+            
+            else:
+                i += 1
 
     wb.save("Wage Times.xlsx")
     wb.close()
@@ -374,7 +438,19 @@ def att_times_weektwo():
         time_out = ws.cell(row=2 + i, column=6).value
         clock_out = ws.cell(row=2 + i, column=8).value
 
-        if name == None:
+        # For recal check if time was inserted manualy 
+        if isinstance(clock_out, str) == False:
+            if clock_out != None:
+                timestamp = clock_out.strftime("%H:%M")
+                clock_out = timestamp
+
+        if isinstance(clock_in, str) == False:
+            if clock_in != None:
+                timestamp = clock_in.strftime("%H:%M")
+                clock_in = timestamp
+
+        # Start of work out times
+        if name == None or 'Total' in name:
             i += 1
 
         elif time_in > 0 and clock_in == None or time_out > 0 and clock_out == None:
@@ -623,61 +699,111 @@ def att_public_weektwo():
     wb.save("Wage Times.xlsx")
     wb.close()
 
-def att_total_wt_hours():
+def att_total_wt_hours(recalculate='no'):
     # Calculate total hours for week add to excel
     wb = load_workbook("Wage Times.xlsx")
     ws = wb['Att Week Two']
 
-    i = 0
-    total = 0
-    total_s = 0
-    total_p = 0
-    total_nc = 0
+    if recalculate == 'no':
+        i = 0
+        total = 0
+        total_s = 0
+        total_p = 0
+        total_nc = 0
 
-    # print(ws.max_row)
-    for x in range(ws.max_row):
-        name = ws.cell(row=2 + i, column=1).value
-        n = ws.cell(row=2 + i - 1, column=1).value
-        badge = ws.cell(row=2 + i - 1, column=2).value
-        day = ws.cell(row=2 + i, column=3).value
-        nc = ws.cell(row=2 + i, column=12).value
-        hours = ws.cell(row=2 + i, column=9).value
-        hours_s = ws.cell(row=2 + i, column=10).value
-        hours_p = ws.cell(row=2 + i, column=11).value
-        
-        # Check if name is true
-        if name:
-            if nc != None:
-                total_nc = 1
-            elif day == 'Sunday':
-                total_s += hours_s
-            elif hours_p != None:
-                total_p += hours_p
-            elif hours == None:
-                total += 0
+        for x in range(ws.max_row):
+            name = ws.cell(row=2 + i, column=1).value
+            n = ws.cell(row=2 + i - 1, column=1).value
+            badge = ws.cell(row=2 + i - 1, column=2).value
+            day = ws.cell(row=2 + i, column=3).value
+            hours = ws.cell(row=2 + i, column=9).value
+            hours_s = ws.cell(row=2 + i, column=10).value
+            hours_p = ws.cell(row=2 + i, column=11).value
+            nc = ws.cell(row=2 + i, column=12).value
+
+            # Check if name is true
+            if name:
+                if nc != None:
+                    total_nc = 1
+                elif day == 'Sunday':
+                    total_s += hours_s
+                elif hours_p != None:
+                    total_p += hours_p
+                elif hours == None:
+                    total += 0
+                else:
+                    total += hours
+                
+                i += 1
+            
+            elif "Total" in n:
+                i += 1
+
             else:
-                total += hours
+                ws.cell(row=2 + i, column=1, value= n + " " + "Total")
+                ws.cell(row=2 + i, column=2, value=badge)
+                ws.cell(row=2 + i, column=9, value=total)
+                ws.cell(row=2 + i, column=10, value=total_s)
+                ws.cell(row=2 + i, column=11, value=total_p)
+                ws.cell(row=2 + i, column=12, value=total_nc)
+                
+
+                total = 0            
+                total_s = 0  
+                total_p = 0  
+                total_nc = 0  
+
+                i += 1
+    else:
+        i = 0
+        total = 0
+        total_s = 0
+        total_p = 0
+        total_nc = 0
+
+        for x in range(ws.max_row):
+            name = ws.cell(row=2 + i, column=1).value
+            n = ws.cell(row=2 + i - 1, column=1).value
+            badge = ws.cell(row=2 + i - 1, column=2).value
+            day = ws.cell(row=2 + i, column=3).value
+            hours = ws.cell(row=2 + i, column=9).value
+            hours_s = ws.cell(row=2 + i, column=10).value
+            hours_p = ws.cell(row=2 + i, column=11).value
+            nc = ws.cell(row=2 + i, column=12).value
+
+            # Check if name is true
+            if name:
+                if 'Total' not in name:
+                    if nc != None:
+                        total_nc = 1
+                    elif day == 'Sunday':
+                        total_s += hours_s
+                    elif hours_p != None:
+                        total_p += hours_p
+                    elif hours == None:
+                        total += 0
+                    else:
+                        total += hours
+                    
+                    i += 1
             
-            i += 1
-        
-        elif "Total" in n:
-            i += 1
+                else:
+                    # ws.cell(row=2 + i, column=1, value= n + " " + "Total")
+                    # ws.cell(row=2 + i, column=2, value=badge)
+                    ws.cell(row=2 + i, column=9, value=total)
+                    ws.cell(row=2 + i, column=10, value=total_s)
+                    ws.cell(row=2 + i, column=11, value=total_p)
+                    ws.cell(row=2 + i, column=12, value=total_nc)
+                    
+                    total = 0            
+                    total_s = 0  
+                    total_p = 0  
+                    total_nc = 0  
 
-        else:
-            ws.cell(row=2 + i, column=1, value= n + " " + "Total")
-            ws.cell(row=2 + i, column=2, value=badge)
-            ws.cell(row=2 + i, column=9, value=total)
-            ws.cell(row=2 + i, column=10, value=total_s)
-            ws.cell(row=2 + i, column=11, value=total_p)
-            ws.cell(row=2 + i, column=12, value=total_nc)
-            
-            total = 0            
-            total_s = 0  
-            total_p = 0  
-            total_nc = 0  
+                    i += 1
 
-            i += 1
-
+            else:
+                i += 1
     wb.save("Wage Times.xlsx")
     wb.close()
 
@@ -797,8 +923,11 @@ def att_fortnight_total():
 
     # Write to excel
     wb = load_workbook("Wage Times.xlsx")
-    wb.create_sheet('Att Total')
-    ws = wb['Att Total']
+    if 'Att Total' in wb.sheetnames:
+        ws = wb['Att Total']
+    else:
+        wb.create_sheet('Att Total')
+        ws = wb['Att Total']
 
     # Create total sheet and headings
     ws["A1"] = 'Name'
@@ -821,6 +950,8 @@ def att_fortnight_total():
         ws.cell(row=2 + i, column=4, value=public)
         if no_clock == 1 or no_clock == 2:
             ws.cell(row=2 + i, column=5, value='No Clock')
+        else:
+            ws.cell(row=2 + i, column=5, value='')
 
         i += 1
 

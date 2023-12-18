@@ -17,6 +17,15 @@ def clean_db():
     con.commit()
     con.close()
 
+def clean_db_recal():
+    con = sqlite3.connect("wageTimes.db")
+    c = con.cursor()
+    
+    c.execute('DELETE FROM attTotal')
+    c.execute('DELETE FROM cashierTotal')
+
+    con.commit()
+    con.close()
 
 def db_init():
     con = sqlite3.connect("wageTimes.db")
@@ -103,6 +112,8 @@ def db_init():
     con.close()
 
 
+
+# ############# WORKINGS ##############
 # con = sqlite3.connect("wageTimes.db")
 # c = con.cursor()
 
