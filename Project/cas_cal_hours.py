@@ -100,13 +100,13 @@ def cas_times_weekone():
                     #     tti = 24.0 - (float(ci[0:2]) + 1.0)
 
                     if ci[-2:] <= "15":
-                        tti = float(ci[0:2]) + 0.25
+                        tti = 24.0 - (float(ci[0:2]) + 0.25)
                     elif ci[-2:] <= "30":
-                        tti = float(ci[0:2]) + 0.50
+                        tti = 24.0 - (float(ci[0:2]) + 0.50)
                     elif ci[-2:] <= "45":
-                        tti = float(ci[0:2]) + 0.75
+                        tti = 24.0 - (float(ci[0:2]) + 0.75)
                     elif ci[-2:] >= "45":
-                        tti = (float(ci[0:2]) + 1) + 0.00
+                        tti = 24.0 - (float(ci[0:2]) + 1.0)
                 else:
                     tti = 24.0 - float(time_in)
 
@@ -520,13 +520,13 @@ def cas_times_weektwo():
                     #     tti = 24.0 - (float(ci[0:2]) + 1.0)
 
                     if ci[-2:] <= "15":
-                        tti = float(ci[0:2]) + 0.25
+                        tti = 24.0 - (float(ci[0:2]) + 0.25)
                     elif ci[-2:] <= "30":
-                        tti = float(ci[0:2]) + 0.50
+                        tti = 24.0 - (float(ci[0:2]) + 0.50)
                     elif ci[-2:] <= "45":
-                        tti = float(ci[0:2]) + 0.75
+                        tti = 24.0 - (float(ci[0:2]) + 0.75)
                     elif ci[-2:] >= "45":
-                        tti = (float(ci[0:2]) + 1) + 0.00
+                        tti = 24.0 - (float(ci[0:2]) + 1.0)
                 else:
                     tti = 24.0 - float(time_in)
 
