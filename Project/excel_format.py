@@ -29,7 +29,7 @@ def excel_format():
     wsco = wb['Cashier Week Two']
     wsct = wb['Cashier Total']
     
-    # Format Attendents
+    # Format attendents column sizes
     for col, size in columns_att.items():
         ws.column_dimensions[col].width = size + col_diff
         wso.column_dimensions[col].width = size + col_diff    
@@ -39,7 +39,7 @@ def excel_format():
 
     cell_center(wst)
 
-    # Format Cashiers
+    # Format cashiers column sizes
     for col, size in columns_att.items():
         wsc.column_dimensions[col].width = size + col_diff
         wsco.column_dimensions[col].width = size + col_diff
@@ -96,6 +96,7 @@ def excel_format():
                 wsc.cell(row=2 + i, column=10).style = total_format
                 wsc.cell(row=2 + i, column=11).style = total_format
                 wsc.cell(row=2 + i, column=12).style = total_format
+                wsc.cell(row=2 + i, column=13).style = total_format
         i += 1
     
     # Apply styles cashier weektwo
@@ -110,6 +111,7 @@ def excel_format():
                 wsco.cell(row=2 + i, column=10).style = total_format
                 wsco.cell(row=2 + i, column=11).style = total_format
                 wsco.cell(row=2 + i, column=12).style = total_format
+                wsco.cell(row=2 + i, column=13).style = total_format
         i += 1
 
     wb.save("Wage Times.xlsx")

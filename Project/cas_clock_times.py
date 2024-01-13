@@ -111,7 +111,7 @@ def cashier_clock_excel():
                         ws.cell(row=2 + i, column=7, value=t)
 
                     # Check clock out times vs roster
-                    if to == 6:
+                    if to == 6 or to == 7:
                         time_r = min(clock_times_list)
                         t = time.fromisoformat(time_r).strftime('%H:%M')
                         ws.cell(row=2 + i, column=8, value=t)
@@ -196,7 +196,7 @@ def cashier_clock_excel_wt():
                         ws.cell(row=2 + i, column=7, value=t)
 
                     # Check clock out times vs roster
-                    if to == 6:
+                    if to == 6 or to == 7:
                         time_r = min(clock_times_list)
                         t = time.fromisoformat(time_r).strftime('%H:%M')
                         ws.cell(row=2 + i, column=8, value=t)

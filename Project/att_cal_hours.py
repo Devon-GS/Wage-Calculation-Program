@@ -7,6 +7,7 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 import pandas as pd
 import sqlite3
+
 # ADD CALULATIONS OF HOURS FOR WEEK AND SUNDAY HOURS
 wb = load_workbook("Public Holidays/Public Holidays.xlsx", data_only=True)
 ws = wb.active
@@ -44,7 +45,7 @@ def att_times_weekone():
         time_out = ws.cell(row=2 + i, column=6).value
         clock_out = ws.cell(row=2 + i, column=8).value
 
-        # For recal check if time was inserted manualy 
+        # For recalculation check if time was inserted manualy 
         if isinstance(clock_out, str) == False:
             if clock_out != None:                
                 timestamp = clock_out.strftime("%H:%M")
