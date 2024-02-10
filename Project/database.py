@@ -14,6 +14,8 @@ def clean_db():
     c.execute('DELETE FROM ClockTimeCashier')
     c.execute('DELETE FROM cashierTotal')
 
+    c.execute('DELETE FROM carwashTotal')
+
     con.commit()
     con.close()
 
