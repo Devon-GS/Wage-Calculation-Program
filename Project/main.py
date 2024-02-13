@@ -182,30 +182,30 @@ def weelky_wage_sheet():
 # START PROGRAM QUESTIONS   
 # ##########################################################   
 
-print('Please select one of following options:')
-print('1: Running program for first time')
-print('2: Run fortnight wages')
-print('3: Recalculate Total Hours')
-print('4: Convert to Weekly Wage Sheet')
+# print('Please select one of following options:')
+# print('1: Running program for first time')
+# print('2: Run fortnight wages')
+# print('3: Recalculate Total Hours')
+# print('4: Convert to Weekly Wage Sheet')
 
-user_input = input('Select option by typing number: ')
+# user_input = input('Select option by typing number: ')
 
-if user_input == '1':
-    db.db_init()
-elif user_input == '2':
-    user_input_two()
-    user = input("Please type 'y' to contine or any other button to exit: ").lower()
+# if user_input == '1':
+#     db.db_init()
+# elif user_input == '2':
+#     user_input_two()
+#     user = input("Please type 'y' to contine or any other button to exit: ").lower()
 
-    if user == 'y':
-        wages_time_main_program()
-        print('===========================================')
-        print('Wage Times.xlsx has printed and is ready for viewing')
-        input('Press any button to continue: ')
+#     if user == 'y':
+#         wages_time_main_program()
+#         print('===========================================')
+#         print('Wage Times.xlsx has printed and is ready for viewing')
+#         input('Press any button to continue: ')
 
-elif user_input == '3':
-    recal_hours()
-    # Ask for date of wages - put in file name
-    # Change date inside sheet
-    # copy total times across
-    # ask if sheet updates
-    # save template to file and the save complete file to main folder
+# elif user_input == '3':
+#     recal_hours()
+#     # Ask for date of wages - put in file name
+#     # Change date inside sheet
+#     # copy total times across
+#     # ask if sheet updates
+#     # save template to file and the save complete file to main folder
