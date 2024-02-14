@@ -2,7 +2,7 @@ from tkinter import *
 import os
 
 # Change name to functions.py when fininshed
-import main as f
+import functions as f
 
 root = Tk()
 
@@ -20,18 +20,16 @@ def setup_options(button_id):
 def program_options(button_id):
     try:
         if button_id == 1:
+            f.program_init()
             update_label.config(text='Program Setup Complete!')
         elif button_id == 2:
             f.wages_time_main_program()
             update_label.config(text='Wage Hours Completed!')
         elif button_id == 3:
             update_label.config(text='Recalcuate Hours Complete!')
+            f.recal_hours()
     except Exception as error:
         update_label.config(text=error)
-
-
-
-
 
 # WIDGETS
 # Setup buttons

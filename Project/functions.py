@@ -12,17 +12,12 @@ import cas_cal_hours as cth
 import excel_format as format
 
 # ##########################################################
-# FUNCTIONS  
+# ALL PROGRAM FUNCTIONS  
 # ##########################################################
 
-def user_input_two():
-    print('===========================================')
-    print('Have You Checked Public holiday Times')
-    print('Have You Checked All Badge Numbers Upto Date')
-    print('Have You Updated Cashier Baker Dates')
-    print('Have You Updated Attendent and Cashier Roster Times Plus Delete Sheets')
-    print('Have You Updated Uniclock Files')
-      
+def program_init():
+     db.db_init()
+
 def wages_time_main_program():
         # REMOVE WAGES TIMES.XLSX
         wage_times = path.exists('Wage Times.xlsx')
@@ -32,8 +27,6 @@ def wages_time_main_program():
 
         # CLEAN DATABASE
         db.clean_db()
-        print('===========================================')
-        print('Database Cleaned')
 
         # ##########################################
         #               ATTENDENT
@@ -45,14 +38,12 @@ def wages_time_main_program():
         ar.db_update_dates()
         ar.db_update_badges()
         ar.db_to_excel()
-        print('Attendent Weekone Finnished')
 
         # Week Two
         ar.db_atwo_init()
         ar.db_atwo_update_dates()
         ar.db_atwo_update_badges()
         ar.db_atwo_to_excel()
-        print('Attendent Weektwo Finnished')
 
         # ATTENDENT CLOCK TIMES
         # Week One
@@ -62,8 +53,6 @@ def wages_time_main_program():
 
         # Week two
         ac.att_clock_excel_wt()
-
-        print('Attendent Clock Times Finnished')
 
         # ATTENDENT TOTAL TIMES CALCULATION
         # Week One
@@ -81,8 +70,6 @@ def wages_time_main_program():
         ath.att_total_wt_db()
         ath.att_fortnight_total()
 
-        print('Attendent Total Times Finnished')
-
         # ##########################################
         #               CASHIER
         # ##########################################
@@ -93,14 +80,12 @@ def wages_time_main_program():
         cr.db_update_cas_dates()
         cr.db_update_cas_badges()
         cr.db_to_excel()
-        print('Cashier Weekone Finnished')
 
         # Week Two
         cr.db_ctwo_init()
         cr.db_ctwo_update_dates()
         cr.db_ctwo_update_badges()
         cr.db_ctwo_to_excel()
-        print('Cashier Weektwo Finnished')
 
         # CASHIER CLOCK TIMES
         # Week One
@@ -110,8 +95,6 @@ def wages_time_main_program():
 
         # Week two
         cc.cashier_clock_excel_wt()
-
-        print('Cashier Clock Times Finnished')
 
         # CASHIER TOTAL TIMES CALCULATION
         # Week One
@@ -131,17 +114,12 @@ def wages_time_main_program():
         cth.cas_total_wt_db()
         cth.cas_fortnight_total()
 
-        print('Cashier Total Times Finnished')
-
         # FORMAT EXCEL WOORKBOOK
         format.excel_format()
-
-        print('Excel Workbook Formated')
 
 def recal_hours():
     # clean Totals table
     db.clean_db_recal()
-    print('Database Cleaned')
 
     # Recalculate hours and push the db (Attendents)
     ath.att_times_weekone()
@@ -155,7 +133,6 @@ def recal_hours():
     ath.att_total_wo_db()   
     ath.att_total_wt_db()
     ath.att_fortnight_total()
-    print('Attendent Hours Updated')
 
     # Recalculate hours and push the db (Cashiers)
     cth.cas_times_weekone()
@@ -171,41 +148,6 @@ def recal_hours():
     cth.cas_total_wo_db()
     cth.cas_total_wt_db()
     cth.cas_fortnight_total()
-    print('Cashier Hours Updated')
 
-    print('Finished')
-
-def weelky_wage_sheet():
+def payroll():
      pass
-
-# ##########################################################
-# START PROGRAM QUESTIONS   
-# ##########################################################   
-
-# print('Please select one of following options:')
-# print('1: Running program for first time')
-# print('2: Run fortnight wages')
-# print('3: Recalculate Total Hours')
-# print('4: Convert to Weekly Wage Sheet')
-
-# user_input = input('Select option by typing number: ')
-
-# if user_input == '1':
-#     db.db_init()
-# elif user_input == '2':
-#     user_input_two()
-#     user = input("Please type 'y' to contine or any other button to exit: ").lower()
-
-#     if user == 'y':
-#         wages_time_main_program()
-#         print('===========================================')
-#         print('Wage Times.xlsx has printed and is ready for viewing')
-#         input('Press any button to continue: ')
-
-# elif user_input == '3':
-#     recal_hours()
-#     # Ask for date of wages - put in file name
-#     # Change date inside sheet
-#     # copy total times across
-#     # ask if sheet updates
-#     # save template to file and the save complete file to main folder
