@@ -16,6 +16,8 @@ def setup_options(button_id):
         os.system('start "EXCEL.EXE" "Public Holidays/Public Holidays.xlsx"')
     elif button_id == 4:
         os.startfile('Rosters')
+    elif button_id == 5:
+        os.system('start "EXCEL.EXE" "Wage Times.xlsx"')
 
 def program_options(button_id):
     try:
@@ -48,6 +50,9 @@ program_button2 = Button(root, text='Run Wages', width=12, command=lambda: progr
 program_button3 = Button(root, text='Recalulate Wages', width=12, command=lambda: program_options(3))
 program_button4 = Button(root, text='Carwash Times', width=12, command=lambda: program_options(4))
 
+# Open Wage Times.xlsx
+open_wage_button = Button(root, text='Wage Times', width=12, command=lambda: setup_options(5))
+
 # Run Wage Payroll
 payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
 
@@ -72,11 +77,17 @@ program_button2.grid(row=3, column=1, padx=(5,10))
 program_button3.grid(row=3, column=2, padx=(5,10))
 program_button4.grid(row=3, column=3, padx=(5,10))
 
+# Open Wage Times.xlsx
+open_wage_button.grid(row=4, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+
 # Run Wage Payroll
-payroll_button.grid(row=4, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+payroll_button.grid(row=5, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Info Label
-update_label.grid(row=5, column=0, columnspan=2, sticky=W, pady=(10, 0), padx=(5, 0))
+update_label.grid(row=6, column=0, columnspan=2, sticky=W, pady=(10, 0), padx=(5, 0))
+
+
+
 
 # ROOT WINDOW CONFIG
 root.title('Wage Calculator')
