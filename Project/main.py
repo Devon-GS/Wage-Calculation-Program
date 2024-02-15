@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import os
 
 # Change name to functions.py when fininshed
@@ -23,15 +24,28 @@ def program_options(button_id):
     try:
         if button_id == 1:
             f.program_init()
-            update_label.config(text='Program Setup Complete!')
+            messagebox.showinfo('Run Wages', 'Program Setup Complete!')
         elif button_id == 2:
-            f.wages_time_main_program()
-            update_label.config(text='Wage Hours Completed!')
+            response = messagebox.askyesno('Run Wages Check list', '''
+            Have you Checked the following:
+            1) Badge Number
+            2) Cashier/Baker Times
+            3) Public Holidays
+            4) Rosters
+            5) Uniclox Files
+            ''')
+            if response == 1:
+                # f.wages_time_main_program()
+                messagebox.showinfo('Run Wages', 'Wage Hours Completed!')
+            else:
+                messagebox.showinfo('Run Wages', 'Nothing Happened!')
         elif button_id == 3:
-            update_label.config(text='Recalcuate Hours Complete!')
             f.recal_hours()
+            messagebox.showinfo('Run Wages', 'Wage Hour Recalculation Complete')       
+        elif button_id == 4:
+            os.system('start "EXCEL.EXE" "Carwash Times/Carwash Times.xlsx"')
     except Exception as error:
-        update_label.config(text=error)
+        messagebox.showerror('Run Wages', error)
 
 # WIDGETS
 # Setup buttons
@@ -55,9 +69,6 @@ open_wage_button = Button(root, text='Wage Times', width=12, command=lambda: set
 
 # Run Wage Payroll
 payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
-
-# Info Label
-update_label = Label(root, text='')
 
 
 # BIND WIDGETS
@@ -83,8 +94,6 @@ open_wage_button.grid(row=4, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pad
 # Run Wage Payroll
 payroll_button.grid(row=5, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
-# Info Label
-update_label.grid(row=6, column=0, columnspan=2, sticky=W, pady=(10, 0), padx=(5, 0))
 
 
 
