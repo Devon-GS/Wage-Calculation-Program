@@ -6,16 +6,17 @@ import sqlite3
 con = sqlite3.connect("wageTimes.db")
 c = con.cursor()
 
+# Attendent Times
 c.execute("SELECT name, badge, normal, sunday, public FROM attTotal")
 records_att = c.fetchall()
 
+# Cashier Times
 c.execute("SELECT name, badge, normal, sunday, public, cashier FROM cashierTotal")
 records_cash = c.fetchall()
 
-# CARWASH TIMES
-# c.execute("SELECT name, badge, normal, sunday, public, cashier FROM cashierTotal")
-# records_cash = c.fetchall()
-# total_records.append(records_cash)
+# Carwash times
+c.execute("SELECT name, badge, normal, sunday, public FROM carwashTotal")
+records_car = c.fetchall()
 
 con.commit()
 con.close()
@@ -27,6 +28,9 @@ for rec in records_att:
     total_records.append(rec)
 
 for rec in records_cash:
+    total_records.append(rec)
+
+for rec in records_car:
     total_records.append(rec)
 
 
