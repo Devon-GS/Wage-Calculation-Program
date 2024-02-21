@@ -1,8 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
 import os
-
-# Change name to functions.py when fininshed
 import functions as f
 
 root = Tk()
@@ -69,7 +67,6 @@ open_wage_button = Button(root, text='Wage Times', width=12, command=lambda: set
 
 # Run Wage Payroll
 payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
-
 
 # BIND WIDGETS
 # Setup Buttons
