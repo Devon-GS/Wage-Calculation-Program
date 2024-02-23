@@ -42,6 +42,9 @@ def program_options(button_id):
             messagebox.showinfo('Run Wages', 'Wage Hour Recalculation Complete')       
         elif button_id == 4:
             os.system('start "EXCEL.EXE" "Carwash Times/Carwash Times.xlsx"')
+        elif button_id == 5:
+            f.run_payroll()
+            messagebox.showinfo('Run Wages', 'Payroll Completed!') 
     except Exception as error:
         messagebox.showerror('Run Wages', error)
 

@@ -1,6 +1,7 @@
 import os
 from os import path
 import database as db
+
 import att_roster_times as ar
 import att_clock_times as ac
 import att_cal_hours as ath
@@ -10,6 +11,8 @@ import cas_clock_times as cc
 import cas_cal_hours as cth
 
 import excel_format as format
+
+import payroll as pay
 
 # ##########################################################
 # ALL PROGRAM FUNCTIONS  
@@ -149,5 +152,5 @@ def recal_hours():
     cth.cas_total_wt_db()
     cth.cas_fortnight_total()
 
-def payroll():
-     pass
+def run_payroll():
+     pay.payroll()
