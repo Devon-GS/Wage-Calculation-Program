@@ -17,6 +17,8 @@ def setup_options(button_id):
         os.startfile('Rosters')
     elif button_id == 5:
         os.system('start "EXCEL.EXE" "Wage Times.xlsx"')
+    elif button_id == 6:
+        os.startfile("Uniclox")
 
 def program_options(button_id):
     try:
@@ -33,7 +35,7 @@ def program_options(button_id):
             5) Uniclox Files
             ''')
             if response == 1:
-                # f.wages_time_main_program()
+                f.wages_time_main_program()
                 messagebox.showinfo('Run Wages', 'Wage Hours Completed!')
             else:
                 messagebox.showinfo('Run Wages', 'Nothing Happened!')
@@ -56,6 +58,7 @@ setup_button = Button(root, text='Badge Numbers', width=12, command=lambda: setu
 setup_button2 = Button(root, text='Cashier/Baker', width=12, command=lambda: setup_options(2))
 setup_button3 = Button(root, text='Public Holidays', width=12, command=lambda: setup_options(3))
 setup_button4 = Button(root, text='Rosters', width=12, command=lambda: setup_options(4))
+setup_button5= Button(root, text='Open Uniclox', width=12, command=lambda: setup_options(6))
 
 # Run Program Buttons
 program_label = Label(root, text='RUN PROGRAM',borderwidth=1, relief='solid')
@@ -66,7 +69,7 @@ program_button3 = Button(root, text='Recalulate Wages', width=12, command=lambda
 program_button4 = Button(root, text='Carwash Times', width=12, command=lambda: program_options(4))
 
 # Open Wage Times.xlsx
-open_wage_button = Button(root, text='Wage Times', width=12, command=lambda: setup_options(5))
+open_wage_button = Button(root, text='Open Wage Times', width=12, command=lambda: setup_options(5))
 
 # Run Wage Payroll
 payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
@@ -79,20 +82,21 @@ setup_button.grid(row=1, column=0, padx=(5,10))
 setup_button2.grid(row=1, column=1, padx=(0,10))
 setup_button3.grid(row=1, column=2, padx=(0,10))
 setup_button4.grid(row=1, column=3, padx=(0,5))
+setup_button5.grid(row=2, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Run Program Buttons
-program_label.grid(row=2, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+program_label.grid(row=3, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
-program_button.grid(row=3, column=0, padx=(5,10))
-program_button2.grid(row=3, column=1, padx=(5,10))
-program_button3.grid(row=3, column=2, padx=(5,10))
-program_button4.grid(row=3, column=3, padx=(5,10))
+program_button.grid(row=4, column=0, padx=(5,10))
+program_button2.grid(row=4, column=1, padx=(5,10))
+program_button3.grid(row=4, column=2, padx=(5,10))
+program_button4.grid(row=4, column=3, padx=(5,10))
 
 # Open Wage Times.xlsx
-open_wage_button.grid(row=4, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+open_wage_button.grid(row=5, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Run Wage Payroll
-payroll_button.grid(row=5, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+payroll_button.grid(row=6, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 
 

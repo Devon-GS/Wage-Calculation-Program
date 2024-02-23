@@ -13,7 +13,7 @@ date_times = []
 def recent_clock():
     # Loop through clock files and collect last 30 files
     clock_list = []
-    for filename in os.listdir('../Uniclox/'):
+    for filename in os.listdir('Uniclox/'):
         file = filename.replace(" ","")
         if 'TL' in file and file[-7:-4] != '000':
             clock_list.append(filename)
@@ -22,7 +22,7 @@ def recent_clock():
 
     # Loop though each clock file by line and append badge and times to dat_times list
     for file in recent:    
-        f = open('../Uniclox/' + file, 'r')
+        f = open('Uniclox/' + file, 'r')
         for line in f:
             line = line.strip()
             line = line.split(',')
