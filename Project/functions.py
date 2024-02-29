@@ -1,4 +1,5 @@
 import os
+import importlib
 from os import path
 import database as db
 
@@ -13,6 +14,9 @@ import cas_cal_hours as cth
 import excel_format as format
 
 import payroll as pay
+
+
+# importlib.reload(sys)
 
 # ##########################################################
 # ALL PROGRAM FUNCTIONS  
@@ -30,7 +34,7 @@ def wages_time_main_program():
 
         # CLEAN DATABASE
         db.clean_db()
-
+        
         # ##########################################
         #               ATTENDENT
         # ##########################################
