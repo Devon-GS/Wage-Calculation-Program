@@ -19,6 +19,8 @@ def setup_options(button_id):
         os.system('start "EXCEL.EXE" "Wage Times.xlsx"')
     elif button_id == 6:
         os.startfile("Uniclox")
+    elif button_id == 7:
+        os.system('start "EXCEL.EXE" "Payroll/Payroll.xlsx"')
 
 def program_options(button_id):
     try:
@@ -74,6 +76,9 @@ open_wage_button = Button(root, text='Open Wage Times', width=12, command=lambda
 # Run Wage Payroll
 payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
 
+# Open Wage Payroll
+payroll_open_button = Button(root, text='Open Payroll Sheet', width=12, command=lambda: setup_options(7))
+
 # BIND WIDGETS
 # Setup Buttons
 setup_label.grid(row=0, column=0, columnspan=4 ,sticky=W+E, padx=(5,5), pady=(0,10))
@@ -98,6 +103,12 @@ open_wage_button.grid(row=5, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pad
 # Run Wage Payroll
 payroll_button.grid(row=6, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
+# Open Wage Payroll
+payroll_open_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+
+# Copy Button
+payroll_open_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+
 
 
 
@@ -105,7 +116,7 @@ payroll_button.grid(row=6, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=
 # ROOT WINDOW CONFIG
 root.title('Wage Calculator')
 # root.iconbitmap('icons/smoking.ico')
-root.geometry('440x300')
+root.geometry('440x330')
 # root.columnconfigure(0, weight=1)
 
 # RUN WINDOW

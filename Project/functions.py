@@ -16,8 +16,6 @@ import excel_format as format
 import payroll as pay
 
 
-# importlib.reload(sys)
-
 # ##########################################################
 # ALL PROGRAM FUNCTIONS  
 # ##########################################################
@@ -26,6 +24,15 @@ def program_init():
      db.db_init()
 
 def wages_time_main_program():
+        # Reload attendent information
+        importlib.reload(ar)    
+        importlib.reload(ac)    
+        importlib.reload(ath)
+        # Reload cashier information
+        importlib.reload(cr)
+        importlib.reload(cc)
+        importlib.reload(cth)
+
         # REMOVE WAGES TIMES.XLSX
         wage_times = path.exists('Wage Times.xlsx')
 
