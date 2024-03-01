@@ -109,6 +109,16 @@ def db_init():
                 noClock TEXT,
                 cashier TEST
                 )""")
+    
+    # CREATE CARWASH TABLES FOR FIRST TIME
+    c.execute("""CREATE TABLE IF NOT EXISTS carwashTotal (
+        name TEXT,
+        badge TEXT,
+        normal TEXT,
+        sunday TEXT,
+        public TEXT
+        )"""
+)
 
     con.commit()
     con.close()
