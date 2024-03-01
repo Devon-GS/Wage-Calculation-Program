@@ -121,14 +121,10 @@ payroll_open_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,
 # Copy Button
 copy_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
-
-
-
-
 # ROOT WINDOW CONFIG
 root.title('Wage Calculator')
 # root.iconbitmap('icons/smoking.ico')
-root.geometry('440x330')
+root.geometry('440x350')
 # root.columnconfigure(0, weight=1)
 
 # RUN WINDOW
