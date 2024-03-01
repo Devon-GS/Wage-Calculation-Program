@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import os
+import shutil
 import functions as f
 
 root = Tk()
@@ -49,6 +50,14 @@ def program_options(button_id):
         elif button_id == 5:
             f.run_payroll()
             messagebox.showinfo('Run Wages', 'Payroll Completed!') 
+        elif button_id == 6:
+          shutil.copy2('Wage Times.xlsx', 'Copy Folder/Wage Times.xlsx')
+          shutil.copy2('Payroll/Payroll.xlsx', 'Copy Folder/Payroll.xlsx')
+          shutil.copy2('Rosters/Attendant_Carwash_Roster.xlsx', 'Copy Folder/Attendant_Carwash_Roster.xlsx')
+          shutil.copy2('Rosters/CASHIERS_ROSTER.xlsx', 'Copy Folder/CASHIERS_ROSTER.xlsx')
+          shutil.copy2('Carwash Times/Carwash Times.xlsx', 'Copy Folder/Carwash Times.xlsx')
+
+          os.startfile("Copy Folder")            
     except Exception as error:
         messagebox.showerror('Run Wages', error)
 
@@ -79,6 +88,9 @@ payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: prog
 # Open Wage Payroll
 payroll_open_button = Button(root, text='Open Payroll Sheet', width=12, command=lambda: setup_options(7))
 
+# Copy Button
+copy_button = Button(root, text='Copy Sheets for Saving', width=12, command=lambda: program_options(6))
+
 # BIND WIDGETS
 # Setup Buttons
 setup_label.grid(row=0, column=0, columnspan=4 ,sticky=W+E, padx=(5,5), pady=(0,10))
@@ -107,7 +119,7 @@ payroll_button.grid(row=6, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=
 payroll_open_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Copy Button
-payroll_open_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+copy_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 
 
