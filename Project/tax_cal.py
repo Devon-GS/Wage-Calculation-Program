@@ -1,4 +1,6 @@
+import xlwings as xw
 from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 import pandas as pd
@@ -133,4 +135,33 @@ wb.save(output_file)
 # Update Payroll File
 # ######################################################
 
-print(results)
+wb = load_workbook("Payroll/Payroll.xlsx")
+ws = wb.active
+
+# (dot = data_only True). To get uif amounts with out formula
+wb_dot = load_workbook("Payroll/Payroll.xlsx", data_only=True)
+ws_dot = wb_dot.active
+
+for col in range(3,ws_dot.max_column):
+    col_letter = get_column_letter(col)
+    name = ws_dot[f'{col_letter}1'].value
+    uif = ws_dot[f'{col_letter}22'].value
+
+    print(uif)
+
+    if uif != None:
+        if uif > 0:
+            tax_amt = results[name]['Tax Payable']
+            ws[f'{col_letter}29'] = tax_amt
+
+wb.save("Payroll/Payroll.xlsx")
+wb.close()
+
+# Run and save excel in background to reevaluate formula
+app = xw.App(visible=False)
+book = app.books.open("Payroll/Payroll.xlsx")
+# sheet = book.sheets[worksheet_name]
+# print(sheet['C5'].value)
+book.save() 
+book.close()
+app.quit()
