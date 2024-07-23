@@ -21,10 +21,10 @@ def clean_column(x):
     return x
 
 # PROGRAM
-
 #  Read in tax deduction and weekly wage excel file
-df = pd.read_excel('PAYE_Fortnight.xlsx')
-file = askopenfilename(title='Select Wage File',initialdir=os.getcwd(), filetypes =[('xls', 'xlsx')])
+df = pd.read_excel('Tax/Tax_rates/PAYE_Fortnight.xlsx')
+# file = askopenfilename(title='Select Wage File',initialdir=os.getcwd(), filetypes =[('xls', 'xlsx')])
+file = 'Payroll/Payroll.xlsx'
 df2 = pd.read_excel(file)
 
 # Clean columns Remuneration 1 and Remuneration 2 and change data type to int
@@ -90,7 +90,7 @@ results_df = pd.DataFrame.from_dict(results, orient='index')
 results_df = results_df.T
 
 # Specify the path and filename for the Excel file
-output_file = 'tax_results.xlsx'
+output_file = 'Tax/tax_results.xlsx'
 
 # Check if the output file already exists, and remove it if it does
 if os.path.isfile(output_file):
@@ -129,3 +129,8 @@ for i, value in enumerate(tax_payable):
 # Save the Excel file
 wb.save(output_file)
 
+# ######################################################
+# Update Payroll File
+# ######################################################
+
+print(results)

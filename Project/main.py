@@ -56,6 +56,7 @@ def program_options(button_id):
           shutil.copy2('Rosters/Attendant_Carwash_Roster.xlsx', 'Copy Folder/Attendant_Carwash_Roster.xlsx')
           shutil.copy2('Rosters/CASHIERS_ROSTER.xlsx', 'Copy Folder/CASHIERS_ROSTER.xlsx')
           shutil.copy2('Carwash Times/Carwash Times.xlsx', 'Copy Folder/Carwash Times.xlsx')
+          shutil.copy2('Tax/tax_results.xlsx', 'Copy Folder/tax_results.xlsx')
 
           os.startfile("Copy Folder")            
     except Exception as error:
