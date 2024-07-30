@@ -73,7 +73,7 @@ setup_button = Button(root, text='Badge Numbers', width=12, command=lambda: setu
 setup_button2 = Button(root, text='Cashier/Baker', width=12, command=lambda: setup_options(2))
 setup_button3 = Button(root, text='Public Holidays', width=12, command=lambda: setup_options(3))
 setup_button4 = Button(root, text='Rosters', width=12, command=lambda: setup_options(4))
-setup_button5= Button(root, text='Open Uniclox', width=12, command=lambda: setup_options(6))
+setup_button5 = Button(root, text='Open Uniclox', width=12, command=lambda: setup_options(6))
 
 # Run Program Buttons
 program_label = Label(root, text='RUN PROGRAM',borderwidth=1, relief='solid')
