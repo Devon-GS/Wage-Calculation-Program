@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import os
 import shutil
+import gen_payslips as pay 
 import functions as f
 
 root = Tk()
@@ -61,6 +62,9 @@ def program_options(button_id):
           os.startfile("Copy Folder")
         elif button_id == 7:
             f.calulate_tax()
+        elif button_id == 8:
+            pay.gen_payslips()
+            os.startfile("Payslips")
              
     except Exception as error:
         messagebox.showerror('Run Wages', error)
@@ -95,6 +99,9 @@ calculate_tax_button = Button(root, text='Calculate Tax', width=12, command=lamb
 # Open Wage Payroll
 payroll_open_button = Button(root, text='Open Payroll Sheet', width=12, command=lambda: setup_options(7))
 
+# Generate Payslips
+payslips = Button(root, text='Generate Payslips', width=12, command=lambda: program_options(8))
+
 # Copy Button
 copy_button = Button(root, text='Copy Sheets for Saving', width=12, command=lambda: program_options(6))
 
@@ -128,13 +135,16 @@ calculate_tax_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) 
 # Open Wage Payroll
 payroll_open_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
+# Generate Payslips
+payslips.grid(row=9, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+
 # Copy Button
-copy_button.grid(row=9, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+copy_button.grid(row=10, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # ROOT WINDOW CONFIG
 root.title('Wage Calculator')
 # root.iconbitmap('icons/smoking.ico')
-root.geometry('440x400')
+root.geometry('440x440')
 # root.columnconfigure(0, weight=1)
 
 # RUN WINDOW
