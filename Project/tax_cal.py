@@ -22,146 +22,154 @@ def clean_column(x):
     x = x.replace('R', '')
     return x
 
-# PROGRAM
-#  Read in tax deduction and weekly wage excel file
-df = pd.read_excel('Tax/Tax_rates/PAYE_Fortnight.xlsx')
-# file = askopenfilename(title='Select Wage File',initialdir=os.getcwd(), filetypes =[('xls', 'xlsx')])
-file = 'Payroll/Payroll.xlsx'
-df2 = pd.read_excel(file)
-
-# Clean columns Remuneration 1 and Remuneration 2 and change data type to int
-df['Remuneration 1'] = df['Remuneration 1'].apply(clean_column).astype(int)
-df['Remuneration 2'] = df['Remuneration 2'].apply(clean_column).astype(int)
-
-# Collect employee name and gross wage and place in dict
-employee_unfilted = []
-for x in df2.columns:
-    employee_unfilted.append(x) 
+# MAIN PROGRAM CALCULATE TAX
+def tax():
+    # Run and save excel in background to reevaluate formula
+    app = xw.App(visible=False)
+    book = app.books.open("Payroll/Payroll.xlsx")
+    # sheet = book.sheets[worksheet_name]
+    # print(sheet['C5'].value)
+    book.save() 
+    book.close()
+    app.quit()
     
-employee = employee_unfilted[2:-1]
+    #  Read in tax deduction and weekly wage excel file
+    df = pd.read_excel('Tax/Tax_rates/PAYE_Fortnight.xlsx')
+    # file = askopenfilename(title='Select Wage File',initialdir=os.getcwd(), filetypes =[('xls', 'xlsx')])
+    file = 'Payroll/Payroll.xlsx'
+    df2 = pd.read_excel(file)
 
-gross_wages_unfilted = []
-for x in df2.loc[19]:
-    gross_wages_unfilted.append(x)
+    # Clean columns Remuneration 1 and Remuneration 2 and change data type to int
+    df['Remuneration 1'] = df['Remuneration 1'].apply(clean_column).astype(int)
+    df['Remuneration 2'] = df['Remuneration 2'].apply(clean_column).astype(int)
 
-gross_wage = gross_wages_unfilted[2:-1]
+    # Collect employee name and gross wage and place in dict
+    employee_unfilted = []
+    for x in df2.columns:
+        employee_unfilted.append(x) 
+        
+    employee = employee_unfilted[2:-1]
 
-d = dict(zip(employee, gross_wage))
+    gross_wages_unfilted = []
+    for x in df2.loc[19]:
+        gross_wages_unfilted.append(x)
 
-# Round values to 2 decimal places
-for key, value in d.items():
-    d[key] = round(value, 2)
+    gross_wage = gross_wages_unfilted[2:-1]
 
-# Merge any dublicate and drop dublicates
-for x in d.copy():
-    if x[-1] == '1':
-        dub = x[:-2]
-        amt = d[dub] + d[x]
-        d[dub] = amt
-        del d[x]
+    d = dict(zip(employee, gross_wage))
 
-# Function to calculate tax payable
-def calculate_tax(gross_wage, tax_brackets):
-    tax_payable = 0
-    
-    for i in range(len(tax_brackets)):
-        min_income = tax_brackets['Remuneration 1'][i]
-        max_income = tax_brackets['Remuneration 2'][i]
-        tax_amount = tax_brackets['Under 65'][i]
+    # Round values to 2 decimal places
+    for key, value in d.items():
+        d[key] = round(value, 2)
 
-        if min_income <= gross_wage <= max_income:
-            tax = clean_tax(tax_amount)
-            tax_payable = tax
-            break
+    # Merge any dublicate and drop dublicates
+    for x in d.copy():
+        if x[-1] == '1':
+            dub = x[:-2]
+            amt = d[dub] + d[x]
+            d[dub] = amt
+            del d[x]
 
-    return tax_payable
+    # Function to calculate tax payable
+    def calculate_tax(gross_wage, tax_brackets):
+        tax_payable = 0
+        
+        for i in range(len(tax_brackets)):
+            min_income = tax_brackets['Remuneration 1'][i]
+            max_income = tax_brackets['Remuneration 2'][i]
+            tax_amount = tax_brackets['Under 65'][i]
 
-# Create a new dictionary with name, gross wage, and tax payable for each person
-results = {}
+            if min_income <= gross_wage <= max_income:
+                tax = clean_tax(tax_amount)
+                tax_payable = tax
+                break
 
-for name, gross_wage in d.items():
-    tax = calculate_tax(gross_wage, df)
-    results[name] = {'Gross Wage': gross_wage, 'Tax Payable': tax}
+        return tax_payable
 
-# CREATE EXCEL SHEET WITH INFO FROM DICT
+    # Create a new dictionary with name, gross wage, and tax payable for each person
+    results = {}
 
-# Create a DataFrame from the results dictionary
-results_df = pd.DataFrame.from_dict(results, orient='index')
+    for name, gross_wage in d.items():
+        tax = calculate_tax(gross_wage, df)
+        results[name] = {'Gross Wage': gross_wage, 'Tax Payable': tax}
 
-# Transpose the DataFrame
-results_df = results_df.T
+    # CREATE EXCEL SHEET WITH INFO FROM DICT
 
-# Specify the path and filename for the Excel file
-output_file = 'Tax/tax_results.xlsx'
+    # Create a DataFrame from the results dictionary
+    results_df = pd.DataFrame.from_dict(results, orient='index')
 
-# Check if the output file already exists, and remove it if it does
-if os.path.isfile(output_file):
-    os.remove(output_file)
+    # Transpose the DataFrame
+    results_df = results_df.T
 
-# Write the DataFrame to Excel
-results_df.to_excel(output_file, sheet_name='Results', index=False)
+    # Specify the path and filename for the Excel file
+    output_file = 'Tax/tax_results.xlsx'
 
-# Open the workbook
-wb = load_workbook(output_file)
+    # Check if the output file already exists, and remove it if it does
+    if os.path.isfile(output_file):
+        os.remove(output_file)
 
-# Get the worksheet
-worksheet = wb['Results']
+    # Write the DataFrame to Excel
+    results_df.to_excel(output_file, sheet_name='Results', index=False)
 
-# Set the labels in the first column
-labels = ['Employee Name', 'Gross Wage', 'Tax Payable']
+    # Open the workbook
+    wb = load_workbook(output_file)
 
-for i, label in enumerate(labels):
-    worksheet.cell(row=i+1, column=1, value=label)
+    # Get the worksheet
+    worksheet = wb['Results']
 
-# Set the column headers
-column_headers = results_df.columns
-for i, header in enumerate(column_headers):
-    worksheet.cell(row=1, column=i+2, value=header)
+    # Set the labels in the first column
+    labels = ['Employee Name', 'Gross Wage', 'Tax Payable']
 
-# Write the gross wages and tax payable rows
-gross_wages = results_df.loc['Gross Wage']
-tax_payable = results_df.loc['Tax Payable']
+    for i, label in enumerate(labels):
+        worksheet.cell(row=i+1, column=1, value=label)
 
-for i, value in enumerate(gross_wages):
-    worksheet.cell(row=2, column=i+2, value=value)
+    # Set the column headers
+    column_headers = results_df.columns
+    for i, header in enumerate(column_headers):
+        worksheet.cell(row=1, column=i+2, value=header)
 
-for i, value in enumerate(tax_payable):
-    worksheet.cell(row=3, column=i+2, value=value)
+    # Write the gross wages and tax payable rows
+    gross_wages = results_df.loc['Gross Wage']
+    tax_payable = results_df.loc['Tax Payable']
 
-# Save the Excel file
-wb.save(output_file)
+    for i, value in enumerate(gross_wages):
+        worksheet.cell(row=2, column=i+2, value=value)
 
-# ######################################################
-# Update Payroll File
-# ######################################################
+    for i, value in enumerate(tax_payable):
+        worksheet.cell(row=3, column=i+2, value=value)
 
-wb = load_workbook("Payroll/Payroll.xlsx")
-ws = wb.active
+    # Save the Excel file
+    wb.save(output_file)
 
-# (dot = data_only True). To get uif amounts with out formula
-wb_dot = load_workbook("Payroll/Payroll.xlsx", data_only=True)
-ws_dot = wb_dot.active
+    # ######################################################
+    # Update Payroll File
+    # ######################################################
 
-for col in range(3,ws_dot.max_column):
-    col_letter = get_column_letter(col)
-    name = ws_dot[f'{col_letter}1'].value
-    uif = ws_dot[f'{col_letter}22'].value
+    wb = load_workbook("Payroll/Payroll.xlsx")
+    ws = wb.active
 
-    print(uif)
+    # (dot = data_only True). To get uif amounts with out formula
+    wb_dot = load_workbook("Payroll/Payroll.xlsx", data_only=True)
+    ws_dot = wb_dot.active
 
-    if uif != None:
-        if uif > 0:
-            tax_amt = results[name]['Tax Payable']
-            ws[f'{col_letter}29'] = tax_amt
+    for col in range(3,ws_dot.max_column):
+        col_letter = get_column_letter(col)
+        name = ws_dot[f'{col_letter}1'].value
+        uif = ws_dot[f'{col_letter}22'].value
 
-wb.save("Payroll/Payroll.xlsx")
-wb.close()
+        if uif != None:
+            if uif > 0:
+                tax_amt = results[name]['Tax Payable']
+                ws[f'{col_letter}29'] = tax_amt
 
-# Run and save excel in background to reevaluate formula
-app = xw.App(visible=False)
-book = app.books.open("Payroll/Payroll.xlsx")
-# sheet = book.sheets[worksheet_name]
-# print(sheet['C5'].value)
-book.save() 
-book.close()
-app.quit()
+    wb.save("Payroll/Payroll.xlsx")
+    wb.close()
+
+    # Run and save excel in background to reevaluate formula
+    app = xw.App(visible=False)
+    book = app.books.open("Payroll/Payroll.xlsx")
+    # sheet = book.sheets[worksheet_name]
+    # print(sheet['C5'].value)
+    book.save() 
+    book.close()
+    app.quit()

@@ -15,6 +15,8 @@ import excel_format as format
 
 import payroll as pay
 
+import tax_cal as tax
+
 
 # ##########################################################
 # ALL PROGRAM FUNCTIONS  
@@ -165,3 +167,6 @@ def recal_hours():
 
 def run_payroll():
      pay.payroll()
+
+def calulate_tax():
+     tax.tax()

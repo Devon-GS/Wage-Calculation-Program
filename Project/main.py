@@ -58,7 +58,10 @@ def program_options(button_id):
           shutil.copy2('Carwash Times/Carwash Times.xlsx', 'Copy Folder/Carwash Times.xlsx')
           shutil.copy2('Tax/tax_results.xlsx', 'Copy Folder/tax_results.xlsx')
 
-          os.startfile("Copy Folder")            
+          os.startfile("Copy Folder")
+        elif button_id == 7:
+            f.calulate_tax()
+             
     except Exception as error:
         messagebox.showerror('Run Wages', error)
 
@@ -85,6 +88,9 @@ open_wage_button = Button(root, text='Open Wage Times', width=12, command=lambda
 
 # Run Wage Payroll
 payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
+
+# Run Tax to Payroll
+calculate_tax_button = Button(root, text='Calculate Tax', width=12, command=lambda: program_options(7))
 
 # Open Wage Payroll
 payroll_open_button = Button(root, text='Open Payroll Sheet', width=12, command=lambda: setup_options(7))
@@ -116,16 +122,19 @@ open_wage_button.grid(row=5, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pad
 # Run Wage Payroll
 payroll_button.grid(row=6, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
+# Run Calculate Tax
+calculate_tax_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+
 # Open Wage Payroll
-payroll_open_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+payroll_open_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Copy Button
-copy_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+copy_button.grid(row=9, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # ROOT WINDOW CONFIG
 root.title('Wage Calculator')
 # root.iconbitmap('icons/smoking.ico')
-root.geometry('440x350')
+root.geometry('440x400')
 # root.columnconfigure(0, weight=1)
 
 # RUN WINDOW
