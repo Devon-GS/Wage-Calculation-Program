@@ -26,7 +26,10 @@ def payroll():
     total_records = []
 
     for rec in records_att:
-        total_records.append(rec)
+        # convert rec to list
+        convert = list(rec)
+        convert.append(0)
+        total_records.append(convert)
 
     for rec in records_cash:
         total_records.append(rec)
@@ -41,10 +44,10 @@ def payroll():
     # Iterate over payrol columns
     columns = ws.iter_cols(min_row=1, min_col=3)
 
-    # If badge number in payrol match info copy hours
+    # If badge number in payroll match info copy hours
     for col in columns:
         for r in total_records:
-            if 'b' in str(col[1].value) and str(col[1].value)[:-1] == str(r[1]):
+            if 'c' in str(col[1].value) and str(col[1].value)[:-1] == str(r[1]):
                 col[2].value = float(r[5])
                 col[11].value = 0.00
                 col[14].value = 0.00
