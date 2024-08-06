@@ -166,6 +166,7 @@ def recal_hours():
     cth.cas_fortnight_total()
 
 def run_payroll():
+     db.clean_carwash()
      pay.payroll()
 
 def calulate_tax():

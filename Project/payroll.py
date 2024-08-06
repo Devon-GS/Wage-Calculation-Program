@@ -1,8 +1,12 @@
 from openpyxl import Workbook
 from openpyxl import load_workbook
+import carwash_db as car
 import sqlite3
 
 def payroll():
+    # Run Carwash to database
+    car.carwash_times()
+
     # GET ALL HOURS FROM DATA BASE
     con = sqlite3.connect("wageTimes.db")
     c = con.cursor()
@@ -36,6 +40,7 @@ def payroll():
 
     for rec in records_car:
         total_records.append(rec)
+
 
     # COPY HOURS FROM TOTAL INFO TO PAYROLL.XLSX
     wb = load_workbook("Payroll/Payroll.xlsx")

@@ -19,6 +19,15 @@ def clean_db():
     con.commit()
     con.close()
 
+def clean_carwash():
+    con = sqlite3.connect("wageTimes.db")
+    c = con.cursor()
+    
+    c.execute('DELETE FROM carwashTotal')
+
+    con.commit()
+    con.close()
+    
 def clean_db_recal():
     con = sqlite3.connect("wageTimes.db")
     c = con.cursor()
