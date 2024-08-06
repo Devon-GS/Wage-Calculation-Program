@@ -50,8 +50,8 @@ def gen_payslips():
         ws['A4'] = 'Occupation'
         ws['B4'] = pay_info['Occupation']
 
-        # Week ending
-        ws['A5'] = 'Week Ending'
+        # Fortnight ending
+        ws['A5'] = 'Fornight Ending'
         ws['B5'] = date
 
         # Hour, Rate, Amount
