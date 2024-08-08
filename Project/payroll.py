@@ -41,7 +41,6 @@ def payroll():
     for rec in records_car:
         total_records.append(rec)
 
-
     # COPY HOURS FROM TOTAL INFO TO PAYROLL.XLSX
     wb = load_workbook("Payroll/Payroll.xlsx")
     ws = wb['Wages']

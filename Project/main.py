@@ -62,6 +62,7 @@ def program_options(button_id):
           os.startfile("Copy Folder")
         elif button_id == 7:
             f.calulate_tax()
+            messagebox.showinfo('Calculate Tax', 'Tax Calculation Completed!') 
         elif button_id == 8:
             pay.gen_payslips()
             os.startfile("Payslips")

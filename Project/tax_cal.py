@@ -35,7 +35,6 @@ def tax():
     
     #  Read in tax deduction and weekly wage excel file
     df = pd.read_excel('Tax/Tax_rates/PAYE_Fortnight.xlsx')
-    # file = askopenfilename(title='Select Wage File',initialdir=os.getcwd(), filetypes =[('xls', 'xlsx')])
     file = 'Payroll/Payroll.xlsx'
     df2 = pd.read_excel(file)
 
@@ -161,6 +160,9 @@ def tax():
             if uif > 0:
                 tax_amt = results[name]['Tax Payable']
                 ws[f'{col_letter}29'] = tax_amt
+            else:
+                ws[f'{col_letter}29'] = 0
+
 
     wb.save("Payroll/Payroll.xlsx")
     wb.close()
