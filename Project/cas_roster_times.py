@@ -45,7 +45,7 @@ for x in data_date_ex:
 
 # # Get week one from excel sheet
 week_one_data = data.loc[1:6]
-week_one_b_data = data.loc[13:14]
+week_one_b_data = data.loc[13:15]
 
 week_one = []
 for x in week_one_data.to_numpy().tolist():
@@ -713,7 +713,7 @@ for x in data_date:
 
 # Get week two from excel sheet
 week_two_data = data.loc[7:12]
-week_two_b_data = data.loc[15:16]
+week_two_b_data = data.loc[16:18]
 
 week_two = []
 for x in week_two_data.to_numpy().tolist():
