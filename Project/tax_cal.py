@@ -147,9 +147,12 @@ def tax():
     wb = load_workbook("Payroll/Payroll.xlsx")
     ws = wb.active
 
-    # (dot = data_only True). To get uif amounts with out formula
+    # (dot = data_only True). To get uif amounts without formula
     wb_dot = load_workbook("Payroll/Payroll.xlsx", data_only=True)
     ws_dot = wb_dot.active
+
+    # Check names that are done for baker/cashier
+    names_done = []
 
     for col in range(3,ws_dot.max_column):
         col_letter = get_column_letter(col)
@@ -157,12 +160,14 @@ def tax():
         uif = ws_dot[f'{col_letter}22'].value
 
         if uif != None:
-            if uif > 0:
+            if name in names_done:
+                ws[f'{col_letter}29'] = 0
+            elif uif > 0:
                 tax_amt = results[name]['Tax Payable']
                 ws[f'{col_letter}29'] = tax_amt
+                names_done.append(name)
             else:
                 ws[f'{col_letter}29'] = 0
-
 
     wb.save("Payroll/Payroll.xlsx")
     wb.close()
