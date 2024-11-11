@@ -23,6 +23,8 @@ def setup_options(button_id):
         os.startfile("Uniclox")
     elif button_id == 7:
         os.system('start "EXCEL.EXE" "Payroll/Payroll.xlsx"')
+    elif button_id == 8:
+        os.startfile('Payroll')
 
 def program_options(button_id):
     try:
@@ -88,8 +90,11 @@ program_button2 = Button(root, text='Run Wages', width=12, command=lambda: progr
 program_button3 = Button(root, text='Recalulate Wages', width=12, command=lambda: program_options(3))
 program_button4 = Button(root, text='Carwash Times', width=12, command=lambda: program_options(4))
 
-# Open Wage Times.xlsx
+# Open Wage Times Excel
 open_wage_button = Button(root, text='Open Wage Times', width=12, command=lambda: setup_options(5))
+
+# Open Payroll Folder
+payroll_open_folder_button = Button(root, text='Open Payroll Folder', width=12, command=lambda: setup_options(8))
 
 # Run Wage Payroll
 payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
@@ -97,7 +102,7 @@ payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: prog
 # Run Tax to Payroll
 calculate_tax_button = Button(root, text='Calculate Tax', width=12, command=lambda: program_options(7))
 
-# Open Wage Payroll
+# Open Payroll Excel
 payroll_open_button = Button(root, text='Open Payroll Sheet', width=12, command=lambda: setup_options(7))
 
 # Generate Payslips
@@ -127,25 +132,28 @@ program_button4.grid(row=4, column=3, padx=(5,10))
 # Open Wage Times.xlsx
 open_wage_button.grid(row=5, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
+# Open Payroll Folder
+payroll_open_folder_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+
 # Run Wage Payroll
-payroll_button.grid(row=6, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+payroll_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Run Calculate Tax
-calculate_tax_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+calculate_tax_button.grid(row=9, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Open Wage Payroll
-payroll_open_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+payroll_open_button.grid(row=10, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Generate Payslips
-payslips.grid(row=9, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+payslips.grid(row=11, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Copy Button
-copy_button.grid(row=10, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+copy_button.grid(row=12, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # ROOT WINDOW CONFIG
 root.title('Wage Calculator')
 # root.iconbitmap('icons/smoking.ico')
-root.geometry('440x440')
+root.geometry('440x490')
 # root.columnconfigure(0, weight=1)
 
 # RUN WINDOW
