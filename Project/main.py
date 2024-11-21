@@ -96,14 +96,14 @@ open_wage_button = Button(root, text='Open Wage Times', width=12, command=lambda
 # Open Payroll Folder
 payroll_open_folder_button = Button(root, text='Open Payroll Folder', width=12, command=lambda: setup_options(8))
 
-# Run Wage Payroll
-payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
-
-# Run Tax to Payroll
-calculate_tax_button = Button(root, text='Calculate Tax', width=12, command=lambda: program_options(7))
-
 # Open Payroll Excel
 payroll_open_button = Button(root, text='Open Payroll Sheet', width=12, command=lambda: setup_options(7))
+
+# Run Payroll
+payroll_button = Button(root, text='Run Payroll', width=12, command=lambda: program_options(5))
+
+# Run Tax
+calculate_tax_button = Button(root, text='Calculate Tax', width=12, command=lambda: program_options(7))
 
 # Generate Payslips
 payslips = Button(root, text='Generate Payslips', width=12, command=lambda: program_options(8))
@@ -135,14 +135,14 @@ open_wage_button.grid(row=5, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pad
 # Open Payroll Folder
 payroll_open_folder_button.grid(row=7, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
-# Run Wage Payroll
-payroll_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+# Open Payroll Excel
+payroll_open_button.grid(row=8, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
-# Run Calculate Tax
-calculate_tax_button.grid(row=9, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+# Run Payroll
+payroll_button.grid(row=9, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
-# Open Wage Payroll
-payroll_open_button.grid(row=10, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+# Run Tax
+calculate_tax_button.grid(row=10, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Generate Payslips
 payslips.grid(row=11, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
