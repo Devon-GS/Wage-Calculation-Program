@@ -8,14 +8,25 @@ def carwash_times():
 
     # Gather info from rows
     rows = ws.iter_rows(min_row=3, max_row=9, min_col=12, max_col=16)
+    extra_time = ws.iter_rows(min_row=14, max_row=19, min_col=12, max_col=16)
 
-    # Put all info in list
-    carwash_times = []
+    # Put all info in dict and list
+    carwash_times = {}
+    carwash_extra_time = []
 
     for row in rows:
         if row[0].value != None:
-            x = [str(row[0].value), str(row[1].value), str(row[2].value), str(row[3].value), '0']
-            carwash_times.append(x)
+            x = [str(row[0].value), str(row[1].value), str(row[2].value), str(row[3].value)]
+            carwash_times[str(row[1].value)] = x
+
+    for x in extra_time:
+        x = [str(x[0].value), str(x[1].value), str(x[2].value), str(x[3].value)]
+        carwash_extra_time.append(x)
+
+    for x in carwash_times:
+        for y in carwash_extra_time:
+            if x == y[1]:
+                carwash_times[x].append(y[3])
 
     # CREATE DATABASE AND ADD TIMES
     # Connect to database
@@ -28,7 +39,8 @@ def carwash_times():
             badge TEXT,
             normal TEXT,
             sunday TEXT,
-            public TEXT
+            public TEXT,
+            extra TEXT
             )"""
     )
 
@@ -38,15 +50,14 @@ def carwash_times():
             badge,
             normal,
             sunday,
-            public
+            public,
+            extra
             )
-            VALUES (?, ?, ?, ?, ?)"""
+            VALUES (?, ?, ?, ?, ?, ?)"""
 
     # Add times to database
-    i = 0
     for x in carwash_times:
-        c.execute(query, (carwash_times[i][0], carwash_times[i][1], carwash_times[i][2], carwash_times[i][3], carwash_times[i][4]))
-        i += 1
+        c.execute(query, (carwash_times[x][0], carwash_times[x][1], carwash_times[x][2], carwash_times[x][3], '0', carwash_times[x][4]))
 
     con.commit()
     con.close()
