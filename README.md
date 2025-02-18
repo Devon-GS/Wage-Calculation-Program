@@ -11,6 +11,8 @@ Create payslips
 - 08 August 2024      - Fixed issues 8, 11
 - 11 November 2024    - Fixed issues 12, 14
 
-### <ins>Currently Working on</ins>
+### <ins>Currently Working On [patch005]</ins>
 
 Issue 5 [Total times not updating]
+Issue 16 [Add check to run payroll]
+Issue 13 [Carwash Extra Money]
