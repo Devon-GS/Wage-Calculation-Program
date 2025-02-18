@@ -51,8 +51,12 @@ def program_options(button_id):
         elif button_id == 4:
             os.system('start "EXCEL.EXE" "Carwash Times/Carwash Times.xlsx"')
         elif button_id == 5:
-            f.run_payroll()
-            messagebox.showinfo('Run Wages', 'Payroll Completed!') 
+            response = messagebox.askyesno('Run Payroll', 'Are you sure you want to run payroll?')
+            if response == 1:
+                f.run_payroll()               
+                messagebox.showinfo('Run Payroll', 'Payroll Completed!')
+            else:
+                messagebox.showinfo('Run payroll', 'Nothing Happened!') 
         elif button_id == 6:
           shutil.copy2('Wage Times.xlsx', 'Copy Folder/Wage Times.xlsx')
           shutil.copy2('Payroll/Payroll.xlsx', 'Copy Folder/Payroll.xlsx')
