@@ -915,6 +915,7 @@ def cas_total_wo_db():
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?)"""
 
+    # Iterate through and add to table 
     i = 0
     for x in range(ws.max_row):
         name = ws.cell(row=2 + i, column=1).value
@@ -960,7 +961,23 @@ def cas_total_wt_db():
             WHERE
                 badge = ?
                 """)
+    
+    # Add to table if absent from first week / Get names from table
+    query_non_fw = """INSERT INTO cashierTotal (
+                name,
+                badge,
+                normal,
+                sunday,
+                public,
+                noClock,
+                cashier
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)"""
+    
+    get_records = c.execute('SELECT name FROM cashierTotal').fetchall()
+    records = [x[0] for x in get_records]
 
+    # Iterate through and add to table 
     i = 0
     for x in range(ws.max_row):
         name = ws.cell(row=2 + i, column=1).value
@@ -971,8 +988,11 @@ def cas_total_wt_db():
         nc = ws.cell(row=2 + i, column=12).value
         bc = ws.cell(row=2 + i, column=13).value
 
+        # if no name in first week add to table / Then add rest to total
         if name != None:
-            if 'Total' in name:
+            if 'Total' in name and name not in records:
+                c.execute(query_non_fw, (name, badge, normal, sunday, public, nc, bc))
+            elif 'Total' in name:
                 c.execute(query, (normal, sunday, public, nc, bc, badge))
         
         i += 1
@@ -1036,4 +1056,3 @@ def cas_fortnight_total():
 
     wb.save("Wage Times.xlsx")
     wb.close()
-

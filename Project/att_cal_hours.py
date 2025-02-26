@@ -886,7 +886,22 @@ def att_total_wt_db():
             WHERE
                 badge = ?
                 """)
+    
+    # Add to table if absent from first week / Get names from table
+    query_non_fw = """INSERT INTO attTotal (
+                name,
+                badge,
+                normal,
+                sunday,
+                public,
+                noClock
+                )
+                VALUES (?, ?, ?, ?, ?, ?)"""
+    
+    get_records = c.execute('SELECT name FROM attTotal').fetchall()
+    records = [x[0] for x in get_records]
 
+    # Iterate through and add to table 
     i = 0
     for x in range(ws.max_row):
         name = ws.cell(row=2 + i, column=1).value
@@ -896,8 +911,11 @@ def att_total_wt_db():
         public = ws.cell(row=2 + i, column=11).value
         nc = ws.cell(row=2 + i, column=12).value
 
+        # if no name in first week add to table / Then add rest to total
         if name != None:
-            if 'Total' in name:
+            if 'Total' in name and name not in records:
+                c.execute(query_non_fw, (name, badge, normal, sunday, public, nc))
+            elif 'Total' in name:
                 c.execute(query, (normal, sunday, public, nc, badge))
         
         i += 1
