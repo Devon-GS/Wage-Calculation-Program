@@ -20,7 +20,7 @@ def payroll():
     records_cash = c.fetchall()
 
     # Carwash times
-    c.execute("SELECT name, badge, normal, sunday, public FROM carwashTotal")
+    c.execute("SELECT name, badge, normal, sunday, public, extra FROM carwashTotal")
     records_car = c.fetchall()
 
     con.commit()
@@ -59,6 +59,9 @@ def payroll():
                     col[2].value = float(r[2])
                     col[11].value = float(r[3])
                     col[14].value = float(r[4])
+                    if float(r[5]) != None and float(r[5]) != 0.0 and float(r[5]) != 1.0:
+                         col[19].value = float(r[5])
 
     wb.save("Payroll/Payroll.xlsx")
     wb.close()
+

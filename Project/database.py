@@ -125,7 +125,8 @@ def db_init():
         badge TEXT,
         normal TEXT,
         sunday TEXT,
-        public TEXT
+        public TEXT,
+        extra TEXT
         )"""
 )
 
