@@ -67,8 +67,12 @@ def program_options(button_id):
 
           os.startfile("Copy Folder")
         elif button_id == 7:
-            f.calulate_tax()
-            messagebox.showinfo('Calculate Tax', 'Tax Calculation Completed!') 
+            response = messagebox.askyesno('Calculate Tax', 'Are you sure you want to run payroll?')
+            if response == 1:
+                f.calulate_tax()              
+                messagebox.showinfo('Calculate Tax', 'Tax Calculation Completed!')
+            else:
+                messagebox.showinfo('Calculate Tax', 'Nothing Happened!') 
         elif button_id == 8:
             pay.gen_payslips()
             os.startfile("Payslips")
