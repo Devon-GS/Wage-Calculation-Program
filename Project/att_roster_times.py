@@ -43,7 +43,7 @@ weekone_dates = {}
 for x in data_date_ex:
 	weekone_dates[x.strftime("%A")] = x.date().strftime("%d/%m/%y")
 
-# Get week one from excel sheet
+# Get week one from excel roster sheet
 week_one_data = data.loc[0:14]
 week_one = []
 for x in week_one_data.to_numpy().tolist():
@@ -701,7 +701,7 @@ weektwo_dates = {}
 for x in data_date:
 	weektwo_dates[x.strftime("%A")] = x.date().strftime("%d/%m/%y")
 
-# Get week one from excel sheet
+# Get week one from excel roster sheet
 week_two_data = data.loc[30:44]
 week_two = []
 for x in week_two_data.to_numpy().tolist():

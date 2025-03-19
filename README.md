@@ -15,4 +15,4 @@ Create payslips
 
 ### <ins>Currently Working On [patch006]</ins>
 
-- Issue 9 [Floats not working]
+- Issue 15 [Tax threshold not caculating]
