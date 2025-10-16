@@ -49,12 +49,19 @@ def payroll():
     columns = ws.iter_cols(min_row=1, min_col=3)
 
     # If badge number in payroll match info copy hours
+    # col[2] = normal pay
+    # col[11] = sunday pay
+    # col[14] = public pay
     for col in columns:
         for r in total_records:
             if 'c' in str(col[1].value) and str(col[1].value)[:-1] == str(r[1]):
                 col[2].value = float(r[5])
                 col[11].value = 0.00
                 col[14].value = 0.00
+            elif 'b' in str(col[1].value) and str(col[1].value)[:-1] == str(r[1]):
+                col[2].value = float(r[2])
+                col[11].value = float(r[3])
+                col[14].value = float(r[4])
             elif col[1].value == int(r[1]):
                     col[2].value = float(r[2])
                     col[11].value = float(r[3])
