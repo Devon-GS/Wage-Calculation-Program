@@ -12,8 +12,9 @@ Create payslips
 - 11 November 2024              - Fixed issues 12, 14
 - 20 February 2024              - Fixed issues 5, 13, 16
 - 16 October 2025   [Patch006]  - Fixed issues 15, 19, 20
+- 17 October 2025   [Patch007]  - Fixed issues 21
 - [ Date ]      [ patch ]       - [ Fixed ]  
 
-### <ins>Currently Working On [patch007]</ins>
+### <ins>Currently Working On [patch008]</ins>
 
-- Issue 21 [Wage Increase September 2025 - With new medical allowance]
+- Issue
