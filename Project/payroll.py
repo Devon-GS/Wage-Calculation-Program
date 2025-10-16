@@ -67,7 +67,7 @@ def payroll():
                     col[11].value = float(r[3])
                     col[14].value = float(r[4])
                     if float(r[5]) != None and float(r[5]) != 0.0 and float(r[5]) != 1.0:
-                         col[19].value = float(r[5])
+                         col[20].value = float(r[5])
 
     wb.save("Payroll/Payroll.xlsx")
     wb.close()

@@ -91,56 +91,60 @@ def gen_payslips():
         ws['A13'] = 'Sick Leave / Leave'
         ws['D13'] = pay_info['SICK / LEAVE']
 
+        # Medical Allowance
+        ws['A14'] = 'Medical'
+        ws['D14'] = pay_info['MEDICAL']
+
         # Standard Hours
-        ws['A14'] = 'Standard Hours'
-        ws['D14'] = pay_info['STANDARD HRS']
+        ws['A15'] = 'Standard Hours'
+        ws['D15'] = pay_info['STANDARD HRS']
 
         # Total Wage
-        ws['A15'] = 'Total Wage'
-        ws['D15'] = pay_info['TOTAL WAGE']
+        ws['A16'] = 'Total Wage'
+        ws['D16'] = pay_info['TOTAL WAGE']
 
         # Deduction Heading
-        ws['A17'] = 'Deductions'
+        ws['A18'] = 'Deductions'
 
         # UIF
-        ws['A18'] = 'UIF'
-        ws['D18'] = pay_info['UIF']
+        ws['A19'] = 'UIF'
+        ws['D19'] = pay_info['UIF']
 
         # Mibco
-        ws['A19'] = 'Mibco'
-        ws['D19'] = pay_info['MIBCO']
+        ws['A20'] = 'Mibco'
+        ws['D20'] = pay_info['MIBCO']
 
         # Uniforms
-        ws['A20'] = 'Uniforms'
-        ws['D20'] = pay_info['UNIFORMS']
+        ws['A21'] = 'Uniforms'
+        ws['D21'] = pay_info['UNIFORMS']
 
         # Union
-        ws['A21'] = 'Union'
-        ws['D21'] = pay_info['UNION']
+        ws['A22'] = 'Union'
+        ws['D22'] = pay_info['UNION']
 
         # Advance
-        ws['A22'] = 'Advance'
-        ws['D22'] = pay_info['ADVANCES']
+        ws['A23'] = 'Advance'
+        ws['D23'] = pay_info['ADVANCES']
 
         # Prov Fund
-        ws['A23'] = 'Prov Fund'
-        ws['D23'] = pay_info['PROV FUND']
+        ws['A24'] = 'Prov Fund'
+        ws['D24'] = pay_info['PROV FUND']
 
         # PAYE
-        ws['A24'] = 'PAYE'
-        ws['D24'] = pay_info['PAYE']
+        ws['A25'] = 'PAYE'
+        ws['D25'] = pay_info['PAYE']
 
         # PAYE REPAY
-        ws['A25'] = 'PAYE REPAY'
-        ws['D25'] = pay_info['PAYE REPAYME']
+        ws['A26'] = 'PAYE REPAY'
+        ws['D26'] = pay_info['PAYE REPAYME']
 
         # Shortages
-        ws['A26'] = 'Shortages'
-        ws['D26'] = pay_info['SHORTAGES']
+        ws['A27'] = 'Shortages'
+        ws['D27'] = pay_info['SHORTAGES']
 
         # Net Wage
-        ws['A28'] = 'NET WAGE'
-        ws['D28'] = pay_info['NET WAGE']
+        ws['A29'] = 'NET WAGE'
+        ws['D29'] = pay_info['NET WAGE']
 
         # FORMATING
         
@@ -170,17 +174,17 @@ def gen_payslips():
         ws["B5"].alignment = Alignment(horizontal="center")
         
         # Bold Headings
-        ws['A15'].font = font_headers
-        ws['A17'].font = font_headers
-        ws['A28'].font = font_headers
+        ws['A16'].font = font_headers
+        ws['A18'].font = font_headers
+        ws['A29'].font = font_headers
 
-        for row in range(3,29):
+        for row in range(3,30):
             for col in range(1,5):
                 ws.cell(row,col).border = thin_border
         
         ws.column_dimensions['D'].width = 9.65
         
-        for row in range(8,29):
+        for row in range(8,30):
             for col in range(3,5):
                 ws.cell(row,col).number_format = 'R #,##0.00'      
         

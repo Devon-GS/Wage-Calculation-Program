@@ -50,7 +50,7 @@ def tax():
     employee = employee_unfilted[2:-1]
 
     gross_wages_unfilted = []
-    for x in df2.loc[19]:
+    for x in df2.loc[20]:
         gross_wages_unfilted.append(x)
 
     gross_wage = gross_wages_unfilted[2:-1]
@@ -158,17 +158,17 @@ def tax():
     for col in range(3,ws_dot.max_column):
         col_letter = get_column_letter(col)
         name = ws_dot[f'{col_letter}1'].value
-        uif = ws_dot[f'{col_letter}22'].value
+        uif = ws_dot[f'{col_letter}23'].value
 
         if uif != None:
             if name in names_done:
-                ws[f'{col_letter}29'] = 0
+                ws[f'{col_letter}30'] = 0
             elif uif > 0:
                 tax_amt = results[name]['Tax Payable']
-                ws[f'{col_letter}29'] = tax_amt
+                ws[f'{col_letter}30'] = tax_amt
                 names_done.append(name)
             else:
-                ws[f'{col_letter}29'] = 0
+                ws[f'{col_letter}30'] = 0
 
     wb.save("Payroll/Payroll.xlsx")
     wb.close()
