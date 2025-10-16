@@ -59,7 +59,8 @@ def tax():
 
     # Round values to 2 decimal places
     for key, value in d.items():
-        d[key] = round(value, 2)
+        # d[key] = round(value, 2)
+        d[key] = int(value)
 
     # Merge any dublicate and drop dublicates
     for x in d.copy():

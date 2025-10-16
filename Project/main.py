@@ -67,7 +67,7 @@ def program_options(button_id):
 
           os.startfile("Copy Folder")
         elif button_id == 7:
-            response = messagebox.askyesno('Calculate Tax', 'Are you sure you want to run payroll?')
+            response = messagebox.askyesno('Calculate Tax', 'Are you sure you want to calculate the tax?')
             if response == 1:
                 f.calulate_tax()              
                 messagebox.showinfo('Calculate Tax', 'Tax Calculation Completed!')
