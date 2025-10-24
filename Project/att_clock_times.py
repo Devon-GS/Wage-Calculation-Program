@@ -81,46 +81,92 @@ def att_clock_excel():
                 ti = ws.cell(row=2 + i, column=5).value
                 to = ws.cell(row=2 + i, column=6).value
 
-                # If employee only clock once
+                # If employee only clock once but should have clocked twice
                 if len(clock_times_list) == 1 and int(ti) > 0 and int(to) > 0:
-                    if ti > 0 and to > 0:     
-                        time_format = time.fromisoformat(x) 
-                        time_hour = time_format.hour              
-                        low = int(ti) - time_hour
-                        high = int(to) - time_hour
+                    # if ti > 0 and to > 0:
+                    time_format = time.fromisoformat(x) 
+                    time_hour = time_format.hour
+                    low = int(ti) - time_hour
+                    high = int(to) - time_hour
+                    
+					# Check if clock time is clock in or clock out time and put in apropriate column
+                    if abs(low) < abs(high):
+                        time_r = min(clock_times_list)
+                        t = time.fromisoformat(time_r).strftime('%H:%M')
+                        ws.cell(row=2 + i, column=7, value=t)
+                    else:
+                        time_r = max(clock_times_list)
+                        t = time.fromisoformat(time_r).strftime('%H:%M')
+                        ws.cell(row=2 + i, column=8, value=t)
 
-                        if abs(low) < abs(high):
+                # Check if employee clocked more than once but only clock in and not out or vice versa
+                else:
+                    # Check if time in and out are the same time
+                    time_in = time.fromisoformat(min(clock_times_list)).strftime('%H:%M')
+                    time_out = time.fromisoformat(max(clock_times_list)).strftime('%H:%M')
+                    
+                    if time_in == time_out:
+                        # If multiple clocks in on night shift
+                        if ti == 18:
+                            time_r = max(clock_times_list)
+                            t = time.fromisoformat(time_r).strftime('%H:%M')
+                            ws.cell(row=2 + i, column=7, value=t)
+                        elif ti == 0:
+                            ws.cell(row=2 + i, column=7, value='')
+
+                        # If multiple clocks out on night shift
+                        if to == 6 or to == 7:
+                            time_r = min(clock_times_list)
+                            t = time.fromisoformat(time_r).strftime('%H:%M')
+
+                            # Check when work double night shift and only one clock time recorded
+                            if time.fromisoformat(time_r).hour > 14:
+                                ws.cell(row=2 + i, column=8, value='')
+                            else:
+                                ws.cell(row=2 + i, column=8, value=t)
+                        elif to == 0:
+                            ws.cell(row=2 + i, column=8, value='')
+
+                        # If multiple clocks in or out on day shift
+                        if int(ti) > 0 and int(to) > 0:
+                            time_format = time.fromisoformat(x) 
+                            time_hour = time_format.hour              
+                            low = int(ti) - time_hour
+                            high = int(to) - time_hour
+                            
+							# Check if clock time is clock in or clock out time and put in apropriate column
+                            if abs(low) < abs(high):
+                                time_r = min(clock_times_list)
+                                t = time.fromisoformat(time_r).strftime('%H:%M')
+                                ws.cell(row=2 + i, column=7, value=t)
+                            else:
+                                time_r = max(clock_times_list)
+                                t = time.fromisoformat(time_r).strftime('%H:%M')
+                                ws.cell(row=2 + i, column=8, value=t)
+                    else:
+                        # Check clock in times vs roster
+                        if ti == 18:
+                            time_r = max(clock_times_list)
+                            t = time.fromisoformat(time_r).strftime('%H:%M')
+                            ws.cell(row=2+ i, column=7, value=t)
+                        elif ti == 0:
+                            ws.cell(row=2 + i, column=7, value='')
+                        else:
                             time_r = min(clock_times_list)
                             t = time.fromisoformat(time_r).strftime('%H:%M')
                             ws.cell(row=2 + i, column=7, value=t)
+                        
+                        # Check clock out times vs roster
+                        if to == 6 or to == 7:                       
+                            time_r = min(clock_times_list)
+                            t = time.fromisoformat(time_r).strftime('%H:%M')
+                            ws.cell(row=2 + i, column=8, value=t)
+                        elif to == 0:
+                            ws.cell(row=2 + i, column=8, value='')
                         else:
                             time_r = max(clock_times_list)
                             t = time.fromisoformat(time_r).strftime('%H:%M')
                             ws.cell(row=2 + i, column=8, value=t)
-                else:
-                    # Check clock in times vs roster
-                    if ti == 18:
-                        time_r = max(clock_times_list)
-                        t = time.fromisoformat(time_r).strftime('%H:%M')
-                        ws.cell(row=2+ i, column=7, value=t)
-                    elif ti == 0:
-                        ws.cell(row=2 + i, column=7, value='')
-                    else:
-                        time_r = min(clock_times_list)
-                        t = time.fromisoformat(time_r).strftime('%H:%M')
-                        ws.cell(row=2 + i, column=7, value=t)
-
-                    # Check clock out times vs roster
-                    if to == 6 or to == 7:
-                        time_r = min(clock_times_list)
-                        t = time.fromisoformat(time_r).strftime('%H:%M')
-                        ws.cell(row=2 + i, column=8, value=t)
-                    elif to == 0:
-                        ws.cell(row=2 + i, column=8, value='')
-                    else:
-                        time_r = max(clock_times_list)
-                        t = time.fromisoformat(time_r).strftime('%H:%M')
-                        ws.cell(row=2 + i, column=8, value=t)
         i += 1
 
     wb.save('Wage Times.xlsx')
@@ -164,46 +210,91 @@ def att_clock_excel_wt():
                 ti = ws.cell(row=2 + i, column=5).value
                 to = ws.cell(row=2 + i, column=6).value
 
-                # If employee only clock once
+                # If employee only clock once but should have clocked twice
                 if len(clock_times_list) == 1 and int(ti) > 0 and int(to) > 0:
-                    if ti > 0 and to > 0:     
-                        time_format = time.fromisoformat(x) 
-                        time_hour = time_format.hour              
-                        low = int(ti) - time_hour
-                        high = int(to) - time_hour
+                    # if ti > 0 and to > 0:
+                    time_format = time.fromisoformat(x) 
+                    time_hour = time_format.hour
+                    low = int(ti) - time_hour
+                    high = int(to) - time_hour
 
-                        if abs(low) < abs(high):
+					# Check if clock time is clock in or clock out time and put in apropriate column
+                    if abs(low) < abs(high):
+                        time_r = min(clock_times_list)
+                        t = time.fromisoformat(time_r).strftime('%H:%M')
+                        ws.cell(row=2 + i, column=7, value=t)
+                    else:
+                        time_r = max(clock_times_list)
+                        t = time.fromisoformat(time_r).strftime('%H:%M')
+                        ws.cell(row=2 + i, column=8, value=t)
+
+                # Check if employee clocked more than once but only clock in and not out or vice versa
+                else:
+                    # Check if time in and out are the same time
+                    time_in = time.fromisoformat(min(clock_times_list)).strftime('%H:%M')
+                    time_out = time.fromisoformat(max(clock_times_list)).strftime('%H:%M')
+                    
+                    if time_in == time_out:
+                        # If multiple clocks in on night shift
+                        if ti == 18:
+                            time_r = max(clock_times_list)
+                            t = time.fromisoformat(time_r).strftime('%H:%M')
+                            ws.cell(row=2 + i, column=7, value=t)
+                        elif ti == 0:
+                            ws.cell(row=2 + i, column=7, value='')
+
+                        if to == 6 or to == 7:
+                            time_r = min(clock_times_list)
+                            t = time.fromisoformat(time_r).strftime('%H:%M')
+
+                            # Check when work double night shift and only one clock time recorded
+                            if time.fromisoformat(time_r).hour > 14:
+                                ws.cell(row=2 + i, column=8, value='')
+                            else:
+                                ws.cell(row=2 + i, column=8, value=t)
+                        elif to == 0:
+                            ws.cell(row=2 + i, column=8, value='')
+
+                        # If multiple clocks in or out on day shift
+                        if int(ti) > 0 and int(to) > 0:
+                            time_format = time.fromisoformat(x) 
+                            time_hour = time_format.hour              
+                            low = int(ti) - time_hour
+                            high = int(to) - time_hour
+                            
+							# Check if clock time is clock in or clock out time and put in apropriate column
+                            if abs(low) < abs(high):
+                                time_r = min(clock_times_list)
+                                t = time.fromisoformat(time_r).strftime('%H:%M')
+                                ws.cell(row=2 + i, column=7, value=t)
+                            else:
+                                time_r = max(clock_times_list)
+                                t = time.fromisoformat(time_r).strftime('%H:%M')
+                                ws.cell(row=2 + i, column=8, value=t)
+                    else:
+                        # Check clock in times vs roster
+                        if ti == 18:
+                            time_r = max(clock_times_list)
+                            t = time.fromisoformat(time_r).strftime('%H:%M')
+                            ws.cell(row=2+ i, column=7, value=t)
+                        elif ti == 0:
+                            ws.cell(row=2 + i, column=7, value='')
+                        else:
                             time_r = min(clock_times_list)
                             t = time.fromisoformat(time_r).strftime('%H:%M')
                             ws.cell(row=2 + i, column=7, value=t)
+                        
+                        # Check clock out times vs roster
+                        if to == 6 or to == 7:
+                            time_r = min(clock_times_list)
+                            t = time.fromisoformat(time_r).strftime('%H:%M')
+                            ws.cell(row=2 + i, column=8, value=t)
+                        elif to == 0:
+                            ws.cell(row=2 + i, column=8, value='')
                         else:
                             time_r = max(clock_times_list)
                             t = time.fromisoformat(time_r).strftime('%H:%M')
                             ws.cell(row=2 + i, column=8, value=t)
-                else:
-                    # Check clock in times vs roster
-                    if ti == 18:
-                        time_r = max(clock_times_list)
-                        t = time.fromisoformat(time_r).strftime('%H:%M')
-                        ws.cell(row=2+ i, column=7, value=t)
-                    elif ti == 0:
-                        ws.cell(row=2 + i, column=7, value='')
-                    else:
-                        time_r = min(clock_times_list)
-                        t = time.fromisoformat(time_r).strftime('%H:%M')
-                        ws.cell(row=2 + i, column=7, value=t)
-
-                    # Check clock out times vs roster
-                    if to == 6 or to == 7:
-                        time_r = min(clock_times_list)
-                        t = time.fromisoformat(time_r).strftime('%H:%M')
-                        ws.cell(row=2 + i, column=8, value=t)
-                    elif to == 0:
-                        ws.cell(row=2 + i, column=8, value='')
-                    else:
-                        time_r = max(clock_times_list)
-                        t = time.fromisoformat(time_r).strftime('%H:%M')
-                        ws.cell(row=2 + i, column=8, value=t)
         i += 1
 
     wb.save('Wage Times.xlsx')
