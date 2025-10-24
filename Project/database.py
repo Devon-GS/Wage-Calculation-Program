@@ -133,14 +133,12 @@ def db_init():
     con.commit()
     con.close()
 
-
-
-# ############# WORKINGS ##############
+# ############# TESTING ##############
 # con = sqlite3.connect("wageTimes.db")
 # c = con.cursor()
 
 # c.execute('DROP TABLE cashierTotal')
 
-
 # con.commit()
 # con.close()
+# ############# TESTING ##############

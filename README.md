@@ -14,8 +14,9 @@ Create payslips
 - 16 October 2025   [Patch006]  - Fixed issues 15, 19, 20
 - 17 October 2025   [Patch007]  - Fixed issues 21
 - 24 October 2025   [Patch008]  - Fixed issues 18, 22
+- 24 October 2025   [Patch009]  - Fixed issues 23
 - [ Date ]      [ patch ]       - [ Fixed ]  
 
-### <ins>Currently Working On [patch009]</ins>
+### <ins>Currently Working On [patch010]</ins>
 
-- Issue 23
+- Issue 24 [New feature add company logo on payslips]

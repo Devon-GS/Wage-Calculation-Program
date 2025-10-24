@@ -200,12 +200,14 @@ def cas_times_weekone():
 
             i += 1
 
+		# If employee is off
         elif clock_in == None and clock_out == None:
             hours = 0
             ws.cell(row=2 + i, column=9, value=hours)
 
             i += 1
 
+		# If employee is working night shift
         elif time_in == 18:
             ti = time(time_in).strftime("%H:%M")
             ci = clock_in
@@ -253,6 +255,7 @@ def cas_times_weekone():
 
             i += 1
 
+		# All other day shifts
         else:
             ti = time(time_in).strftime("%H:%M")
             ci = clock_in

@@ -1345,4 +1345,3 @@ def db_atwo_to_excel():
     # Close workbook
     wb.save("Wage Times.xlsx")
     wb.close()
-

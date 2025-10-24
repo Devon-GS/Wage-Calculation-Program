@@ -1,5 +1,5 @@
 # ###############################################################################################
-# ATTENDENTS WEEK 1 - CALCULATE ROSTER VS CLOCK TIME IN EXCEL
+# ATTENDENTS - CALCULATE ROSTER VS CLOCK TIME IN EXCEL
 # ###############################################################################################
 import os
 from datetime import datetime, time
@@ -23,7 +23,7 @@ for row in ws.iter_rows(min_row=2, max_col=1, max_row=20, values_only=True):
 wb.close()
 
 # ==============================================================================
-# CALCULATE CLOCK IN AND CLOCK OUT TIMES WEEK ONE
+# ATTENDENTS WEEK 1 - CALCULATE CLOCK IN AND CLOCK OUT TIMES
 # ==============================================================================
 
 def att_times_weekone():
@@ -183,13 +183,15 @@ def att_times_weekone():
                 ws.cell(row=2 + i, column=10, value=hours)
             
             i   += 1
-
+		
+		# If employee is off 
         elif clock_in == None and clock_out == None:
             hours = 0
             ws.cell(row=2 + i, column=9, value=hours)
 
             i += 1
 
+		# If emplyee is on night duty
         elif time_in == 18:
             ti = time(time_in).strftime("%H:%M")
             ci = clock_in
@@ -237,6 +239,7 @@ def att_times_weekone():
 
             i += 1
 
+		# Day shifts
         else:
             ti = time(time_in).strftime("%H:%M")
             ci = clock_in
@@ -287,6 +290,7 @@ def att_times_weekone():
     wb.save("Wage Times.xlsx")
     wb.close()
 
+# If public holidays move time to public holiday time slot
 def att_public_weekone():
     wb = load_workbook("Wage Times.xlsx")
     ws = wb.active
@@ -306,6 +310,7 @@ def att_public_weekone():
     wb.save("Wage Times.xlsx")
     wb.close()
 
+# Run recaluation of times if some where manually changed
 def att_total_wo_hours(recalculate='no'):
     # Calculate total hours for week add to excel
     wb = load_workbook("Wage Times.xlsx")
@@ -417,7 +422,7 @@ def att_total_wo_hours(recalculate='no'):
 
 
 # ==============================================================================
-# CALCULATE CLOCK IN AND CLOCK OUT TIMES WEEK TWO
+# ATTENDENTS WEEK 2 - CALCULATE CLOCK IN AND CLOCK OUT TIMES
 # ==============================================================================
 
 def att_times_weektwo():
@@ -976,4 +981,3 @@ def att_fortnight_total():
 
     wb.save("Wage Times.xlsx")
     wb.close()
-
