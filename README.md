@@ -15,8 +15,35 @@ Create payslips
 - 17 October 2025   [Patch007]  - Fixed issues 21
 - 24 October 2025   [Patch008]  - Fixed issues 18, 22
 - 24 October 2025   [Patch009]  - Fixed issues 23
+- 27 October 2025   [Patch010]  - Fixed issues 24
 - [ Date ]      [ patch ]       - [ Fixed ]  
 
-### <ins>Currently Working On [patch010]</ins>
+<!-- ### <ins>Currently Working On [patch]</ins> -->
 
-- Issue 24 [New feature add company logo on payslips]
+<!-- - Issue 24 [New feature add company logo on payslips] -->
+
+### <ins>How to install</ins>
+
+Create environment:
+
+```python
+python -m venv <name>
+```
+
+Install poetry:
+
+```python
+pip install poetry
+``` 
+
+Install dependencies:
+
+```python
+poetry install
+```
+
+Run Script [Project/main.py]:
+
+```python
+python main.py
+``` 

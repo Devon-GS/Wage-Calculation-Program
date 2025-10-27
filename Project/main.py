@@ -25,6 +25,8 @@ def setup_options(button_id):
         os.system('start "EXCEL.EXE" "Payroll/Payroll.xlsx"')
     elif button_id == 8:
         os.startfile('Payroll')
+    elif button_id == 9:
+        os.startfile('Templates')
 
 def program_options(button_id):
     try:
@@ -38,6 +40,7 @@ def program_options(button_id):
             2) Cashier/Baker Times
             3) Public Holidays
             4) Rosters
+            5) Template Updated
             5) Uniclox Files
             ''')
             if response == 1:
@@ -88,7 +91,8 @@ setup_button = Button(root, text='Badge Numbers', width=12, command=lambda: setu
 setup_button2 = Button(root, text='Cashier/Baker', width=12, command=lambda: setup_options(2))
 setup_button3 = Button(root, text='Public Holidays', width=12, command=lambda: setup_options(3))
 setup_button4 = Button(root, text='Rosters', width=12, command=lambda: setup_options(4))
-setup_button5 = Button(root, text='Open Uniclox', width=12, command=lambda: setup_options(6))
+setup_button5 = Button(root, text='Open Templates', width=12, command=lambda: setup_options(9))
+setup_button6 = Button(root, text='Open Uniclox', width=12, command=lambda: setup_options(6))
 
 # Run Program Buttons
 program_label = Label(root, text='RUN PROGRAM',borderwidth=1, relief='solid')
@@ -127,7 +131,8 @@ setup_button.grid(row=1, column=0, padx=(5,10))
 setup_button2.grid(row=1, column=1, padx=(0,10))
 setup_button3.grid(row=1, column=2, padx=(0,10))
 setup_button4.grid(row=1, column=3, padx=(0,5))
-setup_button5.grid(row=2, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+setup_button5.grid(row=2, column=0, columnspan=2 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
+setup_button6.grid(row=2, column=2, columnspan=2 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
 
 # Run Program Buttons
 program_label.grid(row=3, column=0, columnspan=4 ,sticky=W+E, padx=(5,5) ,pady=(10,10))
