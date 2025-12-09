@@ -62,7 +62,6 @@ def setup_options(button_id):
 
 				# Save to database
 				pay.add_employees(english_name, full_name, surname, id_pass)
-
 				top.destroy()
 
 			def search():
@@ -100,6 +99,9 @@ def setup_options(button_id):
 				sname_entry.delete(0, END)
 				id_entry.delete(0, END)
 			
+			def delete():
+				pass
+			
 			# Buttons 
 			save_button = Button(top, text="Save", command=save)
 			save_button.grid(row=4, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
@@ -109,6 +111,9 @@ def setup_options(button_id):
 
 			update_button = Button(top, text="Update", command=update)
 			update_button.grid(row=6, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+			
+			delete_button = Button(top, text="Delete", command=delete)
+			delete_button.grid(row=7, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
 		else:
 			os.startfile('Templates')
 

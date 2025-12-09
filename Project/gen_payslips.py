@@ -56,6 +56,18 @@ def update_employees(ename, fname, sname, id):
 	con.commit()
 	con.close()
 
+def delete_employees(id):
+	con = sqlite3.connect("wageTimes.db")
+	c = con.cursor()
+
+	c.execute(f'''DELETE FROM employeeNames WHERE idPass = :id''',
+					{
+						'id' : id
+					})
+
+	con.commit()
+	con.close()
+
 
 
 
