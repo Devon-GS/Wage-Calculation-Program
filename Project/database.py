@@ -130,7 +130,7 @@ def db_init():
         )"""
 )
     
-    # CREATE CARWASH TABLES FOR FIRST TIME
+    # CREATE EMPLOYEE INFO TABLES FOR FIRST TIME
     c.execute("""CREATE TABLE IF NOT EXISTS employeeNames (
         englishName TEXT,
         fullName TEXT,

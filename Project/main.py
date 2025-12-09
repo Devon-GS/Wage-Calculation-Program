@@ -30,7 +30,7 @@ def setup_options(button_id):
 		if response == 1:
 			top = Toplevel()
 			top.attributes("-topmost", True)
-			top.geometry("300x300")
+			top.geometry("300x400")
 			top.title("Add Employee Information")
 
 			ename_label = Label(top, text="English Name:")
@@ -109,7 +109,9 @@ def setup_options(button_id):
 					ename_entry.delete(0, END)
 					fname_entry.delete(0, END)
 					sname_entry.delete(0, END)
+					id_entry.config(state="normal")
 					id_entry.delete(0, END)
+					
 				else:
 					messagebox.showinfo('Update Employee', 'Nothing happened!')
 			
@@ -126,12 +128,13 @@ def setup_options(button_id):
 					ename_entry.delete(0, END)
 					fname_entry.delete(0, END)
 					sname_entry.delete(0, END)
+					id_entry.config(state="normal")
 					id_entry.delete(0, END)
 				else:
 					messagebox.showinfo('Delete Employee', 'Nothing happened!')
 			
 			# Buttons 
-			save_button = Button(top, text="Save", command=save)
+			save_button = Button(top, text="Add", command=save)
 			save_button.grid(row=4, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
 
 			search_button = Button(top, text="Search", command=search)
@@ -142,6 +145,9 @@ def setup_options(button_id):
 			
 			delete_button = Button(top, text="Delete", command=delete)
 			delete_button.grid(row=7, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+
+			bulk_button = Button(top, text="Bulk Add", command=pay.bulk_add)
+			bulk_button.grid(row=8, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
 		else:
 			os.startfile('Templates')
 

@@ -5,7 +5,9 @@ from openpyxl.styles import Alignment, Font
 from openpyxl.styles.borders import Border, Side
 from tkinter import messagebox
 
+# ###########################################################################################
 # FUNCTIONS TO INTERACT WITH EMPLOYEE INFOMATION
+# ###########################################################################################
 def add_employees(ename, fname, sname, id):
 	try:
 		# Check to see if non english name
@@ -90,11 +92,44 @@ def delete_employees(id):
 	except Exception as error:
 		messagebox.showerror('Error Delete Employee', error)
 
+def bulk_add():
+	try:
+		response = messagebox.askyesno('Add Bulk Employee', 'Are you sure you want add bulk employees?')
+		if response == 1:
+			con = sqlite3.connect("wageTimes.db")
+			c = con.cursor()
 
-# add bulk import
-# disable id on update
+			# Get employee info from bulk file
+			employee_names_file = 'Templates/Bulk_Employee_Add.csv'
+			employee_info = pd.read_csv(employee_names_file)
+			employee_list = employee_info.values.tolist()
 
+			# Loop through and add to database
+			for x in employee_list:
+				ename = str(x[0]).strip()
+				fname = str(x[1]).strip()
+				sname = str(x[2]).strip()
+				id = str(x[3]).strip()
+
+				query = """INSERT INTO employeeNames (englishName, fullName, Surname, idPass)
+						VALUES (?, ?, ?, ?)"""
+				
+				c.execute(query, (ename, fname, sname, id))
+
+			con.commit()
+			con.close()
+
+			messagebox.showinfo('Bulk Add','Bulk Add Complete')
+	except Exception as error:
+		messagebox.showerror('Error Add Employee', error)
+
+# ###########################################################################################
+# GET EMPLOYEE INFO FUNCTION
+# ###########################################################################################
+
+# ###########################################################################################
 # GENERATE PAY SLIPS
+# ###########################################################################################
 def gen_payslips():
 	# Get employee information Full Name and ID/Passport
 	employee_names_file = 'Templates/Employee_Names.csv'
