@@ -126,24 +126,49 @@ def bulk_add():
 # ###########################################################################################
 # GET EMPLOYEE INFO FUNCTION
 # ###########################################################################################
+def get_emp_info():
+	try:
+		con = sqlite3.connect("wageTimes.db")
+		c = con.cursor()
+
+		c.execute(f"SELECT * FROM employeeNames")
+		records = c.fetchall()
+
+		con.commit()
+		con.close()
+
+		employee_name_info = {}
+		for x in records:
+			emp_eng_name = str(x[0])
+			emp_name = str(x[1])
+			emp_surname = str(x[2])
+			emp_id = str(x[3])
+
+			employee_name_info[emp_eng_name] = [emp_eng_name, emp_name, emp_surname, emp_id]
+
+		return employee_name_info
+	except Exception as error:
+		messagebox.showerror('Error Getting Employee Info', error)
 
 # ###########################################################################################
 # GENERATE PAY SLIPS
 # ###########################################################################################
 def gen_payslips():
 	# Get employee information Full Name and ID/Passport
-	employee_names_file = 'Templates/Employee_Names.csv'
-	employee_info = pd.read_csv(employee_names_file)
-	employee_list = employee_info.values.tolist()
+	# employee_names_file = 'Templates/Employee_Names.csv'
+	# employee_info = pd.read_csv(employee_names_file)
+	# employee_list = employee_info.values.tolist()
 
-	employee_name_info = {}
-	for x in employee_list:
-		emp_eng_name = str(x[0]).strip()
-		emp_name = str(x[1]).strip()
-		emp_surname = str(x[2]).strip()
-		emp_id = str(x[3]).strip()
+	# employee_name_info = {}
+	# for x in employee_list:
+	# 	emp_eng_name = str(x[0]).strip()
+	# 	emp_name = str(x[1]).strip()
+	# 	emp_surname = str(x[2]).strip()
+	# 	emp_id = str(x[3]).strip()
 
-		employee_name_info[emp_eng_name] = [emp_eng_name, emp_name, emp_surname, emp_id]
+	# 	employee_name_info[emp_eng_name] = [emp_eng_name, emp_name, emp_surname, emp_id]
+
+	employee_name_info = get_emp_info()
 
 	# Read in wxcel workbook
 	df = pd.read_excel('Payroll/payroll.xlsx')
