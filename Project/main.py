@@ -30,7 +30,7 @@ def setup_options(button_id):
 		if response == 1:
 			top = Toplevel()
 			top.attributes("-topmost", True)
-			top.geometry("300x250")
+			top.geometry("300x300")
 			top.title("Add Employee Information")
 
 			ename_label = Label(top, text="English Name:")
@@ -54,15 +54,24 @@ def setup_options(button_id):
 			id_entry.grid(row=3, column=1, padx=5, pady=5)
 
 			def save():
-				# Get entry information
-				english_name = ename_entry.get()
-				full_name = fname_entry.get()
-				surname = sname_entry.get()
-				id_pass = id_entry.get()
+				response = messagebox.askyesno('Add Employee', 'Are you sure you want to add an employee?')
+				if response == 1:
+					# Get entry information
+					english_name = ename_entry.get().capitalize()
+					full_name = fname_entry.get().capitalize()
+					surname = sname_entry.get().capitalize()
+					id_pass = id_entry.get()
 
-				# Save to database
-				pay.add_employees(english_name, full_name, surname, id_pass)
-				top.destroy()
+					# Save to database
+					pay.add_employees(english_name, full_name, surname, id_pass)
+
+					# clear entry boxes
+					ename_entry.delete(0, END)
+					fname_entry.delete(0, END)
+					sname_entry.delete(0, END)
+					id_entry.delete(0, END)
+				else:
+					messagebox.showinfo('Add Employee', 'Nothing happened!')
 
 			def search():
 				# Get search name
@@ -84,23 +93,41 @@ def setup_options(button_id):
 						break
 			
 			def update():
-				# Get entry information
-				english_name = ename_entry.get()
-				full_name = fname_entry.get()
-				surname = sname_entry.get()
-				id_pass = id_entry.get()
+				response = messagebox.askyesno('Update Employee', 'Are you sure you want to update the employee?')
+				if response == 1:
+					# Get entry information
+					english_name = ename_entry.get().capitalize()
+					full_name = fname_entry.get().capitalize()
+					surname = sname_entry.get().capitalize()
+					id_pass = id_entry.get()
 
-				# Save to database
-				pay.update_employees(english_name, full_name, surname, id_pass)
+					# Save to database
+					pay.update_employees(english_name, full_name, surname, id_pass)
 
-				# clear entry boxes
-				ename_entry.delete(0, END)
-				fname_entry.delete(0, END)
-				sname_entry.delete(0, END)
-				id_entry.delete(0, END)
+					# clear entry boxes
+					ename_entry.delete(0, END)
+					fname_entry.delete(0, END)
+					sname_entry.delete(0, END)
+					id_entry.delete(0, END)
+				else:
+					messagebox.showinfo('Update Employee', 'Nothing happened!')
 			
 			def delete():
-				pass
+				response = messagebox.askyesno('Delete Employee', 'Are you sure you want to delete the employee?')
+				if response == 1:
+					# Get entry information
+					id_pass = id_entry.get()
+
+					# Delete employee
+					pay.delete_employees(id_pass)
+
+					# clear entry boxes
+					ename_entry.delete(0, END)
+					fname_entry.delete(0, END)
+					sname_entry.delete(0, END)
+					id_entry.delete(0, END)
+				else:
+					messagebox.showinfo('Delete Employee', 'Nothing happened!')
 			
 			# Buttons 
 			save_button = Button(top, text="Save", command=save)

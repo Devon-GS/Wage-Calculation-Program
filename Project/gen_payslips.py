@@ -5,6 +5,10 @@ from openpyxl.styles import Alignment, Font
 from openpyxl.styles.borders import Border, Side
 
 def add_employees(ename, fname, sname, id):
+	# Check to see if non english name
+	if fname == '':
+		fname = '0'
+
 	con = sqlite3.connect("wageTimes.db")
 	c = con.cursor()
 
@@ -37,6 +41,10 @@ def search_employees(search):
 	return records
 
 def update_employees(ename, fname, sname, id):
+	# Check to see if non english name
+	if fname == '':
+		fname = '0'
+
 	con = sqlite3.connect("wageTimes.db")
 	c = con.cursor()
 
@@ -77,7 +85,8 @@ def delete_employees(id):
 
 
 
-# Build options for editing and removal
+# Build options for editing and removal and ask yes no for save update a and removal
+# Disable id block when updating
 	
 
 def gen_payslips():
