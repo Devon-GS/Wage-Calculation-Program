@@ -9,79 +9,163 @@ root = Tk()
 
 # FUNCTIONS
 def setup_options(button_id):
-    if button_id == 1:
-        os.system('start "EXCEL.EXE" "Badge Numbers/Badges.xlsx"')
-    elif button_id == 2:
-        os.system('start "EXCEL.EXE" "Baker Cashier/Baker Cashier Work.xlsx"')
-    elif button_id == 3:
-        os.system('start "EXCEL.EXE" "Public Holidays/Public Holidays.xlsx"')
-    elif button_id == 4:
-        os.startfile('Rosters')
-    elif button_id == 5:
-        os.system('start "EXCEL.EXE" "Wage Times.xlsx"')
-    elif button_id == 6:
-        os.startfile("Uniclox")
-    elif button_id == 7:
-        os.system('start "EXCEL.EXE" "Payroll/Payroll.xlsx"')
-    elif button_id == 8:
-        os.startfile('Payroll')
-    elif button_id == 9:
-        os.startfile('Templates')
+	if button_id == 1:
+		os.system('start "EXCEL.EXE" "Badge Numbers/Badges.xlsx"')
+	elif button_id == 2:
+		os.system('start "EXCEL.EXE" "Baker Cashier/Baker Cashier Work.xlsx"')
+	elif button_id == 3:
+		os.system('start "EXCEL.EXE" "Public Holidays/Public Holidays.xlsx"')
+	elif button_id == 4:
+		os.startfile('Rosters')
+	elif button_id == 5:
+		os.system('start "EXCEL.EXE" "Wage Times.xlsx"')
+	elif button_id == 6:
+		os.startfile("Uniclox")
+	elif button_id == 7:
+		os.system('start "EXCEL.EXE" "Payroll/Payroll.xlsx"')
+	elif button_id == 8:
+		os.startfile('Payroll')
+	elif button_id == 9:
+		response = messagebox.askyesno('Employee Information', 'Do you want to update employee infomation?')
+		if response == 1:
+			top = Toplevel()
+			top.attributes("-topmost", True)
+			top.geometry("300x250")
+			top.title("Add Employee Information")
+
+			ename_label = Label(top, text="English Name:")
+			ename_label.grid(row=0, column=0, padx=5, pady=10)
+			ename_entry = Entry(top)
+			ename_entry.grid(row=0, column=1, padx=5, pady=10)
+
+			fname_label = Label(top, text="Full Name:")
+			fname_label.grid(row=1, column=0, padx=5, pady=5)
+			fname_entry = Entry(top)
+			fname_entry.grid(row=1, column=1, padx=5, pady=5)
+
+			sname_label = Label(top, text="Surname Name:")
+			sname_label.grid(row=2, column=0, padx=5, pady=5)
+			sname_entry = Entry(top)
+			sname_entry.grid(row=2, column=1, padx=5, pady=5)
+
+			id_label = Label(top, text="ID/Passport:")
+			id_label.grid(row=3, column=0, padx=5, pady=5)
+			id_entry = Entry(top)
+			id_entry.grid(row=3, column=1, padx=5, pady=5)
+
+			def save():
+				# Get entry information
+				english_name = ename_entry.get()
+				full_name = fname_entry.get()
+				surname = sname_entry.get()
+				id_pass = id_entry.get()
+
+				# Save to database
+				pay.add_employees(english_name, full_name, surname, id_pass)
+
+				top.destroy()
+
+			def search():
+				# Get search name
+				english_name = ename_entry.get()
+				ename_entry.delete(0, END)
+
+				# Get matching results
+				search_results = pay.search_employees(english_name)
+
+				# Loop through and select right result
+				for x in search_results:
+					response = messagebox.askyesno('Employee Information', f'{x} : Is this the right employee?')
+
+					if response == 1:
+						ename_entry.insert(0, x[0])
+						fname_entry.insert(0, x[1])
+						sname_entry.insert(0, x[2])
+						id_entry.insert(0, x[3])
+						break
+			
+			def update():
+				# Get entry information
+				english_name = ename_entry.get()
+				full_name = fname_entry.get()
+				surname = sname_entry.get()
+				id_pass = id_entry.get()
+
+				# Save to database
+				pay.update_employees(english_name, full_name, surname, id_pass)
+
+				# clear entry boxes
+				ename_entry.delete(0, END)
+				fname_entry.delete(0, END)
+				sname_entry.delete(0, END)
+				id_entry.delete(0, END)
+			
+			# Buttons 
+			save_button = Button(top, text="Save", command=save)
+			save_button.grid(row=4, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+
+			search_button = Button(top, text="Search", command=search)
+			search_button.grid(row=5, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+
+			update_button = Button(top, text="Update", command=update)
+			update_button.grid(row=6, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+		else:
+			os.startfile('Templates')
 
 def program_options(button_id):
-    try:
-        if button_id == 1:
-            f.program_init()
-            messagebox.showinfo('Run Wages', 'Program Setup Complete!')
-        elif button_id == 2:
-            response = messagebox.askyesno('Run Wages Check list', '''
-            Have you Checked the following:
-            1) Badge Number
-            2) Cashier/Baker Times
-            3) Public Holidays
-            4) Rosters
-            5) Template Updated
-            5) Uniclox Files
-            ''')
-            if response == 1:
-                f.wages_time_main_program()
-                messagebox.showinfo('Run Wages', 'Wage Hours Completed!')
-            else:
-                messagebox.showinfo('Run Wages', 'Nothing Happened!')
-        elif button_id == 3:
-            f.recal_hours()
-            messagebox.showinfo('Run Wages', 'Wage Hour Recalculation Complete')       
-        elif button_id == 4:
-            os.system('start "EXCEL.EXE" "Carwash Times/Carwash Times.xlsx"')
-        elif button_id == 5:
-            response = messagebox.askyesno('Run Payroll', 'Are you sure you want to run payroll?')
-            if response == 1:
-                f.run_payroll()               
-                messagebox.showinfo('Run Payroll', 'Payroll Completed!')
-            else:
-                messagebox.showinfo('Run payroll', 'Nothing Happened!') 
-        elif button_id == 6:
-          shutil.copy2('Wage Times.xlsx', 'Copy Folder/Wage Times.xlsx')
-          shutil.copy2('Payroll/Payroll.xlsx', 'Copy Folder/Payroll.xlsx')
-          shutil.copy2('Rosters/Attendant_Carwash_Roster.xlsx', 'Copy Folder/Attendant_Carwash_Roster.xlsx')
-          shutil.copy2('Rosters/CASHIERS_ROSTER.xlsx', 'Copy Folder/CASHIERS_ROSTER.xlsx')
-          shutil.copy2('Carwash Times/Carwash Times.xlsx', 'Copy Folder/Carwash Times.xlsx')
-          shutil.copy2('Tax/tax_results.xlsx', 'Copy Folder/tax_results.xlsx')
+	try:
+		if button_id == 1:
+			f.program_init()
+			messagebox.showinfo('Run Wages', 'Program Setup Complete!')
+		elif button_id == 2:
+			response = messagebox.askyesno('Run Wages Check list', '''
+			Have you Checked the following:
+			1) Badge Number
+			2) Cashier/Baker Times
+			3) Public Holidays
+			4) Rosters
+			5) Template Updated
+			5) Uniclox Files
+			''')
+			if response == 1:
+				f.wages_time_main_program()
+				messagebox.showinfo('Run Wages', 'Wage Hours Completed!')
+			else:
+				messagebox.showinfo('Run Wages', 'Nothing Happened!')
+		elif button_id == 3:
+			f.recal_hours()
+			messagebox.showinfo('Run Wages', 'Wage Hour Recalculation Complete')       
+		elif button_id == 4:
+			os.system('start "EXCEL.EXE" "Carwash Times/Carwash Times.xlsx"')
+		elif button_id == 5:
+			response = messagebox.askyesno('Run Payroll', 'Are you sure you want to run payroll?')
+			if response == 1:
+				f.run_payroll()               
+				messagebox.showinfo('Run Payroll', 'Payroll Completed!')
+			else:
+				messagebox.showinfo('Run payroll', 'Nothing Happened!') 
+		elif button_id == 6:
+			shutil.copy2('Wage Times.xlsx', 'Copy Folder/Wage Times.xlsx')
+			shutil.copy2('Payroll/Payroll.xlsx', 'Copy Folder/Payroll.xlsx')
+			shutil.copy2('Rosters/Attendant_Carwash_Roster.xlsx', 'Copy Folder/Attendant_Carwash_Roster.xlsx')
+			shutil.copy2('Rosters/CASHIERS_ROSTER.xlsx', 'Copy Folder/CASHIERS_ROSTER.xlsx')
+			shutil.copy2('Carwash Times/Carwash Times.xlsx', 'Copy Folder/Carwash Times.xlsx')
+			shutil.copy2('Tax/tax_results.xlsx', 'Copy Folder/tax_results.xlsx')
 
-          os.startfile("Copy Folder")
-        elif button_id == 7:
-            response = messagebox.askyesno('Calculate Tax', 'Are you sure you want to calculate the tax?')
-            if response == 1:
-                f.calulate_tax()              
-                messagebox.showinfo('Calculate Tax', 'Tax Calculation Completed!')
-            else:
-                messagebox.showinfo('Calculate Tax', 'Nothing Happened!') 
-        elif button_id == 8:
-            pay.gen_payslips()
-            os.startfile("Payslips")
-             
-    except Exception as error:
-        messagebox.showerror('Run Wages', error)
+			os.startfile("Copy Folder")
+		elif button_id == 7:
+			response = messagebox.askyesno('Calculate Tax', 'Are you sure you want to calculate the tax?')
+			if response == 1:
+				f.calulate_tax()              
+				messagebox.showinfo('Calculate Tax', 'Tax Calculation Completed!')
+			else:
+				messagebox.showinfo('Calculate Tax', 'Nothing Happened!') 
+		elif button_id == 8:
+			pay.gen_payslips()
+			os.startfile("Payslips")
+			 
+	except Exception as error:
+		messagebox.showerror('Run Wages', error)
 
 # WIDGETS
 # Setup buttons

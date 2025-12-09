@@ -1,7 +1,72 @@
+import sqlite3
+import pandas as pd
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.styles.borders import Border, Side
-import pandas as pd
+
+def add_employees(ename, fname, sname, id):
+	con = sqlite3.connect("wageTimes.db")
+	c = con.cursor()
+
+	query = """INSERT INTO employeeNames (englishName, fullName, Surname, idPass)
+	 		   VALUES (?, ?, ?, ?)"""
+	
+	c.execute(query, (ename, fname, sname, id))
+
+	con.commit()
+	con.close()
+
+def search_employees(search):
+	con = sqlite3.connect("wageTimes.db")
+	c = con.cursor()
+
+	c.execute(f"""SELECT englishName,
+					  fullName,
+					  Surname,
+					  idPass
+				FROM
+					  employeeNames
+				WHERE
+					  englishName LIKE '%{search}%'""")
+	
+	records = c.fetchall()
+
+	con.commit()
+	con.close()
+
+	return records
+
+def update_employees(ename, fname, sname, id):
+	con = sqlite3.connect("wageTimes.db")
+	c = con.cursor()
+
+	c.execute(f'''UPDATE employeeNames SET
+					englishName = :ename,
+					fullName = :fname,
+					surname = :sname
+
+					WHERE idPass = :id''',
+					{
+						'ename' : ename,
+						'fname' : fname,
+						'sname' : sname,
+						'id' : id
+					})
+
+	con.commit()
+	con.close()
+
+
+
+
+
+
+
+
+
+
+# Build options for editing and removal
+	
 
 def gen_payslips():
 	# Get employee information Full Name and ID/Passport

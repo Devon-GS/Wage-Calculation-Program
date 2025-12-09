@@ -129,6 +129,15 @@ def db_init():
         extra TEXT
         )"""
 )
+    
+    # CREATE CARWASH TABLES FOR FIRST TIME
+    c.execute("""CREATE TABLE IF NOT EXISTS employeeNames (
+        englishName TEXT,
+        fullName TEXT,
+        Surname TEXT,
+        idPass TEXT
+        )"""
+)
 
     con.commit()
     con.close()
