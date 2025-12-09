@@ -30,28 +30,28 @@ def setup_options(button_id):
 		if response == 1:
 			top = Toplevel()
 			top.attributes("-topmost", True)
-			top.geometry("300x400")
+			top.geometry("305x355")
 			top.title("Add Employee Information")
 
 			ename_label = Label(top, text="English Name:")
 			ename_label.grid(row=0, column=0, padx=5, pady=10)
-			ename_entry = Entry(top)
-			ename_entry.grid(row=0, column=1, padx=5, pady=10)
+			ename_entry = Entry(top, width=30)
+			ename_entry.grid(row=0, column=1, columnspan=2, sticky='EW', padx=5, pady=10) 
 
 			fname_label = Label(top, text="Full Name:")
 			fname_label.grid(row=1, column=0, padx=5, pady=5)
 			fname_entry = Entry(top)
-			fname_entry.grid(row=1, column=1, padx=5, pady=5)
+			fname_entry.grid(row=1, column=1, columnspan=2, sticky='EW', padx=5, pady=5)
 
 			sname_label = Label(top, text="Surname Name:")
 			sname_label.grid(row=2, column=0, padx=5, pady=5)
 			sname_entry = Entry(top)
-			sname_entry.grid(row=2, column=1, padx=5, pady=5)
+			sname_entry.grid(row=2, column=1, columnspan=2, sticky='EW', padx=5, pady=5)
 
 			id_label = Label(top, text="ID/Passport:")
 			id_label.grid(row=3, column=0, padx=5, pady=5)
 			id_entry = Entry(top)
-			id_entry.grid(row=3, column=1, padx=5, pady=5)
+			id_entry.grid(row=3, column=1, columnspan=2, sticky='EW', padx=5, pady=5)
 
 			def save():
 				response = messagebox.askyesno('Add Employee', 'Are you sure you want to add an employee?')
@@ -132,22 +132,33 @@ def setup_options(button_id):
 					id_entry.delete(0, END)
 				else:
 					messagebox.showinfo('Delete Employee', 'Nothing happened!')
-			
+
+			def clear():
+				# clear entry boxes
+				ename_entry.delete(0, END)
+				fname_entry.delete(0, END)
+				sname_entry.delete(0, END)
+				id_entry.config(state="normal")
+				id_entry.delete(0, END)
+		
 			# Buttons 
 			save_button = Button(top, text="Add", command=save)
-			save_button.grid(row=4, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+			save_button.grid(row=4, column=0, columnspan=3, sticky=EW, padx=5, pady=5)
 
 			search_button = Button(top, text="Search", command=search)
-			search_button.grid(row=5, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+			search_button.grid(row=5, column=0, columnspan=3, sticky=EW, padx=5, pady=5)
 
 			update_button = Button(top, text="Update", command=update)
-			update_button.grid(row=6, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+			update_button.grid(row=6, column=0, columnspan=3, sticky=EW, padx=5, pady=5)
 			
 			delete_button = Button(top, text="Delete", command=delete)
-			delete_button.grid(row=7, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+			delete_button.grid(row=7, column=0, columnspan=3, sticky=EW, padx=5, pady=5)
 
 			bulk_button = Button(top, text="Bulk Add", command=pay.bulk_add)
-			bulk_button.grid(row=8, column=0, columnspan=2, sticky=NSEW, padx=5, pady=5)
+			bulk_button.grid(row=8, column=0, columnspan=3, sticky=EW, padx=5, pady=5)
+
+			clear_button = Button(top, text="Clear", command=clear)
+			clear_button.grid(row=9, column=0, columnspan=3, sticky=EW, padx=5, pady=5)
 		else:
 			os.startfile('Templates')
 
