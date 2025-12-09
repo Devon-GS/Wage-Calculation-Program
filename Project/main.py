@@ -169,14 +169,13 @@ def program_options(button_id):
 			messagebox.showinfo('Run Wages', 'Program Setup Complete!')
 		elif button_id == 2:
 			response = messagebox.askyesno('Run Wages Check list', '''
-			Have you Checked the following:
-			1) Badge Number
-			2) Cashier/Baker Times
-			3) Public Holidays
-			4) Rosters
-			5) Template Updated
-			5) Uniclox Files
-			''')
+								  Have you Checked the following:
+								  1) Badge Number
+								  2) Cashier/Baker Times
+								  3) Public Holidays
+								  4) Rosters
+								  5) Template Updated
+								  5) Uniclox Files''')
 			if response == 1:
 				f.wages_time_main_program()
 				messagebox.showinfo('Run Wages', 'Wage Hours Completed!')
