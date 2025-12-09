@@ -91,18 +91,10 @@ def delete_employees(id):
 		messagebox.showerror('Error Delete Employee', error)
 
 
+# add bulk import
+# disable id on update
 
-
-
-
-
-
-
-
-# Build options for editing and removal and ask yes no for save update a and removal
-# Disable id block when updating
-	
-
+# GENERATE PAY SLIPS
 def gen_payslips():
 	# Get employee information Full Name and ID/Passport
 	employee_names_file = 'Templates/Employee_Names.csv'

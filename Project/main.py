@@ -91,6 +91,7 @@ def setup_options(button_id):
 						sname_entry.insert(0, x[2])
 						id_entry.insert(0, x[3])
 						break
+				id_entry.config(state="readonly")
 			
 			def update():
 				response = messagebox.askyesno('Update Employee', 'Are you sure you want to update the employee?')
