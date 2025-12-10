@@ -3,4 +3,3 @@
 === COMMIT FORMAT ===
 
 - [Patch number] [issue number] [issue description]
-
