@@ -17,6 +17,7 @@ Create payslips
 - 24 October 2025   [Patch009]  - Fixed issues 23
 - 27 October 2025   [Patch010]  - Fixed issues 24
 - 10 December 2025  [Patch011]  - Fixed issues 25
+- 05 January 2026  	[Patch012]  - Fixed issues 26, 27
 
 <!-- - [ Date ]      [ patch ]       - [ Fixed ]   -->
 
