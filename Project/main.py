@@ -8,21 +8,29 @@ import functions as f
 root = Tk()
 
 # FUNCTIONS
+cwd = os.getcwd()
+
 def setup_options(button_id):
 	if button_id == 1:
-		os.system('start "EXCEL.EXE" "Badge Numbers/Badges.xlsx"')
+		# os.system('start "EXCEL.EXE" "Badge Numbers/Badges.xlsx"')
+		os.startfile(os.path.join("Badge Numbers", "Badges.xlsx"))
+		# print(os.getcwd())
 	elif button_id == 2:
-		os.system('start "EXCEL.EXE" "Baker Cashier/Baker Cashier Work.xlsx"')
+		# os.system('start "EXCEL.EXE" "Baker Cashier/Baker Cashier Work.xlsx"')
+		os.startfile(os.path.join("Baker Cashier", "Baker Cashier Work.xlsx"))
 	elif button_id == 3:
-		os.system('start "EXCEL.EXE" "Public Holidays/Public Holidays.xlsx"')
+		# os.system('start "EXCEL.EXE" "Public Holidays/Public Holidays.xlsx"')
+		os.startfile(os.path.join("Public Holidays", "Public Holidays.xlsx"))
 	elif button_id == 4:
 		os.startfile('Rosters')
 	elif button_id == 5:
-		os.system('start "EXCEL.EXE" "Wage Times.xlsx"')
+		# os.system('start "EXCEL.EXE" "Wage Times.xlsx"')
+		os.startfile("Wage Times.xlsx")
 	elif button_id == 6:
 		os.startfile("Uniclox")
 	elif button_id == 7:
-		os.system('start "EXCEL.EXE" "Payroll/Payroll.xlsx"')
+		# os.system('start "EXCEL.EXE" "Payroll/Payroll.xlsx"')
+		os.startfile(os.path.join("Payroll", "Payroll.xlsx"))
 	elif button_id == 8:
 		os.startfile('Payroll')
 	elif button_id == 9:
@@ -185,7 +193,8 @@ def program_options(button_id):
 			f.recal_hours()
 			messagebox.showinfo('Run Wages', 'Wage Hour Recalculation Complete')       
 		elif button_id == 4:
-			os.system('start "EXCEL.EXE" "Carwash Times/Carwash Times.xlsx"')
+			# os.system('start "EXCEL.EXE" "Carwash Times/Carwash Times.xlsx"')
+			os.startfile(os.path.join("Carwash Times", "Carwash Times.xlsx"))
 		elif button_id == 5:
 			response = messagebox.askyesno('Run Payroll', 'Are you sure you want to run payroll?')
 			if response == 1:
