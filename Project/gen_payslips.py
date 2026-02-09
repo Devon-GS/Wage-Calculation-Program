@@ -269,8 +269,8 @@ def gen_payslips():
 		ws['E17'] = pay_info['SICK / LEAVE']
 
 		# Medical Allowance
-		ws['B18'] = 'Medical'
-		ws['E18'] = pay_info['MEDICAL']
+		ws['B18'] = 'Medical Allowence'
+		ws['E18'] = pay_info['MEDICAL ALLOW']
 
 		# Standard Hours
 		ws['B19'] = 'Standard Hours'
@@ -311,9 +311,9 @@ def gen_payslips():
 		ws['B29'] = 'PAYE'
 		ws['E29'] = pay_info['PAYE']
 
-		# PAYE REPAY
-		ws['B30'] = 'PAYE REPAY'
-		ws['E30'] = pay_info['PAYE REPAYME']
+		# MEDICAL AID
+		ws['B30'] = 'Medical Aid'
+		ws['E30'] = pay_info['MEDICAL AID']
 
 		# Shortages
 		ws['B31'] = 'Shortages'
