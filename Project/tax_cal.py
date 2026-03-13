@@ -20,6 +20,7 @@ def clean_tax(x):
 def clean_column(x):
 	x = x.replace(',', '')
 	x = x.replace('R', '')
+	x = x.replace(' ', '')
 	return x
 
 # MAIN PROGRAM CALCULATE TAX
