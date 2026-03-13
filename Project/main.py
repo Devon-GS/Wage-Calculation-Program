@@ -4,6 +4,7 @@ import os
 import shutil
 import gen_payslips as pay 
 import functions as f
+import traceback
 
 root = Tk()
 
@@ -223,7 +224,9 @@ def program_options(button_id):
 			os.startfile("Payslips")
 			 
 	except Exception as error:
-		messagebox.showerror('Run Wages', error)
+		error_log = traceback.format_exc()
+		messagebox.showerror('Run Wages', error_log)
+
 
 # WIDGETS
 # Setup buttons
