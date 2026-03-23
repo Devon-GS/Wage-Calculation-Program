@@ -26,6 +26,53 @@ files = [
 lxml = ">=4.7.1"
 
 [[package]]
+name = "ctkmessagebox"
+version = "2.7"
+description = "A modern messagebox for customtkinter"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "CTkMessagebox-2.7-py3-none-any.whl", hash = "sha256:68941ccab2251f2fd3ac3338a99bdd30d9f28fee4ef0070dfdd0420be1c34a5a"},
+    {file = "ctkmessagebox-2.7.tar.gz", hash = "sha256:5ce7e76b797c8d5de5f29438d8c784e33c72fb6ff666c87eb8991815c46c59c5"},
+]
+
+[package.dependencies]
+customtkinter = "*"
+pillow = "*"
+
+[[package]]
+name = "customtkinter"
+version = "5.2.2"
+description = "Create modern looking GUIs with Python"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "customtkinter-5.2.2-py3-none-any.whl", hash = "sha256:14ad3e7cd3cb3b9eb642b9d4e8711ae80d3f79fb82545ad11258eeffb2e6b37c"},
+    {file = "customtkinter-5.2.2.tar.gz", hash = "sha256:fd8db3bafa961c982ee6030dba80b4c2e25858630756b513986db19113d8d207"},
+]
+
+[package.dependencies]
+darkdetect = "*"
+packaging = "*"
+
+[[package]]
+name = "darkdetect"
+version = "0.8.0"
+description = "Detect OS Dark Mode from Python"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "darkdetect-0.8.0-py3-none-any.whl", hash = "sha256:a7509ccf517eaad92b31c214f593dbcf138ea8a43b2935406bbd565e15527a85"},
+    {file = "darkdetect-0.8.0.tar.gz", hash = "sha256:b5428e1170263eb5dea44c25dc3895edd75e6f52300986353cd63533fe7df8b1"},
+]
+
+[package.extras]
+macos-listener = ["pyobjc-framework-Cocoa ; platform_system == \"Darwin\""]
+
+[[package]]
 name = "et-xmlfile"
 version = "2.0.0"
 description = "An implementation of lxml.xmlfile for the standard library"
@@ -359,6 +406,18 @@ files = [
 
 [package.dependencies]
 et-xmlfile = "*"
+
+[[package]]
+name = "packaging"
+version = "26.0"
+description = "Core utilities for Python packages"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "packaging-26.0-py3-none-any.whl", hash = "sha256:b36f1fef9334a5588b4166f8bcd26a14e521f2b55e6b9de3aaa80d3ff7a37529"},
+    {file = "packaging-26.0.tar.gz", hash = "sha256:00243ae351a257117b6a241061796684b084ed1c516a08c48a3f7e147a9d80b4"},
+]
 
 [[package]]
 name = "pandas"
@@ -750,4 +809,4 @@ vba-edit = ["watchgod"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10"
-content-hash = "f3229694bf648b128c237efee58afe0f1ef58265cffa229a3677ff53ba4d239e"
+content-hash = "5ed8b1c08916b5bec23ce5559b6cd028c21459a3c516fd114f571fd8973162b4"
