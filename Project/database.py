@@ -55,9 +55,32 @@ class DatabaseManager:
 			except Exception as error:
 				CTkMessagebox(title="Error", message=error, icon="cancel")
 
+	def search_employees(self):
+		with closing(self.get_connection()) as con:
+			c = con.cursor()
+			try:
+				con = sqlite3.connect("wageTimes.db")
+				c = con.cursor()
 
-# ------------- Working ---------------------
-	def search_employees(self, search):
+				c.execute("SELECT englishName, idPass FROM employeeNames")
+				
+				records = c.fetchall()
+				con.commit()
+
+				# Dic
+				results = {}
+
+				# Made records in to dic
+				for x in records:
+					results[x[0]] = x[1]
+				
+			except Exception as error:
+				CTkMessagebox(title="Error", message=error, icon="cancel")
+		
+		
+		return results
+
+	def employee_selected_option(self, id):
 		with closing(self.get_connection()) as con:
 			c = con.cursor()
 			try:
@@ -65,20 +88,22 @@ class DatabaseManager:
 				c = con.cursor()
 
 				c.execute(f"""SELECT englishName,
-								fullName,
-								Surname,
-								idPass
-							FROM
-								employeeNames
-							WHERE
-								englishName LIKE '%{search}%'""")
-				
-				records = c.fetchall()
+									fullName,
+									Surname,
+									idPass
+								FROM
+									employeeNames
+								WHERE
+									idpass = {id}
+			  			""")
+								
+				record = c.fetchall()
 				con.commit()
 				
 			except Exception as error:
 				CTkMessagebox(title="Error", message=error, icon="cancel")
 		
 		
-		return records
-			
+		return record		
+	
+# ------------- Working ---------------------

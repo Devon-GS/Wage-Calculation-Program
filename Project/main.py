@@ -2,6 +2,7 @@
 
 
 import customtkinter as ctk
+from employee_info import pop_up
 from tkinter import messagebox
 from CTkMessagebox import CTkMessagebox
 import os
@@ -98,164 +99,32 @@ class WageApp(ctk.CTk):
 		# Baker button
 		ctk.CTkButton(self.setup_card, text="Baker Cashier", fg_color="#4f46e5", hover_color="#4338ca", command=lambda: os.startfile(config.BAKER_CASHIER_FILE)).grid(row=2, column=1, padx=5, pady=(0, 15), sticky="ew")
 		
-		# Template (Employee Managemant) button
-		def templates():
-			top = ctk.CTkToplevel()
-			top.attributes("-topmost", True)
-			top.geometry("400x620")  # Slightly wider/taller for better spacing
-			top.title("Employee Management")
-			top.configure(fg_color=("#f1f5f9", "#1e293b")) # Theme matching bg
+		# Employee infomation
+		ctk.CTkButton(self.setup_card, text="Employee Infomation", fg_color="#4f46e5", hover_color="#4338ca", command=pop_up).grid(row=3, column=0, columnspan=2, padx=5, pady=(0, 15), sticky="ew")
 
-			# Prevent the window from opening behind the main app
-			top.after(100, top.lift)
-			top.focus()
-
-			# Layout Configuration
-			top.grid_columnconfigure(1, weight=1)
-
-			# --- INPUT FIELDS ---
-			# Using a consistent font and padding
-			label_font = ctk.CTkFont(family="Segoe UI", size=13, weight="bold")
-
-			ctk.CTkLabel(top, text="English Name:", font=label_font).grid(row=0, column=0, padx=20, pady=(25, 5), sticky="w")
-			ename_entry = ctk.CTkEntry(top, placeholder_text="e.g. John")
-			ename_entry.grid(row=0, column=1, padx=20, pady=(25, 5), sticky="ew") 
-
-			ctk.CTkLabel(top, text="Full Name:", font=label_font).grid(row=1, column=0, padx=20, pady=10, sticky="w")
-			fname_entry = ctk.CTkEntry(top, placeholder_text="e.g. Johnathan")
-			fname_entry.grid(row=1, column=1, padx=20, pady=10, sticky="ew")
-
-			ctk.CTkLabel(top, text="Surname:", font=label_font).grid(row=2, column=0, padx=20, pady=10, sticky="w")
-			sname_entry = ctk.CTkEntry(top, placeholder_text="e.g. Smith")
-			sname_entry.grid(row=2, column=1, padx=20, pady=10, sticky="ew")
-
-			ctk.CTkLabel(top, text="ID/Passport:", font=label_font).grid(row=3, column=0, padx=20, pady=10, sticky="w")
-			id_entry = ctk.CTkEntry(top, placeholder_text="ID Number")
-			id_entry.grid(row=3, column=1, padx=20, pady=10, sticky="ew")
-
-			# --- FUNCTIONS ---
-			# Add employee infornation
-			def save():
-				# Ask if sure
-				msg = CTkMessagebox(title="Add Employee", 
-                        message="Are you sure you want to add an employee?",
-                        icon="question", 
-                        option_1="No", 
-                        option_2="Yes")
-				
-				# Get response
-				response = msg.get()
-
-				if response == "Yes":
-					english_name = ename_entry.get().capitalize()
-					full_name = fname_entry.get().capitalize()
-					surname = sname_entry.get().capitalize()
-					id_pass = id_entry.get()
-
-					# Add employee information
-					self.db.add_employees(english_name, full_name, surname, id_pass)
-
-					# Clear entry boxes
-					ename_entry.delete(0, ctk.END)
-					fname_entry.delete(0, ctk.END)
-					sname_entry.delete(0, ctk.END)
-					id_entry.delete(0, ctk.END)
-			
-				else:
-					CTkMessagebox(title="Add Employee", 
-                        message="Operation Canceled",
-                        icon="cancel")
-
-			def search():
-				english_name = ename_entry.get()
-				ename_entry.delete(0, ctk.END)
-
-				search_results = self.db.search_employees(english_name)
-
-				# Loop through results
-				for x in search_results:
-					# Ask if right employee
-					response = CTkMessagebox(title="Employee Search", 
-                        message=f'{x} : Is this the right employee?',
-                        icon="question", 
-                        option_1="No", 
-                        option_2="Yes")
-					
-					# Logic if yes or no
-					if response == 'Yes':
-						ename_entry.insert(0, x[0])
-						fname_entry.insert(0, x[1])
-						sname_entry.insert(0, x[2])
-						id_entry.insert(0, x[3])
-						id_entry.configure(state="readonly") # Correct CTK attribute
-						break
-
-			def update():
-				pass
-			# 	response = messagebox.askyesno('Update Employee', 'Are you sure you want to update the employee?')
-			# 	if response == 1:
-			# 		english_name = ename_entry.get().capitalize()
-			# 		full_name = fname_entry.get().capitalize()
-			# 		surname = sname_entry.get().capitalize()
-			# 		id_pass = id_entry.get()
-
-			# 		self.payslips.update_employees(english_name, full_name, surname, id_pass)
-
-			# 		ename_entry.delete(0, ctk.END)
-			# 		fname_entry.delete(0, ctk.END)
-			# 		sname_entry.delete(0, ctk.END)
-			# 		id_entry.configure(state="normal")
-			# 		id_entry.delete(0, ctk.END)
-			# 	else:
-			# 		messagebox.showinfo('Update Employee', 'Nothing happened!')
-
-			def delete():
-				self.db.employee_management()
-				# db_manager.employee_management()
-				# response = messagebox.askyesno('Delete Employee', 'Are you sure you want to delete the employee?')
-				# if response == 1:
-				# 	id_pass = id_entry.get()
-				# 	# self.payslips.delete_employees(id_pass)
-
-				# 	ename_entry.delete(0, ctk.END)
-				# 	fname_entry.delete(0, ctk.END)
-				# 	sname_entry.delete(0, ctk.END)
-				# 	id_entry.configure(state="normal")
-				# 	id_entry.delete(0, ctk.END)
-				# else:
-				# 	messagebox.showinfo('Delete Employee', 'Nothing happened!')
-
-			def clear():
-				ename_entry.delete(0, ctk.END)
-				fname_entry.delete(0, ctk.END)
-				sname_entry.delete(0, ctk.END)
-				id_entry.configure(state="normal")
-				id_entry.delete(0, ctk.END)
-
-			# --- ACTION BUTTONS ---
-			# Primary action (Add) uses the Success Green
-			ctk.CTkButton(top, text="Add New Employee", fg_color="#10b981", hover_color="#059669", 
-							font=label_font, command=save).grid(row=4, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
-
-			# Search and Update use Indigo
-			ctk.CTkButton(top, text="Search by English Name", fg_color="#4f46e5", hover_color="#4338ca", 
-							command=search).grid(row=5, column=0, columnspan=2, sticky="ew", padx=20, pady=5)
-
-			ctk.CTkButton(top, text="Update Employee Details", fg_color="#4f46e5", hover_color="#4338ca", 
-							command=update).grid(row=6, column=0, columnspan=2, sticky="ew", padx=20, pady=5)
-
-			# Delete uses a warning color
-			ctk.CTkButton(top, text="Delete Employee", fg_color="#ef4444", hover_color="#b91c1c", 
-							command=delete).grid(row=7, column=0, columnspan=2, sticky="ew", padx=20, pady=5)
-
-			# Bulk add and clear use transparent/outlined styles
-			ctk.CTkButton(top, text="Bulk Add (CSV)", fg_color="transparent", border_width=1,).grid(row=8, column=0, columnspan=2, sticky="ew", padx=20, pady=5)
-
-			ctk.CTkButton(top, text="Clear Form", fg_color="transparent", border_width=1, text_color=("#1e293b", "#cbd5e1"),
-							command=clear).grid(row=9, column=0, columnspan=2, sticky="ew", padx=20, pady=(5, 20))
-
-		ctk.CTkButton(self.setup_card, text="Template", fg_color="#4f46e5", hover_color="#4338ca", command=templates).grid(row=3, column=0, columnspan=2, padx=5, pady=(0, 15), sticky="ew")
-
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		# file_btns = [
 		# 	("Badge Numbers", "Badges.xlsx"), 
 		# 	("Public Holidays", "Public Holidays.xlsx")
