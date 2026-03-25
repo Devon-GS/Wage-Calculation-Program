@@ -58,12 +58,15 @@ python Project/main.py
 
 ## 🗺️ Roadmap / In Progress
 
-- [x] Minimize code by creating classes (Completed in v2.0)
-- [x] Update gui to more modernized and sleek layout (Completed in v2.0)
-- [ ] Implement automated backups for database data
-- [ ] Export payroll summaries to PDF
+- [ ] Update gui to more modernized and sleek layout (In Progress)
+- [ ] Minimize code by creating classes
+- [ ] Implement run main wage program
+- [ ] Implement recalculate hours 
+- [ ] Add buttons open wage times, open payroll 
+- [ ] Implement carwash times
+- [ ] Export payroll
 
-## ✅ Completed Phases (v2.0 Overhaul)
+## Phases (v2.0 Overhaul)
 
 ### Phase 1: Analysis & Architectural Design
 * **Code Audit:** Identified redundant functions, global variables, and "spaghetti code" that could be grouped into logical objects.
