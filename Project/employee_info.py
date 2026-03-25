@@ -9,7 +9,7 @@ db = DatabaseManager()
 def pop_up():
 	top = ctk.CTkToplevel()
 	top.attributes("-topmost", True)
-	top.geometry("400x620")  # Slightly wider/taller for better spacing
+	top.geometry("400x620")  
 	top.title("Employee Management")
 	top.configure(fg_color=("#f1f5f9", "#1e293b")) # Theme matching bg
 
@@ -89,13 +89,16 @@ def pop_up():
 		# Start pop up
 		etop = ctk.CTkToplevel()
 		etop.attributes("-topmost", True)
-		etop.geometry("400x620")
+		etop.geometry("250x200")
 		etop.title("Edit Employee")
 		etop.configure(fg_color=("#f1f5f9", "#1e293b"))
 
 		# Prevent the window from opening behind the main app
 		etop.after(100, etop.lift)
 		etop.focus()
+
+		# Configure the grid column weight
+		etop.columnconfigure(0, weight=1) 
 
 		# Get all Employee names
 		results = db.search_employees()
@@ -125,7 +128,7 @@ def pop_up():
             button_hover_color="#3730a3"               
         )
 
-		option_menu.grid(row=0, column=0)
+		option_menu.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 5))
 
         # Default starting value
 		option_menu.set("Please Select") 
@@ -134,7 +137,7 @@ def pop_up():
 					font=label_font, command=select_employee).grid(row=2, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
 		
 		
-		ctk.CTkButton(etop, text="No", fg_color="#10b981", hover_color="#059669", 
+		ctk.CTkButton(etop, text="Exit", fg_color="#ef4444", hover_color="#b91c1c", 
 					font=label_font, command=etop.destroy).grid(row=3, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
 
 
