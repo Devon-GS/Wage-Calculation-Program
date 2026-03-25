@@ -23,7 +23,7 @@ class DatabaseManager:
 			c.execute("CREATE TABLE IF NOT EXISTS attTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, noClock TEXT)")
 			c.execute("CREATE TABLE IF NOT EXISTS cashierTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, noClock TEXT, cashier TEXT)")
 			c.execute("CREATE TABLE IF NOT EXISTS carwashTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, extra TEXT)")
-			c.execute("CREATE TABLE IF NOT EXISTS employeeNames (englishName TEXT, fullName TEXT, Surname TEXT, idPass TEXT)")
+			c.execute("CREATE TABLE IF NOT EXISTS employeeNames (englishName TEXT, fullName TEXT, Surname TEXT, idPass TEXT UNIQUE)")
 			con.commit()
 
 	def clear_session_data(self):
@@ -59,9 +59,6 @@ class DatabaseManager:
 		with closing(self.get_connection()) as con:
 			c = con.cursor()
 			try:
-				con = sqlite3.connect("wageTimes.db")
-				c = con.cursor()
-
 				c.execute("SELECT englishName, idPass FROM employeeNames")
 				
 				records = c.fetchall()
@@ -84,9 +81,6 @@ class DatabaseManager:
 		with closing(self.get_connection()) as con:
 			c = con.cursor()
 			try:
-				con = sqlite3.connect("wageTimes.db")
-				c = con.cursor()
-
 				c.execute(f"""SELECT englishName,
 									fullName,
 									Surname,
@@ -103,7 +97,47 @@ class DatabaseManager:
 			except Exception as error:
 				CTkMessagebox(title="Error", message=error, icon="cancel")
 		
-		
-		return record		
+		return record
 	
+	def update_employees(self, ename, fname, sname, id):
+		with closing(self.get_connection()) as con:
+			c = con.cursor()
+			try:
+				# Check to see if non english name
+				if fname == '':
+					fname = '0'
+
+				c.execute(f'''UPDATE employeeNames SET
+								englishName = :ename,
+								fullName = :fname,
+								surname = :sname
+
+								WHERE idPass = :id''',
+								{
+									'ename' : ename,
+									'fname' : fname,
+									'sname' : sname,
+									'id' : id
+								})
+
+				con.commit()
+				CTkMessagebox(title="Update Employee", message="Employee Update Successfuly", icon="info")
+			except Exception as error:
+				CTkMessagebox(title="Error", message=error, icon="cancel")
+
+	def delete_employees(self, id):
+		with closing(self.get_connection()) as con:
+			c = con.cursor()
+			try:
+				c.execute(f'''DELETE FROM employeeNames WHERE idPass = :id''',
+								{
+									'id' : id
+								})
+
+				con.commit()
+				CTkMessagebox(title="Delete Employee", message="Employee Deleted Successfuly", icon="info")
+			except Exception as error:
+				CTkMessagebox(title="Error", message=error, icon="cancel")
+				
+
 # ------------- Working ---------------------

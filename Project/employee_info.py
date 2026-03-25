@@ -41,6 +41,7 @@ def pop_up():
 	id_entry.grid(row=3, column=1, padx=20, pady=10, sticky="ew")
 
 	# --- FUNCTIONS ---
+
 	# Add employee infornation
 	def save():
 		# Ask if sure
@@ -66,6 +67,7 @@ def pop_up():
 			ename_entry.delete(0, ctk.END)
 			fname_entry.delete(0, ctk.END)
 			sname_entry.delete(0, ctk.END)
+			id_entry.configure(state="normal") 
 			id_entry.delete(0, ctk.END)
 	
 		else:
@@ -73,11 +75,7 @@ def pop_up():
 				message="Operation Canceled",
 				icon="cancel")
 
-
-
-
-# ------------- Working ---------------------
-
+	# Search employee
 	def search():
 		# Clear entry boxes
 		ename_entry.delete(0, ctk.END)
@@ -108,16 +106,19 @@ def pop_up():
 
 		# Function to handle the selection
 		def select_employee():
-			choice = option_menu.get()
-			empolyee = db.employee_selected_option(results[choice])
+			try:
+				choice = option_menu.get()
+				empolyee = db.employee_selected_option(results[choice])
 
-			ename_entry.insert(0, empolyee[0][0])
-			fname_entry.insert(0, empolyee[0][1])
-			sname_entry.insert(0, empolyee[0][2])
-			id_entry.insert(0, empolyee[0][3])
-			id_entry.configure(state="readonly") 
+				ename_entry.insert(0, empolyee[0][0])
+				fname_entry.insert(0, empolyee[0][1])
+				sname_entry.insert(0, empolyee[0][2])
+				id_entry.insert(0, empolyee[0][3])
+				id_entry.configure(state="readonly") 
 
-			etop.destroy()			
+				etop.destroy()
+			except KeyError:
+				CTkMessagebox(title="Error", message='Please Select a Valid Employee', icon="cancel")			
 
         # OptionMenu
 		option_menu = ctk.CTkOptionMenu(etop, 
@@ -140,61 +141,61 @@ def pop_up():
 		ctk.CTkButton(etop, text="Exit", fg_color="#ef4444", hover_color="#b91c1c", 
 					font=label_font, command=etop.destroy).grid(row=3, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	def update():
-		pass
-	# 	response = messagebox.askyesno('Update Employee', 'Are you sure you want to update the employee?')
-	# 	if response == 1:
-	# 		english_name = ename_entry.get().capitalize()
-	# 		full_name = fname_entry.get().capitalize()
-	# 		surname = sname_entry.get().capitalize()
-	# 		id_pass = id_entry.get()
+		# Ask if sure
+		msg = CTkMessagebox(title="Update Employee", 
+				message="Are you sure you want to update the employee?",
+				icon="question", 
+				option_1="No", 
+				option_2="Yes")
+		
+		# Get response
+		response = msg.get()
 
-	# 		self.payslips.update_employees(english_name, full_name, surname, id_pass)
 
-	# 		ename_entry.delete(0, ctk.END)
-	# 		fname_entry.delete(0, ctk.END)
-	# 		sname_entry.delete(0, ctk.END)
-	# 		id_entry.configure(state="normal")
-	# 		id_entry.delete(0, ctk.END)
-	# 	else:
-	# 		messagebox.showinfo('Update Employee', 'Nothing happened!')
+		if response == 'Yes':
+			english_name = ename_entry.get().capitalize()
+			full_name = fname_entry.get().capitalize()
+			surname = sname_entry.get().capitalize()
+			id_pass = id_entry.get()
+
+			db.update_employees(english_name, full_name, surname, id_pass)
+
+			ename_entry.delete(0, ctk.END)
+			fname_entry.delete(0, ctk.END)
+			sname_entry.delete(0, ctk.END)
+			id_entry.configure(state="normal")
+			id_entry.delete(0, ctk.END)
+		else:
+			CTkMessagebox(title="Update Employee", 
+				message="Operation Canceled",
+				icon="cancel")
 
 	def delete():
-		db.employee_management()
-		# db_manager.employee_management()
-		# response = messagebox.askyesno('Delete Employee', 'Are you sure you want to delete the employee?')
-		# if response == 1:
-		# 	id_pass = id_entry.get()
-		# 	# self.payslips.delete_employees(id_pass)
+		# Ask if sure
+		msg = CTkMessagebox(title="Delete Employee", 
+				message="Are you sure you want to delete the employee?",
+				icon="question", 
+				option_1="No", 
+				option_2="Yes")
+		
+		# Get response
+		response = msg.get()
 
-		# 	ename_entry.delete(0, ctk.END)
-		# 	fname_entry.delete(0, ctk.END)
-		# 	sname_entry.delete(0, ctk.END)
-		# 	id_entry.configure(state="normal")
-		# 	id_entry.delete(0, ctk.END)
-		# else:
-		# 	messagebox.showinfo('Delete Employee', 'Nothing happened!')
+		if response == 'Yes':
+			id_pass = id_entry.get()
+
+			db.delete_employees(id_pass)
+
+			ename_entry.delete(0, ctk.END)
+			fname_entry.delete(0, ctk.END)
+			sname_entry.delete(0, ctk.END)
+			id_entry.configure(state="normal")
+			id_entry.delete(0, ctk.END)
+		else:
+			CTkMessagebox(title="Delete Employee", 
+				message="Operation Canceled",
+				icon="cancel")
 
 	def clear():
 		ename_entry.delete(0, ctk.END)
@@ -202,6 +203,36 @@ def pop_up():
 		sname_entry.delete(0, ctk.END)
 		id_entry.configure(state="normal")
 		id_entry.delete(0, ctk.END)
+
+
+	# ------------- Working ---------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	# --- ACTION BUTTONS ---
 	# Primary action (Add) uses the Success Green
