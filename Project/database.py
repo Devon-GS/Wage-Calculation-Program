@@ -1,10 +1,9 @@
-# Handles all SQLite interactions
-
-
 import sqlite3
+import pandas as pd
 from CTkMessagebox import CTkMessagebox
 from contextlib import closing
 from config import DB_PATH
+
 
 class DatabaseManager:
 	def get_connection(self):
@@ -139,5 +138,28 @@ class DatabaseManager:
 			except Exception as error:
 				CTkMessagebox(title="Error", message=error, icon="cancel")
 				
+	def bulk_add_employees(self):
+		with closing(self.get_connection()) as con:
+			c = con.cursor()
+			try:
+				# Get employee info from bulk file
+				employee_names_file = 'Templates/Bulk_Employee_Add.csv'
+				employee_info = pd.read_csv(employee_names_file)
+				employee_list = employee_info.values.tolist()
 
-# ------------- Working ---------------------
+				# Loop through and add to database
+				for x in employee_list:
+					ename = str(x[0]).strip()
+					fname = str(x[1]).strip()
+					sname = str(x[2]).strip()
+					id = str(x[3]).strip()
+
+					query = """INSERT INTO employeeNames (englishName, fullName, Surname, idPass)
+								VALUES (?, ?, ?, ?)"""
+						
+					c.execute(query, (ename, fname, sname, id))
+
+					con.commit()
+					CTkMessagebox(title="Bulk Add", message="Bulk Add Complete Successfuly", icon="info")
+			except Exception as error:
+				CTkMessagebox(title="Error", message=error, icon="cancel")

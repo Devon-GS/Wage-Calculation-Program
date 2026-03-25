@@ -204,55 +204,39 @@ def pop_up():
 		id_entry.configure(state="normal")
 		id_entry.delete(0, ctk.END)
 
+	def bulk_add():
+		# Ask if sure
+		msg = CTkMessagebox(title="Add Bulk Employees", 
+				message="Are you sure you want add bulk employees?",
+				icon="question", 
+				option_1="No", 
+				option_2="Yes")
+		
+		# Get response
+		response = msg.get()
 
-	# ------------- Working ---------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		if response == 'Yes':
+			db.bulk_add_employees()
+		else:
+			CTkMessagebox(title="Bulk Add Employees", 
+				message="Operation Canceled",
+				icon="cancel")
+			
 	# --- ACTION BUTTONS ---
-	# Primary action (Add) uses the Success Green
 	ctk.CTkButton(top, text="Add New Employee", fg_color="#10b981", hover_color="#059669", 
-					font=label_font, command=save).grid(row=4, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
+					font=label_font, command=save).grid(row=4, column=0, columnspan=2, sticky="ew", padx=20, pady=(20,30))
 
-	# Search and Update use Indigo
 	ctk.CTkButton(top, text="Search by English Name", fg_color="#4f46e5", hover_color="#4338ca", 
 					command=search).grid(row=5, column=0, columnspan=2, sticky="ew", padx=20, pady=5)
 
 	ctk.CTkButton(top, text="Update Employee Details", fg_color="#4f46e5", hover_color="#4338ca", 
-					command=update).grid(row=6, column=0, columnspan=2, sticky="ew", padx=20, pady=5)
+					command=update).grid(row=6, column=0, columnspan=2, sticky="ew", padx=20, pady=(10,30))
 
-	# Delete uses a warning color
 	ctk.CTkButton(top, text="Delete Employee", fg_color="#ef4444", hover_color="#b91c1c", 
-					command=delete).grid(row=7, column=0, columnspan=2, sticky="ew", padx=20, pady=5)
+					command=delete).grid(row=7, column=0, columnspan=2, sticky="ew", padx=20, pady=(5,30))
 
-	# Bulk add and clear use transparent/outlined styles
-	ctk.CTkButton(top, text="Bulk Add (CSV)", fg_color="transparent", border_width=1,).grid(row=8, column=0, columnspan=2, sticky="ew", padx=20, pady=5)
+	ctk.CTkButton(top, text="Bulk Add (CSV)", fg_color="transparent", border_width=1,
+			   		command=bulk_add).grid(row=8, column=0, columnspan=2, sticky="ew", padx=20, pady=(5, 20))
 
 	ctk.CTkButton(top, text="Clear Form", fg_color="transparent", border_width=1, text_color=("#1e293b", "#cbd5e1"),
 					command=clear).grid(row=9, column=0, columnspan=2, sticky="ew", padx=20, pady=(5, 20))
-
