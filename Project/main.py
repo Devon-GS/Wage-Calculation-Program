@@ -1,10 +1,8 @@
-# The GUI that connects everything
-
-
 import customtkinter as ctk
 from employee_info import pop_up
 from tkinter import messagebox
 from CTkMessagebox import CTkMessagebox
+import config
 import os
 import traceback
 
@@ -43,8 +41,8 @@ class WageApp(ctk.CTk):
 		self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="WAGE ENGINE", font=ctk.CTkFont(size=20, weight="bold"))
 		self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-		# self.btn_home = ctk.CTkButton(self.sidebar_frame, text="Dashboard", command=self.show_dashboard)
-		# self.btn_home.grid(row=1, column=0, padx=20, pady=10)
+		self.btn_init = ctk.CTkButton(self.sidebar_frame, text="Initialize Database", command=self.init_sys)
+		self.btn_init.grid(row=1, column=0, padx=20, pady=10)
 
 		self.btn_files = ctk.CTkButton(self.sidebar_frame, text="Open Folder", fg_color="transparent", border_width=1, command=lambda: os.startfile("."))
 		self.btn_files.grid(row=2, column=0, padx=20, pady=10)
@@ -85,84 +83,34 @@ class WageApp(ctk.CTk):
 
 		# MAIN SETUP BUTTONS
 		# Bages button
-		ctk.CTkButton(self.setup_card, text="Bage Numbers", fg_color="#4f46e5", hover_color="#4338ca", command=lambda: os.startfile(config.BADGE_NUMBER_FILE)).grid(row=1, column=0, padx=5, pady=(0, 15), sticky="ew")
+		ctk.CTkButton(self.setup_card, text="Bage Numbers", fg_color="#4f46e5", hover_color="#4338ca", 
+				command=lambda: os.startfile(config.BADGE_NUMBER_FILE)).grid(row=1, column=0, padx=5, pady=(0, 15), sticky="ew")
 
 		# Public holiday button
-		ctk.CTkButton(self.setup_card, text="Public Holidays", fg_color="#4f46e5", hover_color="#4338ca", command=lambda: os.startfile(config.PUBLIC_HOILIDAY_FILE)).grid(row=1, column=1, padx=5, pady=(0, 15), sticky="ew")
-		
-		# Init satabase
-		# ctk.CTkButton(self.setup_card, text="Initialize Database", fg_color="#4f46e5", hover_color="#4338ca", command=self.init_sys).grid(row=2, column=0, padx=20, pady=(0, 15), sticky="ew")
+		ctk.CTkButton(self.setup_card, text="Public Holidays", fg_color="#4f46e5", hover_color="#4338ca", 
+				command=lambda: os.startfile(config.PUBLIC_HOILIDAY_FILE)).grid(row=1, column=1, padx=5, pady=(0, 15), sticky="ew")
 		
 		# Rosters button
-		ctk.CTkButton(self.setup_card, text="Rosters", fg_color="#4f46e5", hover_color="#4338ca", command=lambda: os.startfile(config.ROSTER_FOLDER)).grid(row=2, column=0, padx=5, pady=(0, 15), sticky="ew")
+		ctk.CTkButton(self.setup_card, text="Rosters", fg_color="#4f46e5", hover_color="#4338ca", 
+				command=lambda: os.startfile(config.ROSTER_FOLDER)).grid(row=2, column=0, padx=5, pady=(0, 15), sticky="ew")
 		
 		# Baker button
-		ctk.CTkButton(self.setup_card, text="Baker Cashier", fg_color="#4f46e5", hover_color="#4338ca", command=lambda: os.startfile(config.BAKER_CASHIER_FILE)).grid(row=2, column=1, padx=5, pady=(0, 15), sticky="ew")
+		ctk.CTkButton(self.setup_card, text="Baker Cashier", fg_color="#4f46e5", hover_color="#4338ca", 
+				command=lambda: os.startfile(config.BAKER_CASHIER_FILE)).grid(row=2, column=1, padx=5, pady=(0, 15), sticky="ew")
 		
 		# Employee infomation
-		ctk.CTkButton(self.setup_card, text="Employee Infomation", fg_color="#4f46e5", hover_color="#4338ca", command=pop_up).grid(row=3, column=0, columnspan=2, padx=5, pady=(0, 15), sticky="ew")
+		ctk.CTkButton(self.setup_card, text="Employee Infomation", fg_color="#4f46e5", hover_color="#4338ca",
+				command=pop_up).grid(row=3, column=0, columnspan=2, padx=5, pady=(0, 15), sticky="ew")
+		
+		# Uniclox burron
+		ctk.CTkButton(self.setup_card, text="Open Uniclox", fg_color="#4f46e5", hover_color="#4338ca", 
+				command=lambda: os.startfile(config.UNICLOX_FOLDER)).grid(row=4, column=0, columnspan=2, padx=5, pady=(0, 15), sticky="ew")
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		# file_btns = [
-		# 	("Badge Numbers", "Badges.xlsx"), 
-		# 	("Public Holidays", "Public Holidays.xlsx")
-		# ]
-			
-		# # Get the directory where main.py is located
-		# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-		
-		# # Loop through and display buttons
-		# for i, (name, path) in enumerate(file_btns):
-		# 	if name == 'Rosters':
-		# 		full_path = "Rosters"
-		# 	else:
-		# 		full_path = os.path.join(BASE_DIR, name, path)
-			
-		# 	ctk.CTkButton(files_frame, text=name, width=100, command=lambda p=full_path: os.startfile(p)).grid(row=0, column=i, padx=(12,0))
-
-		
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		# --- Card 2: Processing ---
 		self.ops_card = ctk.CTkFrame(self.main_container)
 		self.ops_card.pack(fill="x", pady=10)
 		
-		ctk.CTkLabel(self.ops_card, text="2. Data Processing", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
+		ctk.CTkLabel(self.ops_card, text="Data Processing", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
 		
 		ctk.CTkButton(self.ops_card, text="RUN MAIN WAGE PROGRAM", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", command=self.run_wages).pack(fill="x", padx=20, pady=5)
 		
@@ -173,7 +121,7 @@ class WageApp(ctk.CTk):
 		self.final_card = ctk.CTkFrame(self.main_container)
 		self.final_card.pack(fill="x", pady=10)
 		
-		ctk.CTkLabel(self.final_card, text="3. Payroll & Payslips", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
+		ctk.CTkLabel(self.final_card, text="Payroll & Payslips", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
 		
 		self.final_grid = ctk.CTkFrame(self.final_card, fg_color="transparent")
 		self.final_grid.pack(fill="x", padx=20, pady=(0, 15))
@@ -184,8 +132,21 @@ class WageApp(ctk.CTk):
 
 	# --- Logic Wrappers ---
 	def init_sys(self):
-		self.db.initialize_tables()
-		messagebox.showinfo("Success", "System Database Ready")
+		msg = CTkMessagebox(title="Initialize Database", 
+				message="Are you sure you want Initialize the database?",
+				icon="question", 
+				option_1="No", 
+				option_2="Yes")
+		
+		# Get response
+		response = msg.get()
+
+		if response == 'Yes':
+			self.db.initialize_tables()
+		else:
+			CTkMessagebox(title="Initialize Database", 
+				message="Operation Canceled",
+				icon="cancel")
 
 	def run_wages(self):
 		try:

@@ -1,6 +1,11 @@
-# 💼 Automated Payroll & Payslip Generator
+# 💼 Automated Payroll & Payslip Generator (v2.0)
 
 A Python-based automation tool designed to streamline payroll management. This programme automatically calculates employee hours, processes tax deductions, updates your payroll Excel sheets, and generates individual payslips.
+
+## 🚀 What's New in Version 2.0
+The application has undergone a major architectural and visual overhaul:
+- **Modernized GUI:** Completely redesigned using **CustomTkinter**, replacing the older layout with a sleek, responsive, and dark-mode-ready interface.
+- **Class-Based Architecture:** The backend has been fully refactored into robust, Object-Oriented classes (e.g., `DatabaseManager`, `WageProcessor`, `PayrollManager`, `PayslipGenerator`). This modular approach minimizes code duplication, improves maintainability, and strictly separates the UI from the business logic.
 
 ## ✨ Features
 
@@ -32,7 +37,6 @@ venv\Scripts\activate
 python -m venv venv
 source venv/bin/activate
 ```
-
 **3. Install Poetry (Dependency Manager):**
 ```bash
 pip install poetry
@@ -54,45 +58,40 @@ python Project/main.py
 
 ## 🗺️ Roadmap / In Progress
 
-- Minimize code by creating classes
-- Update gui to more modernized and sleek layout
+- [x] Minimize code by creating classes (Completed in v2.0)
+- [x] Update gui to more modernized and sleek layout (Completed in v2.0)
+- [ ] Implement automated backups for database data
+- [ ] Export payroll summaries to PDF
 
-## Phase 1: Analysis & Architectural Design
-*Before touching the code, we define the "blueprint" for the new structure.*
+## ✅ Completed Phases (v2.0 Overhaul)
 
-* **Code Audit:** Identify redundant functions, global variables, and "spaghetti code" that can be grouped into logical objects.
-* **Class Mapping:** Define a new Class Hierarchy (e.g., `User`, `DataManager`, `UIController`) to handle specific responsibilities, adhering to the Single Responsibility Principle.
-* **UI Benchmarking:** Research modern design languages (e.g., Google’s Material 3, Apple’s Glassmorphism, or Microsoft’s Fluent Design) to establish a "Sleek & Professional" style guide.
+### Phase 1: Analysis & Architectural Design
+* **Code Audit:** Identified redundant functions, global variables, and "spaghetti code" that could be grouped into logical objects.
+* **Class Mapping:** Defined a new Class Hierarchy (`DatabaseManager`, `WageProcessor`, etc.) to handle specific responsibilities, adhering to the Single Responsibility Principle.
+* **UI Benchmarking:** Researched modern design languages to establish a "Sleek & Professional" style guide.
 
-## Phase 2: Backend Refactoring (Structural Cleanup)
-*The goal here is to reduce the "weight" of the codebase and improve maintainability.*
+### Phase 2: Backend Refactoring (Structural Cleanup)
+* **Object-Oriented Migration:** Converted procedural scripts into reusable classes.
+* **Encapsulation:** Protected data by making class variables private, ensuring that the GUI only interacts with the backend through controlled logic.
+* **API/Service Layer:** Separated the core logic from the UI so that the backend runs independently of the layout updates.
 
-* **Object-Oriented Migration:** Convert procedural scripts into reusable classes. Use **Inheritance** to share common traits and **Methods** to eliminate duplicated logic.
-* **Encapsulation:** Protect data by making class variables private, ensuring that the GUI only interacts with the backend through controlled "getters" and "setters."
-* **API/Service Layer:** Separate the core logic from the UI so that the backend can run independently of the layout updates.
-
-## Phase 3: GUI Modernization (Visual Overhaul)
-*Moving away from dated, clunky layouts toward a fluid, minimalist experience.*
-
-* **Layout Restructuring:** Replace fixed-size windows with **Responsive Grid Layouts** that adapt to different screen resolutions.
+### Phase 3: GUI Modernization (Visual Overhaul)
+* **Layout Restructuring:** Replaced fixed-size windows with responsive grids that adapt to different screen resolutions using CustomTkinter.
 * **Visual Refresh:**
-    * **Typography:** Switch to clean, sans-serif fonts (e.g., Inter, Roboto).
-    * **Color Palette:** Implement a balanced palette with a focus on "Dark Mode" compatibility and high-contrast accessibility.
-    * **Sleek Elements:** Add rounded corners, subtle shadows (soft depth), and generous white space to reduce cognitive load.
-* **Micro-interactions:** Add smooth transitions for button clicks, hover states, and loading sequences to make the app feel "alive."
+    * Switched to clean, sans-serif fonts.
+    * Implemented a balanced palette with a focus on "Dark Mode" compatibility.
+    * Added modern elements like rounded corners and generous white space to reduce cognitive load.
 
-## Phase 4: Optimization & Deployment
-*Fine-tuning the integration between the new classes and the new layout.*
-
-* **Component Binding:** Connect the new Class Methods to the modernized UI components using an **Observer pattern** (ensuring the UI updates automatically when data changes).
-* **Performance Testing:** Verify that the "minimized code" results in faster load times and lower memory usage.
-* **User Acceptance (UAT):** Gather feedback on the new sleek layout to ensure it improves the actual workflow rather than just looking good.
+### Phase 4: Optimization & Deployment
+* **Component Binding:** Connected the new Class Methods to the modernized UI components.
+* **Performance Testing:** Verified that the "minimized code" results in faster load times and lower memory usage.
 
 ## 📝 Changelog & Fixed Issues
 
 *Note: Patches are released periodically to address issues and add features.*
 
 ### 2026
+- **25 March 2026 [v2.0 Update]:** Major UI overhaul using CustomTkinter and backend refactor into classes.
 - **13 March 2026 [Patch014]:** Fixed issues 33, 34
 - **09 January 2026[Patch013]:** Fixed issues 30, 31
 - **05 January 2026 [Patch012]:** Fixed issues 26, 27

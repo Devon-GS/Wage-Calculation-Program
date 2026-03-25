@@ -24,6 +24,7 @@ class DatabaseManager:
 			c.execute("CREATE TABLE IF NOT EXISTS carwashTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, extra TEXT)")
 			c.execute("CREATE TABLE IF NOT EXISTS employeeNames (englishName TEXT, fullName TEXT, Surname TEXT, idPass TEXT UNIQUE)")
 			con.commit()
+			CTkMessagebox(title="Success", message="Successfully Initialized The Database", icon="info")
 
 	def clear_session_data(self):
 		with self.get_connection() as con:

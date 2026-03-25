@@ -1,6 +1,3 @@
-# This file stores your constants and styles
-
-
 import os
 from openpyxl.styles import Alignment, Font, Border, Side
 
@@ -16,6 +13,7 @@ BAKER_CASHIER_FILE = os.path.join(BASE_DIR, "Baker Cashier", "Baker Cashier Work
 BADGE_NUMBER_FILE = os.path.join(BASE_DIR, "Badge Numbers", "Badges.xlsx")
 PUBLIC_HOILIDAY_FILE = os.path.join(BASE_DIR, "Public Holidays", "Public Holidays.xlsx")
 ROSTER_FOLDER = os.path.join(BASE_DIR, "Rosters")
+UNICLOX_FOLDER = os.path.join(BASE_DIR, "Uniclox")
 
 
 # Shared Styles
