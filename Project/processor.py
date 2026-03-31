@@ -210,27 +210,24 @@ def initialize_roster_to_excel(role="Attendant", week="WeekOne"):
 # ------- EXTRA END ----------
 
 
-# # --- Step 2: Clock Collection (Logic from att_clock_times.py) ---
-# def collect_clock_times(self, role="Att"):
-#     """Reads last 20 files from Uniclox folder and saves to DB."""
-#     date_times = []
-#     clock_files = [f for f in os.listdir(UNICLOX_FOLDER) if 'TL' in f and f[-7:-4] != '000']
-#     recent_files = clock_files[-20:]
+# --- Step 2: Clock Collection (Logic from att_clock_times.py) ---
+def collect_clock_times():
+	"""Reads last 20 files from Uniclox folder and saves to DB."""
+	clock_times = []
+	clock_files = [f for f in os.listdir(UNICLOX_FOLDER) if 'TL' in f and f[-7:-4] != '000']
+	recent_files = clock_files[-20:]
 
-#     for filename in recent_files:
-#         with open(os.path.join(UNICLOX_FOLDER, filename), 'r') as f:
-#             for line in f:
-#                 parts = line.strip().split(',')
-#                 if len(parts) < 2: continue
-#                 badge = parts[0]
-#                 dt_obj = datetime.strptime(parts[1], '%Y-%m-%d %H:%M:%S')
-#                 date_times.append((badge, dt_obj.strftime("%d/%m/%y"), dt_obj.strftime("%H:%M:%S")))
+	for filename in recent_files:
+		with open(os.path.join(UNICLOX_FOLDER, filename), 'r') as f:
+			for line in f:
+				parts = line.strip().split(',')
+				if len(parts) < 2: continue
+				badge = parts[0]
+				dt_obj = datetime.strptime(parts[1], '%Y-%m-%d %H:%M:%S')
+				clock_times.append((badge, dt_obj.strftime("%d/%m/%y"), dt_obj.strftime("%H:%M:%S")))
 
-#     table = "ClockTimeAttendent" if role == "Att" else "ClockTimeCashier"
-#     with self.db.get_connection() as con:
-#         c = con.cursor()
-#         c.executemany(f"INSERT INTO {table} (badge, date, time) VALUES (?, ?, ?)", date_times)
-#         con.commit()
+	db.add_clock_times(clock_times)
+
 
 # # --- Step 3: Match Clocks to Excel (Logic from cas_clock_times.py) ---
 # def sync_clocks_to_excel(self, sheet_name, role="Att"):

@@ -17,8 +17,7 @@ def initialize_tables():
 		# 		c.execute(f"CREATE TABLE IF NOT EXISTS roster{role}Week{week} (name TEXT, badge TEXT, thur TEXT, fri TEXT, sat TEXT, sun TEXT, mon TEXT, tue TEXT, wed TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS rosterAttendant (name TEXT, badge TEXT, day TEXT, date TEXT, shift TEXT, week TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS rosterCashier (name TEXT, badge TEXT, day TEXT, date TEXT, shift TEXT, week TEXT)")
-		c.execute("CREATE TABLE IF NOT EXISTS ClockTimeAttendant (badge TEXT, date TEXT, time TEXT)")
-		c.execute("CREATE TABLE IF NOT EXISTS ClockTimeCashier (badge TEXT, date TEXT, time TEXT)")
+		c.execute("CREATE TABLE IF NOT EXISTS uniclox (badge TEXT, date TEXT, time TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS attTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, noClock TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS cashierTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, noClock TEXT, cashier TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS carwashTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, extra TEXT)")
@@ -192,3 +191,14 @@ def add_shifts(shifts, role, week):
 			CTkMessagebox(title="Add Shifts", message=f"Added {role} shifts for {week[:4] + " " + week[4:]} Successfuly", icon="info")
 		except Exception as error:
 			CTkMessagebox(title="Error", message=error, icon="cancel")
+
+#  -- ADD CLOCK TIMES --
+def add_clock_times(clock_times):
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		try:
+			c.executemany(f"INSERT INTO uniclox (badge, date, time) VALUES (?, ?, ?)", clock_times)
+			con.commit()
+		except Exception as error:
+			CTkMessagebox(title="Error", message=error, icon="cancel")
+		
