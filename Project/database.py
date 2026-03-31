@@ -5,7 +5,6 @@ from contextlib import closing
 from config import DB_PATH
 
 
-
 def get_connection():
 	return sqlite3.connect(DB_PATH)
 
@@ -13,11 +12,12 @@ def initialize_tables():
 	with get_connection() as con:
 		c = con.cursor()
 		# Roster & Total Tables
-		for role in ["Att", "Cashier"]:
-			for week in ["One", "Two"]:
-				c.execute(f"CREATE TABLE IF NOT EXISTS roster{role}Week{week} (name TEXT, badge TEXT, thur TEXT, fri TEXT, sat TEXT, sun TEXT, mon TEXT, tue TEXT, wed TEXT)")
-		
-		c.execute("CREATE TABLE IF NOT EXISTS ClockTimeAttendent (badge TEXT, date TEXT, time TEXT)")
+		# for role in ["Att", "Cashier"]:
+		# 	for week in ["One", "Two"]:
+		# 		c.execute(f"CREATE TABLE IF NOT EXISTS roster{role}Week{week} (name TEXT, badge TEXT, thur TEXT, fri TEXT, sat TEXT, sun TEXT, mon TEXT, tue TEXT, wed TEXT)")
+		c.execute("CREATE TABLE IF NOT EXISTS rosterAttendant (name TEXT, badge TEXT, day TEXT, date TEXT, shift TEXT, week TEXT)")
+		c.execute("CREATE TABLE IF NOT EXISTS rosterCashier (name TEXT, badge TEXT, day TEXT, date TEXT, shift TEXT, week TEXT)")
+		c.execute("CREATE TABLE IF NOT EXISTS ClockTimeAttendant (badge TEXT, date TEXT, time TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS ClockTimeCashier (badge TEXT, date TEXT, time TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS attTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, noClock TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS cashierTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, noClock TEXT, cashier TEXT)")
@@ -26,14 +26,19 @@ def initialize_tables():
 		con.commit()
 		CTkMessagebox(title="Success", message="Successfully Initialized The Database", icon="info")
 
+# initialize_tables()
+
+
+
 def clear_session_data():
 	with get_connection() as con:
 		c = con.cursor()
-		tables = ['ClockTimeAttendent', 'ClockTimeCashier', 'attTotal', 'cashierTotal', 'carwashTotal']
+		tables = ['rosterAttendant', 'rosterCashier',
+				  'ClockTimeAttendent', 'ClockTimeCashier', 'attTotal', 'cashierTotal', 'carwashTotal']
 		for table in tables: c.execute(f"DELETE FROM {table}")
 		con.commit()
 
-# EMPLOYEE MANAGEMENT 
+# --- EMPLOYEE MANAGEMENT --- 
 def add_employees(ename, fname, sname, id):
 	with closing(get_connection()) as con:
 		c = con.cursor()
@@ -162,5 +167,25 @@ def bulk_add_employees():
 
 				con.commit()
 				CTkMessagebox(title="Bulk Add", message="Bulk Add Complete Successfuly", icon="info")
+		except Exception as error:
+			CTkMessagebox(title="Error", message=error, icon="cancel")
+
+
+# --- ADD SHIFTS ---
+		# only used this and change between att and cashier
+
+def add_shifts(shifts, role, week):
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		try:
+			query = """INSERT INTO rosterAttendant (name, badge, day, date, shift, week)
+							VALUES (?, ?, ?, ?, ?, ?)"""
+			
+			# Loop through shift info and add to database
+			for x in shifts:
+				c.execute(query, (x[0], x[1], x[2], x[3], x[4], x[5]))
+				con.commit()
+
+			CTkMessagebox(title="Add Shifts", message=f"Added {role} shifts for {week} Successfuly", icon="info")
 		except Exception as error:
 			CTkMessagebox(title="Error", message=error, icon="cancel")
