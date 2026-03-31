@@ -7,7 +7,7 @@ import os
 import traceback
 
 # Import your logic classes
-from database import DatabaseManager
+import database as db
 from processor import WageProcessor
 from payroll_logic import PayrollManager
 from payslips import PayslipGenerator
@@ -25,10 +25,10 @@ class WageApp(ctk.CTk):
 		self.geometry("900x600")
 		
 		# Initialize Logic
-		self.db = DatabaseManager()
-		self.processor = WageProcessor(self.db)
-		self.payroll = PayrollManager(self.db)
-		self.payslips = PayslipGenerator(self.db)
+		# self.db = DatabaseManager()
+		# self.processor = WageProcessor(self.db)
+		# self.payroll = PayrollManager(self.db)
+		# self.payslips = PayslipGenerator(self.db)
 
 		# Create Layout
 		self.grid_columnconfigure(1, weight=1)
@@ -142,21 +142,45 @@ class WageApp(ctk.CTk):
 		response = msg.get()
 
 		if response == 'Yes':
-			self.db.initialize_tables()
+			db.initialize_tables()
 		else:
 			CTkMessagebox(title="Initialize Database", 
 				message="Operation Canceled",
 				icon="cancel")
 
+	# def run_wages(self):
+	# 	try:
+	# 		# Add your specific workflow here
+	# 		# self.db.clear_session_data()
+	# 		self.processor.get_public_holidays()
+	# 		# self.processor.collect_clock_times("Att")
+	# 		self.processor.calculate_sheet_hours("Att Week One", "Att")
+	# 		messagebox.showinfo("Success", "Wage program finished successfully")
+	# 	except Exception:
+	# 		messagebox.showerror("Error", traceback.format_exc())
+
 	def run_wages(self):
 		try:
-			# Add your specific workflow here
+			# 1. Clear old session data
 			self.db.clear_session_data()
+			
+			# 2. Collect from raw files
 			self.processor.collect_clock_times("Att")
-			self.processor.calculate_sheet_hours("Att Week One", "Att")
-			messagebox.showinfo("Success", "Wage program finished successfully")
-		except Exception:
-			messagebox.showerror("Error", traceback.format_exc())
+			self.processor.collect_clock_times("Cashier")
+			
+			# 3. Match clocks to Excel sheets
+			# Assuming "Att Week One" was already created by an initialization step
+			for sheet in ["Att Week One", "Att Week Two", "Cashier Week One", "Cashier Week Two"]:
+				role = "Att" if "Att" in sheet else "Cashier"
+				self.processor.sync_clocks_to_excel(sheet, role)
+				# self.processor.calculate_hours(sheet)
+			
+			# 4. Process Carwash
+			# self.processor.process_carwash()
+
+			messagebox.showinfo("Success", "Wages processed and matched to Excel successfully.")
+		except Exception as e:
+			messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
 	def run_recal(self):
 		self.processor.calculate_sheet_hours("Att Week One", "Att")

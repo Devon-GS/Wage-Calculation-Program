@@ -1,5 +1,0 @@
-- Update readme with [patch numer] and [fixed issue]
-
-=== COMMIT FORMAT ===
-
-- [Patch number] [issue number] [issue description]

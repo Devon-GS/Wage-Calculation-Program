@@ -1,4 +1,5 @@
 import os
+from openpyxl import Workbook 
 from openpyxl.styles import Alignment, Font, Border, Side
 
 # SETUP PATHS
@@ -14,7 +15,21 @@ BADGE_NUMBER_FILE = os.path.join(BASE_DIR, "Badge Numbers", "Badges.xlsx")
 PUBLIC_HOILIDAY_FILE = os.path.join(BASE_DIR, "Public Holidays", "Public Holidays.xlsx")
 ROSTER_FOLDER = os.path.join(BASE_DIR, "Rosters")
 UNICLOX_FOLDER = os.path.join(BASE_DIR, "Uniclox")
+PUBLIC_HIOLIDAY_FILE = os.path.join(BASE_DIR, "Public Holidays", "Public Holidays.xlsx")
+ATT_ROSTER_FILE = os.path.join(ROSTER_FOLDER, "Attendant_Carwash_Roster.xlsx")
+CAS_ROSTER_FILE = os.path.join(ROSTER_FOLDER, "CASHIERS_ROSTER.xlsx")
+CARWASH_FILE = os.path.join(BASE_DIR, "Carwash Times", "Carwash Times.xlsx")
 
+# Check if wage time and create
+if not os.path.isfile(WAGE_TIMES_FILE):
+	wb = Workbook()
+	wb.remove(wb['Sheet'])
+	wb.create_sheet('Att Week One')
+	wb.create_sheet('Att Week Two')
+	wb.create_sheet('Cashier Week One')
+	wb.create_sheet('Cashier Week Two')
+	wb.save(WAGE_TIMES_FILE)
+	wb.close()
 
 # Shared Styles
 THIN_SIDE = Side(style='thin', color="000000")
