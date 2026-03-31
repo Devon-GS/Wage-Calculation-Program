@@ -172,13 +172,16 @@ def bulk_add_employees():
 
 
 # --- ADD SHIFTS ---
-		# only used this and change between att and cashier
-
 def add_shifts(shifts, role, week):
 	with closing(get_connection()) as con:
 		c = con.cursor()
+		if role == "Attendant":
+			table = "rosterAttendant"
+		else:
+			table = "rosterCashier"
+
 		try:
-			query = """INSERT INTO rosterAttendant (name, badge, day, date, shift, week)
+			query = f"""INSERT INTO {table} (name, badge, day, date, shift, week)
 							VALUES (?, ?, ?, ?, ?, ?)"""
 			
 			# Loop through shift info and add to database
@@ -186,6 +189,6 @@ def add_shifts(shifts, role, week):
 				c.execute(query, (x[0], x[1], x[2], x[3], x[4], x[5]))
 				con.commit()
 
-			CTkMessagebox(title="Add Shifts", message=f"Added {role} shifts for {week} Successfuly", icon="info")
+			CTkMessagebox(title="Add Shifts", message=f"Added {role} shifts for {week[:4] + " " + week[4:]} Successfuly", icon="info")
 		except Exception as error:
 			CTkMessagebox(title="Error", message=error, icon="cancel")

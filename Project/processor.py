@@ -1,15 +1,14 @@
 import os
 import re
 import pandas as pd
+import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
 from config import (WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, 
 					ATT_ROSTER_FILE, CAS_ROSTER_FILE, BADGE_NUMBER_FILE, CARWASH_FILE)
 
 
-import database as db
-
-	# --- Helper Functions ---
+# --- Helper Functions ---
 def get_badge_mapping():
 	"""Creates a dictionary {Name: BadgeID} from the badges.xlsx file."""
 	mapping = {}
@@ -44,14 +43,7 @@ def get_public_holidays():
 
 # --- Helper Functions End ---
 
-
-
-
-
-
-
-
-# --- Step 1: Roster to Excel (Logic from att_roster_times.py) ---
+# --- Step 1: Roster to Excel ---
 def initialize_roster_to_excel(role="Attendant", week="WeekOne"):
 	"""
 	1. Reads the Roster (Attendant or Cashier).
@@ -65,7 +57,6 @@ def initialize_roster_to_excel(role="Attendant", week="WeekOne"):
 	
 	# Load the Roster via Pandas
 	try:
-		# ********* add logic to get week dates and shifts *******
 		if role == "Attendant" and week == "WeekOne":
 			# Columns used
 			cols = "B:I"
@@ -111,13 +102,30 @@ def initialize_roster_to_excel(role="Attendant", week="WeekOne"):
 			wbrow = 31
 			wbrow_end = 33
 		
+		# Cashier week two 
+		elif role == "Cashier" and week == "WeekTwo":
+			# Columns used
+			cols = "B:I"
+			
+			# Dates slice
+			drow = 34
+			d_col_start = 1
+			d_col_end = 8
+
+			# Week times slice
+			wrow = 14
+			wrow_end = 20
+
+			# Week times slice (bakers)
+			wbrow = 36	
+			wbrow_end = 38
+		
 		# Get times from excel
 		df = pd.read_excel(file_path, header=None, usecols=cols, nrows=46)
 		data = df.fillna(0)
 
 		# Extract the dates  
 		week_dates = data.iloc[drow, d_col_start : d_col_end]
-		# print(week_dates)
 
 		# Extract the employee schedule block
 		if role == "Cashier":
@@ -130,9 +138,6 @@ def initialize_roster_to_excel(role="Attendant", week="WeekOne"):
 			week_times = pd.concat([cashier_times, baker_times])
 		else:
 			week_times = data.iloc[wrow : wrow_end]		
-
-
-		print(week_times)
 
 		# Create an empty list to store the final tuples
 		schedule_list = []
@@ -165,21 +170,14 @@ def initialize_roster_to_excel(role="Attendant", week="WeekOne"):
 
 							schedule_list.append((name, badge_id, day_name, date_str, shift, week))
 	
-		# for x in schedule_list:
-		# 	print(x)
+		# Add shifts to database
 		db.add_shifts(schedule_list, role, week)
-
 
 	except Exception as e:
 		print(f"Error initializing roster: {e}")
 
-# initialize_roster_to_excel()
-# initialize_roster_to_excel("Attendant", "WeekTwo")
-initialize_roster_to_excel("Cashier", "WeekOne")
 
-
-
-
+# ------- EXTRA ----------
 
 # Assuming header=4 for Cashiers or header=1 for Attendants
 	# hdr = 1 if role == "Att" else 4
@@ -209,22 +207,7 @@ initialize_roster_to_excel("Cashier", "WeekOne")
 			
 		# wb.save(WAGE_TIMES_FILE)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
+# ------- EXTRA END ----------
 
 
 # # --- Step 2: Clock Collection (Logic from att_clock_times.py) ---
