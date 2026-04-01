@@ -27,7 +27,7 @@ def split_roster_time(val):
 	try:
 		# Matches "08-17" or "18-06"
 		times = re.findall(r"(\d+)", str(val))
-		return float(times[0]), float(times[1])
+		return int(times[0]), int(times[1])
 	except:
 		return 0.0, 0.0
 
@@ -229,6 +229,7 @@ def sync_clocks_to_excel(sheet_name, role="Attendant"):
 	# Write shifts, badges, days, dates to Excel 
 	current_row = 2
 	prev_name = None
+	prev_shift = []
 
 	for row in data:
 		name = row[0]
@@ -243,23 +244,57 @@ def sync_clocks_to_excel(sheet_name, role="Attendant"):
 		elif prev_name != name:
 			current_row += 2
 		
-		ws.cell(row=current_row, column=1, value=name)
-		ws.cell(row=current_row, column=2, value=badge)
-		ws.cell(row=current_row, column=3, value=day)
-		ws.cell(row=current_row, column=4, value=date)
-		ws.cell(row=current_row, column=5, value=shift) # NEED TO SPLIT TIMES BETWEEN CLOCK IN AND CLOCK OUT
-	
+		# Split shift times into start and end
+		shift_times = split_roster_time(shift)
+		shift_start = shift_times[0]
+		shift_end = shift_times[1]	
+
+		# Logic for night shift
+		if shift_start == 0 and prev_shift >= 18:
+			current_row -= 1
+		
+		elif shift_start >= 18:
+			# Shift start
+			ws.cell(row=current_row, column=1, value=name)
+			ws.cell(row=current_row, column=2, value=badge)
+			ws.cell(row=current_row, column=3, value=day)
+			ws.cell(row=current_row, column=4, value=date)
+			ws.cell(row=current_row, column=5, value=shift_start)
+
+			# Get shift end and next day 
+			# Convert the string into a datetime object (format: day/month/year)
+			date_obj = datetime.strptime(date, "%d/%m/%Y")
+		
+			# Add one day
+			next_date = date_obj + timedelta(days=1)
+			new_date = next_date.strftime("%d/%m/%Y")
+
+			# Get the day name (e.g., Thursday)
+			day_name = next_date.strftime("%A")
+
+			# Shift end
+			ws.cell(row=current_row + 1, column=1, value=name)
+			ws.cell(row=current_row + 1, column=2, value=badge)
+			ws.cell(row=current_row + 1, column=3, value=day_name)
+			ws.cell(row=current_row + 1, column=4, value=new_date)
+			ws.cell(row=current_row + 1, column=6, value=shift_end)
+
+			current_row += 1
+
+		else:
+			ws.cell(row=current_row, column=1, value=name)
+			ws.cell(row=current_row, column=2, value=badge)
+			ws.cell(row=current_row, column=3, value=day)
+			ws.cell(row=current_row, column=4, value=date)
+			ws.cell(row=current_row, column=5, value=shift_start)
+			ws.cell(row=current_row, column=6, value=shift_end)
+		 
 		current_row += 1
 		prev_name = name
+		prev_shift = shift_start
 		
 
-	# current_row = 2
-	# for index, row in data.iterrows():
-	# 	ws.cell(row=current_row, column=1, value=name)
-	# 	ws.cell(row=current_row, column=2, value=badge_id)
-		
-	# 	# ... rest of your logic to fill dates and rostered times ...
-	# 	current_row += 1
+
 		
 	
 
@@ -312,7 +347,13 @@ def sync_clocks_to_excel(sheet_name, role="Attendant"):
 	
 	wb.save(WAGE_TIMES_FILE)
 
+
+
+
 sync_clocks_to_excel('Att Week One')
+sync_clocks_to_excel('Att Week Two')
+sync_clocks_to_excel('Cashier Week One', 'Cashier')
+sync_clocks_to_excel('Cashier Week Two', 'Cashier')
 
 
 

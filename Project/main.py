@@ -8,7 +8,7 @@ import traceback
 
 # Import your logic classes
 import database as db
-from processor import WageProcessor
+# import processor as Processor
 from payroll_logic import PayrollManager
 from payslips import PayslipGenerator
 

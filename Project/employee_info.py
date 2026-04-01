@@ -1,10 +1,8 @@
 import customtkinter as ctk
 from tkinter import messagebox
 from CTkMessagebox import CTkMessagebox
-from database import DatabaseManager
+import database as db
 
-
-db = DatabaseManager()
 
 def pop_up():
 	top = ctk.CTkToplevel()
