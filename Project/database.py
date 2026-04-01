@@ -188,7 +188,7 @@ def add_shifts(shifts, role, week):
 				c.execute(query, (x[0], x[1], x[2], x[3], x[4], x[5]))
 				con.commit()
 
-			CTkMessagebox(title="Add Shifts", message=f"Added {role} shifts for {week[:4] + " " + week[4:]} Successfuly", icon="info")
+			# CTkMessagebox(title="Add Shifts", message=f"Added {role} shifts for {week[:4] + " " + week[4:]} Successfuly", icon="info")
 		except Exception as error:
 			CTkMessagebox(title="Error", message=error, icon="cancel")
 
@@ -201,4 +201,26 @@ def add_clock_times(clock_times):
 			con.commit()
 		except Exception as error:
 			CTkMessagebox(title="Error", message=error, icon="cancel")
+
+# --- GET SHIFT TIMES FOR EXCEL ---
+def get_shift_times_db(roster, week):
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		try:
+			if roster == "Attendant":
+				table = 'rosterAttendant'
+			else:
+				table = 'rosterCashier'
+
+			c.execute(f"SELECT * FROM {table} WHERE week=?", (week,))
+							
+			records = c.fetchall()
+			con.commit()
+
+		except Exception as error:
+			CTkMessagebox(title="Error", message=error, icon="cancel")
+
+		return records
+
+		
 		

@@ -176,40 +176,6 @@ def initialize_roster_to_excel(role="Attendant", week="WeekOne"):
 	except Exception as e:
 		print(f"Error initializing roster: {e}")
 
-
-# ------- EXTRA ----------
-
-# Assuming header=4 for Cashiers or header=1 for Attendants
-	# hdr = 1 if role == "Att" else 4
-	# cols = ['idx','ATTENDANTS', 'THURS', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED'] if role == "Att" \
-	# 		else ['idx','CASHIERS', 'THU', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED']
-
-# --- to excel ---
-# wb = load_workbook(WAGE_TIMES_FILE)
-		# sheet_name = f"{role} Week One"
-		# if sheet_name not in wb.sheetnames:
-		# 	wb.create_sheet(sheet_name)
-		# ws = wb[sheet_name]
-		
-		# 3. Write to Excel and map Badges
-		# current_row = 2
-		# for index, row in data.iterrows():
-		# 	name = str(row[cols[1]]).strip()
-		# 	badge_id = badges.get(name, "NOT FOUND") # <--- USING THE BADGE FILE HERE
-		# 	print(name)
-			
-			# Write Name and Badge to columns A and B
-			# ws.cell(row=current_row, column=1, value=name)
-			# ws.cell(row=current_row, column=2, value=badge_id)
-			
-			# ... rest of your logic to fill dates and rostered times ...
-			# current_row += 1
-			
-		# wb.save(WAGE_TIMES_FILE)
-
-# ------- EXTRA END ----------
-
-
 # --- Step 2: Clock Collection (Logic from att_clock_times.py) ---
 def collect_clock_times():
 	"""Reads last 20 files from Uniclox folder and saves to DB."""
@@ -229,42 +195,146 @@ def collect_clock_times():
 	db.add_clock_times(clock_times)
 
 
-# # --- Step 3: Match Clocks to Excel (Logic from cas_clock_times.py) ---
-# def sync_clocks_to_excel(self, sheet_name, role="Att"):
-#     """Matches DB clockings to the rostered rows in the Excel sheet."""
-#     wb = load_workbook(WAGE_TIMES_FILE)
-#     ws = wb[sheet_name]
-#     table = "ClockTimeAttendent" if role == "Att" else "ClockTimeCashier"
-	
-#     with self.db.get_connection() as con:
-#         c = con.cursor()
-#         for i in range(2, ws.max_row + 1):
-#             badge = ws.cell(row=i, column=2).value
-#             date = ws.cell(row=i, column=4).value
-#             if not badge or not date: continue
 
-#             c.execute(f"SELECT time FROM {table} WHERE badge = ? AND date = ?", (str(badge), str(date)))
-#             clocks = sorted([x[0] for x in c.fetchall()])
-			
-#             if not clocks: continue
-			
-#             ti_roster = ws.cell(row=i, column=5).value
-#             to_roster = ws.cell(row=i, column=6).value
 
-#             # Logic for picking min/max based on shift
-#             if len(clocks) == 1:
-#                 # Single clocking: Determine if it's an IN or an OUT
-#                 clock_h = int(clocks[0].split(':')[0])
-#                 if abs(clock_h - (ti_roster or 0)) < abs(clock_h - (to_roster or 0)):
-#                     ws.cell(row=i, column=7, value=clocks[0][:5])
-#                 else:
-#                     ws.cell(row=i, column=8, value=clocks[0][:5])
-#             else:
-#                 # Multiple clockings
-#                 ws.cell(row=i, column=7, value=clocks[0][:5]) # Earliest
-#                 ws.cell(row=i, column=8, value=clocks[-1][:5]) # Latest
+
+
+# ****** WORKING ******
+
+# --- Step 3: Match Clocks to Excel (Logic from cas_clock_times.py) ---
+def sync_clocks_to_excel(sheet_name, role="Attendant"):
+	"""
+	1. Write roster data for name, badges, dates, shift times.
+	2. Matches DB clockings to the rostered rows in the Excel sheet.
+	"""
+
+	# -- Write shifts to excel ---
+
+	wb = load_workbook(WAGE_TIMES_FILE)
+	ws = wb[sheet_name]
+
+	# Get selected data from database
+	if sheet_name == "Att Week One":
+		data = db.get_shift_times_db('Attendant', 'WeekOne')
+	elif sheet_name == "Att Week Two":
+		data = db.get_shift_times_db('Attendant', 'WeekTwo')
+	elif sheet_name == "Cashier Week One":
+		data = db.get_shift_times_db('Cashier', 'WeekOne')
+	else:
+		data = db.get_shift_times_db('Cashier', 'WeekTwo')
+
+	for x in data:
+		print(x)
 	
-#     wb.save(WAGE_TIMES_FILE)
+	# Write shifts, badges, days, dates to Excel 
+	current_row = 2
+	prev_name = None
+
+	for row in data:
+		name = row[0]
+		badge = row[1]
+		day = row[2]
+		date = row[3]
+		shift = row[4]
+
+		# Skip two lines between employees
+		if prev_name == None:
+			pass
+		elif prev_name != name:
+			current_row += 2
+		
+		ws.cell(row=current_row, column=1, value=name)
+		ws.cell(row=current_row, column=2, value=badge)
+		ws.cell(row=current_row, column=3, value=day)
+		ws.cell(row=current_row, column=4, value=date)
+		ws.cell(row=current_row, column=5, value=shift) # NEED TO SPLIT TIMES BETWEEN CLOCK IN AND CLOCK OUT
+	
+		current_row += 1
+		prev_name = name
+		
+
+	# current_row = 2
+	# for index, row in data.iterrows():
+	# 	ws.cell(row=current_row, column=1, value=name)
+	# 	ws.cell(row=current_row, column=2, value=badge_id)
+		
+	# 	# ... rest of your logic to fill dates and rostered times ...
+	# 	current_row += 1
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	# wb = load_workbook(WAGE_TIMES_FILE)
+	# ws = wb[sheet_name]
+	# table = "ClockTimeAttendent" if role == "Att" else "ClockTimeCashier"
+	
+	# with db.get_connection() as con:
+	# 	c = con.cursor()
+	# 	for i in range(2, ws.max_row + 1):
+	# 		badge = ws.cell(row=i, column=2).value
+	# 		date = ws.cell(row=i, column=4).value
+	# 		if not badge or not date: continue
+
+	# 		c.execute(f"SELECT time FROM {table} WHERE badge = ? AND date = ?", (str(badge), str(date)))
+	# 		clocks = sorted([x[0] for x in c.fetchall()])
+			
+	# 		if not clocks: continue
+			
+	# 		ti_roster = ws.cell(row=i, column=5).value
+	# 		to_roster = ws.cell(row=i, column=6).value
+
+	# 		# Logic for picking min/max based on shift
+	# 		if len(clocks) == 1:
+	# 			# Single clocking: Determine if it's an IN or an OUT
+	# 			clock_h = int(clocks[0].split(':')[0])
+	# 			if abs(clock_h - (ti_roster or 0)) < abs(clock_h - (to_roster or 0)):
+	# 				ws.cell(row=i, column=7, value=clocks[0][:5])
+	# 			else:
+	# 				ws.cell(row=i, column=8, value=clocks[0][:5])
+	# 		else:
+	# 			# Multiple clockings
+	# 			ws.cell(row=i, column=7, value=clocks[0][:5]) # Earliest
+	# 			ws.cell(row=i, column=8, value=clocks[-1][:5]) # Latest
+	
+	wb.save(WAGE_TIMES_FILE)
+
+sync_clocks_to_excel('Att Week One')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # # --- Step 4: Calculate Hours (Logic from att_cal_hours.py) ---
 # def calculate_hours(self, sheet_name):
@@ -340,6 +410,53 @@ def collect_clock_times():
 #         c.executemany("INSERT INTO carwashTotal VALUES (?,?,?,?,?,?)", data)
 #         con.commit()
 		
+
+
+
+
+
+
+
+
+
+
+# ------- EXTRA ----------
+
+# Assuming header=4 for Cashiers or header=1 for Attendants
+	# hdr = 1 if role == "Att" else 4
+	# cols = ['idx','ATTENDANTS', 'THURS', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED'] if role == "Att" \
+	# 		else ['idx','CASHIERS', 'THU', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED']
+
+# --- to excel ---
+# wb = load_workbook(WAGE_TIMES_FILE)
+		# sheet_name = f"{role} Week One"
+		# if sheet_name not in wb.sheetnames:
+		# 	wb.create_sheet(sheet_name)
+		# ws = wb[sheet_name]
+		
+		# 3. Write to Excel and map Badges
+		# current_row = 2
+		# for index, row in data.iterrows():
+		# 	name = str(row[cols[1]]).strip()
+		# 	badge_id = badges.get(name, "NOT FOUND") # <--- USING THE BADGE FILE HERE
+		# 	print(name)
+			
+			# Write Name and Badge to columns A and B
+			# ws.cell(row=current_row, column=1, value=name)
+			# ws.cell(row=current_row, column=2, value=badge_id)
+			
+			# ... rest of your logic to fill dates and rostered times ...
+			# current_row += 1
+			
+		# wb.save(WAGE_TIMES_FILE)
+
+# ------- EXTRA END ----------
+
+
+
+
+
+
 
 
 
