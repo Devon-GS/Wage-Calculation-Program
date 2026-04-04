@@ -24,25 +24,28 @@ CARWASH_FILE = os.path.join(BASE_DIR, "Carwash Times", "Carwash Times.xlsx")
 if not os.path.isfile(WAGE_TIMES_FILE):
 	wb = Workbook()
 	wb.remove(wb['Sheet'])
-	wb.create_sheet('Att Week One')
-	wb.create_sheet('Att Week Two')
-	wb.create_sheet('Cashier Week One')
-	wb.create_sheet('Cashier Week Two')
+	sheet_list = ['Att Week One', 'Att Week Two', 'Att Total', 
+			   'Cashier Week One', 'Cashier Week Two', 'Cashier Total']
+	
+	for sheet in sheet_list:
+		wb.create_sheet(sheet)
 
+	
 	# Create heading
 	for ws in wb.worksheets:
-		ws["A1"] = "Name"
-		ws["B1"] = "Badge Number"
-		ws["C1"] = "Week Day"
-		ws["D1"] = "Date"
-		ws["E1"] = "Time In"
-		ws["F1"] = "Time Out"
-		ws["G1"] = "Clock Time In"
-		ws["H1"] = "Clock Time Out"
-		ws["I1"] = "Hours"
-		ws["J1"] = "Sunday Hours"
-		ws["K1"] = "Public Hours"
-		ws["L1"] = "No Clock"
+		if ws not in [wb['Att Total'], wb['Cashier Total']]:
+			ws["A1"] = "Name"
+			ws["B1"] = "Badge Number"
+			ws["C1"] = "Week Day"
+			ws["D1"] = "Date"
+			ws["E1"] = "Time In"
+			ws["F1"] = "Time Out"
+			ws["G1"] = "Clock Time In"
+			ws["H1"] = "Clock Time Out"
+			ws["I1"] = "Hours"
+			ws["J1"] = "Sunday Hours"
+			ws["K1"] = "Public Hours"
+			ws["L1"] = "No Clock"
 
 	wb.save(WAGE_TIMES_FILE)
 	wb.close()
