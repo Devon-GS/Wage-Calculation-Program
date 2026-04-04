@@ -178,10 +178,10 @@ def initialize_roster_to_excel(role="Attendant", week="WeekOne"):
 
 # --- Step 2: Clock Collection (Logic from att_clock_times.py) ---
 def collect_clock_times():
-	"""Reads last 20 files from Uniclox folder and saves to DB."""
+	"""Reads last 5 files from Uniclox folder and saves to DB."""
 	clock_times = []
 	clock_files = [f for f in os.listdir(UNICLOX_FOLDER) if 'TL' in f and f[-7:-4] != '000']
-	recent_files = clock_files[-20:]
+	recent_files = clock_files[-5:]
 
 	for filename in recent_files:
 		with open(os.path.join(UNICLOX_FOLDER, filename), 'r') as f:
@@ -190,25 +190,19 @@ def collect_clock_times():
 				if len(parts) < 2: continue
 				badge = parts[0]
 				dt_obj = datetime.strptime(parts[1], '%Y-%m-%d %H:%M:%S')
-				clock_times.append((badge, dt_obj.strftime("%d/%m/%y"), dt_obj.strftime("%H:%M:%S")))
+				clock_times.append((badge, dt_obj.strftime("%d/%m/%Y"), dt_obj.strftime("%H:%M:%S")))
 
 	db.add_clock_times(clock_times)
-
-
-
-
-
-
-# ****** WORKING ******
 
 # --- Step 3: Match Clocks to Excel (Logic from cas_clock_times.py) ---
 def sync_clocks_to_excel(sheet_name, role="Attendant"):
 	"""
 	1. Write roster data for name, badges, dates, shift times.
-	2. Matches DB clockings to the rostered rows in the Excel sheet.
+	2. Matches clockings to the shift rows in the Excel sheet.
+	3. ti = Time in | to = Time out [Actual clock times]
 	"""
 
-	# -- Write shifts to excel ---
+	# -- Write Shifts to Excel ---
 
 	wb = load_workbook(WAGE_TIMES_FILE)
 	ws = wb[sheet_name]
@@ -223,9 +217,6 @@ def sync_clocks_to_excel(sheet_name, role="Attendant"):
 	else:
 		data = db.get_shift_times_db('Cashier', 'WeekTwo')
 
-	for x in data:
-		print(x)
-	
 	# Write shifts, badges, days, dates to Excel 
 	current_row = 2
 	prev_name = None
@@ -260,6 +251,7 @@ def sync_clocks_to_excel(sheet_name, role="Attendant"):
 			ws.cell(row=current_row, column=3, value=day)
 			ws.cell(row=current_row, column=4, value=date)
 			ws.cell(row=current_row, column=5, value=shift_start)
+			ws.cell(row=current_row, column=6, value=0)
 
 			# Get shift end and next day 
 			# Convert the string into a datetime object (format: day/month/year)
@@ -277,6 +269,7 @@ def sync_clocks_to_excel(sheet_name, role="Attendant"):
 			ws.cell(row=current_row + 1, column=2, value=badge)
 			ws.cell(row=current_row + 1, column=3, value=day_name)
 			ws.cell(row=current_row + 1, column=4, value=new_date)
+			ws.cell(row=current_row + 1, column=5, value=0)
 			ws.cell(row=current_row + 1, column=6, value=shift_end)
 
 			current_row += 1
@@ -292,77 +285,101 @@ def sync_clocks_to_excel(sheet_name, role="Attendant"):
 		current_row += 1
 		prev_name = name
 		prev_shift = shift_start
-		
 
+	# --- Write Clocks to Excel ---
 
-		
+	clocks = db.get_clock_times()
 	
+	for i in range(2, ws.max_row + 1):
+		badge = ws.cell(row=i, column=2).value
+		date = ws.cell(row=i, column=4).value
+		if not badge or not date: continue
 
+		clocking_times = []
 
+		for c_badge, c_date, c_time in clocks:
+			if badge == c_badge and date == c_date:
+				clocking_times.append(c_time)
 
+		ti_roster = ws.cell(row=i, column=5).value
+		to_roster = ws.cell(row=i, column=6).value
 
+		# If shift is 'AF' ignore all clocking
+		if ti_roster == 0.0 and to_roster == 0.0:
+			continue
 
+		# Handle night shift
+		elif ti_roster == 18:
+			t = time.fromisoformat(max(clocking_times)).strftime('%H:%M')
+			ws.cell(row=i, column=7, value=t)
 
+		# Handle morning of night shift
+		elif to_roster == 6 or to_roster == 7:
+			t = time.fromisoformat(min(clocking_times)).strftime('%H:%M')
+			ws.cell(row=i, column=8, value=t)
 
-
-
-
-
-
-
-
-
-
-	# wb = load_workbook(WAGE_TIMES_FILE)
-	# ws = wb[sheet_name]
-	# table = "ClockTimeAttendent" if role == "Att" else "ClockTimeCashier"
-	
-	# with db.get_connection() as con:
-	# 	c = con.cursor()
-	# 	for i in range(2, ws.max_row + 1):
-	# 		badge = ws.cell(row=i, column=2).value
-	# 		date = ws.cell(row=i, column=4).value
-	# 		if not badge or not date: continue
-
-	# 		c.execute(f"SELECT time FROM {table} WHERE badge = ? AND date = ?", (str(badge), str(date)))
-	# 		clocks = sorted([x[0] for x in c.fetchall()])
+		# Handle when employee clocks in/out only once 
+		elif ti_roster > 0 and to_roster > 0 and len(clocking_times) == 1:
+			# Logic for picking min/max based on shift
+			# Single clocking: Determine if it's an IN or an OUT
+			clock_h = int(clocking_times[0].split(':')[0])
+			if abs(clock_h - (ti_roster or 0)) < abs(clock_h - (to_roster or 0)):
+				t = time.fromisoformat(clocking_times[0]).strftime('%H:%M')
+				ws.cell(row=i, column=7, value=t)
+			else:
+				t = time.fromisoformat(clocking_times[0]).strftime('%H:%M')
+				ws.cell(row=i, column=8, value=t)
+		
+		# Handle when employee clocks in/out multiple times but does not clock in/out
+		elif ti_roster > 0 and to_roster > 0 and len(clocking_times) >= 2:
+			# Get clock times
+			clock_min = (min(clocking_times).split(':')[0])
+			clock_max = (max(clocking_times).split(':')[0])
 			
-	# 		if not clocks: continue
-			
-	# 		ti_roster = ws.cell(row=i, column=5).value
-	# 		to_roster = ws.cell(row=i, column=6).value
+			# Get roster shifts 
+			roster_min = ws.cell(row=i, column=5).value
+			roster_max = ws.cell(row=i, column=6).value
 
-	# 		# Logic for picking min/max based on shift
-	# 		if len(clocks) == 1:
-	# 			# Single clocking: Determine if it's an IN or an OUT
-	# 			clock_h = int(clocks[0].split(':')[0])
-	# 			if abs(clock_h - (ti_roster or 0)) < abs(clock_h - (to_roster or 0)):
-	# 				ws.cell(row=i, column=7, value=clocks[0][:5])
-	# 			else:
-	# 				ws.cell(row=i, column=8, value=clocks[0][:5])
-	# 		else:
-	# 			# Multiple clockings
-	# 			ws.cell(row=i, column=7, value=clocks[0][:5]) # Earliest
-	# 			ws.cell(row=i, column=8, value=clocks[-1][:5]) # Latest
+			# Check if the two clock times match
+			if clock_min == clock_max:
+				# Find if  clocks where start or end shift
+				low = int(roster_min) - int(clock_min)
+				high = int(roster_max) - int(clock_min)
+
+				# Start shift
+				if abs(low) < abs(high):
+					t = time.fromisoformat(clocking_times[0]).strftime('%H:%M')
+					ws.cell(row=i, column=7, value=t)
+				else:
+					t = time.fromisoformat(clocking_times[0]).strftime('%H:%M')
+					ws.cell(row=i, column=8, value=t)
+			# Handle normal shift
+			else:
+				ti = time.fromisoformat(min(clocking_times)).strftime('%H:%M')
+				ws.cell(row=i, column=7, value=ti)
+
+				to = time.fromisoformat(max(clocking_times)).strftime('%H:%M')
+				ws.cell(row=i, column=8, value=to)
 	
 	wb.save(WAGE_TIMES_FILE)
 
 
 
-
-sync_clocks_to_excel('Att Week One')
-sync_clocks_to_excel('Att Week Two')
-sync_clocks_to_excel('Cashier Week One', 'Cashier')
-sync_clocks_to_excel('Cashier Week Two', 'Cashier')
-
-
+# --- Running functions ---
+# sync_clocks_to_excel('Att Week One')
+# sync_clocks_to_excel('Att Week Two')
+# sync_clocks_to_excel('Cashier Week One', 'Cashier')
+# sync_clocks_to_excel('Cashier Week Two', 'Cashier')
 
 
+# collect_clock_times()
+
+# --------------------------
 
 
 
 
-
+# ****** WORKING ******
 
 
 

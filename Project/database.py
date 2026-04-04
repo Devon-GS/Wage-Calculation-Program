@@ -25,17 +25,17 @@ def initialize_tables():
 		con.commit()
 		CTkMessagebox(title="Success", message="Successfully Initialized The Database", icon="info")
 
-# initialize_tables()
-
-
-
 def clear_session_data():
-	with get_connection() as con:
+	with closing(get_connection()) as con:
 		c = con.cursor()
-		tables = ['rosterAttendant', 'rosterCashier',
-				  'ClockTimeAttendent', 'ClockTimeCashier', 'attTotal', 'cashierTotal', 'carwashTotal']
-		for table in tables: c.execute(f"DELETE FROM {table}")
+		# tables = ['rosterAttendant', 'rosterCashier',
+		# 		  'uniclox', 'attTotal', 'cashierTotal', 'carwashTotal']
+		# for table in tables: c.execute(f"DELETE FROM {table}")
+		
+		c.execute(f"DELETE FROM uniclox")
 		con.commit()
+
+# clear_session_data()
 
 # --- EMPLOYEE MANAGEMENT --- 
 def add_employees(ename, fname, sname, id):
@@ -221,6 +221,18 @@ def get_shift_times_db(roster, week):
 			CTkMessagebox(title="Error", message=error, icon="cancel")
 
 		return records
+	
+# --- GET CLOCK TIMES ---
+def get_clock_times():
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		try:
+			c.execute("SELECT * FROM uniclox")
+			
+			clocks = c.fetchall()
+			con.commit()
 
+		except Exception as error:
+			CTkMessagebox(title="Error", message=error, icon="cancel")
 		
-		
+		return clocks
