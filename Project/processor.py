@@ -37,7 +37,8 @@ def get_public_holidays():
 		wb = load_workbook(PUBLIC_HOILIDAY_FILE, data_only=True)
 		ws = wb.active
 		for row in ws.iter_rows(min_row=2, max_col=1, values_only=True):
-			if row[0]: holidays.append(row[0].strftime('%d/%m/%y'))
+			if row[0]: 
+				holidays.append(row[0].strftime('%d/%m/%Y'))
 		wb.close()
 	return holidays
 
@@ -49,6 +50,55 @@ def load_excel():
 def save_workbook(wb):
 	"""Saves the workbook to the disk."""
 	wb.save(WAGE_TIMES_FILE)
+
+def adjust_time(clock_hours, roster_h, day, is_in):
+	"""
+	1. Rounding logic - changes the dicimal to 15, 30 or 45
+	2. m = Minutes and h = Hours 
+	"""
+	if not clock_hours: return float(roster_h)
+	h, m = map(int, clock_hours.split(':'))
+
+	# Clock In Logic
+	if is_in: 
+		if h > roster_h or (h == roster_h and m > 0):
+			# Special logic for Sunday: No 4-minute grace period
+			if day == "Sunday":
+				if m <= 15: 
+					return h + 0.25
+				elif m <= 30: 
+					return h + 0.50
+				elif m <= 45: 
+					return h + 0.75
+				else: 
+					return float(h + 1)
+			 # Standard logic for all other days
+			else:
+				if m <= 4: 
+					return float(h) # Gives employee 4 min to clock in
+				elif m <= 15: 
+					return h + 0.25
+				elif m <= 30: 
+					return h + 0.50
+				elif m <= 45: 
+					return h + 0.75
+				else: 
+					return float(h + 1)
+		return float(roster_h)
+	# Clock Out Logic
+	else: 
+		if h < roster_h:
+			# if m <= 4: 
+			# 	return float(h)
+			if m <= 15: 
+				return float(h)
+			elif m <= 30: 
+				return h + 0.25
+			elif m <= 45: 
+				return h + 0.50
+			else: 
+				return h + 0.75
+		return float(roster_h)
 
 
 # --- Helper Functions End ---
@@ -386,69 +436,61 @@ def sync_clocks_to_excel(wb, sheet_name):
 
 # ****** WORKING ******
 
+
 # --- Step 4: Calculate Hours (Logic from att_cal_hours.py) ---
 def calculate_hours(wb, sheet_name):
+	"""
+	1. Calculates shift vs clocking hours
+	2. Calculate total normal, sunday, public hours
+	"""
 	# wb = load_workbook(WAGE_TIMES_FILE)
 	ws = wb[sheet_name]
 
+	# Get public holidays
 	holidays = get_public_holidays()
-	print(holidays)
+
+	# -- Caculate Shift vs Clocking Times To Get Hours Worked ---
+	for i in range(2, ws.max_row + 1):
+		name = ws.cell(row=i, column=1).value
+		if not name or 'Total' in name: 
+			continue
+
+		day = ws.cell(row=i, column=3).value
+		date = ws.cell(row=i, column=4).value
+		ti = ws.cell(row=i, column=5).value  # Roster In
+		to = ws.cell(row=i, column=6).value  # Roster Out
+		ci = ws.cell(row=i, column=7).value  # Clock In (str HH:MM)
+		co = ws.cell(row=i, column=8).value  # Clock Out (str HH:MM)
+
+		# Checks to see if an employee did not clock
+		if (ti and ti > 0 and not ci) or (to and to > 0 and not co):
+			ws.cell(row=i, column=12, value="No Clock")
+			continue
+
+		# Rounding Logic
+		calc_ti = adjust_time(ci, ti, day, True) if ci else 0
+		calc_to = adjust_time(co, to, day, False) if co else 0
+
+		# Night Shift Logic
+		if ti == 18:
+			hours = 24.0 - calc_ti
+		elif ti == 0 and to > 0:
+			hours = calc_to
+		else:
+			hours = calc_to - calc_ti
+
+		# Assign columns
+		if date in holidays:
+			ws.cell(row=i, column=9, value='')
+			ws.cell(row=i, column=11, value=hours)
+		elif day == "Sunday":
+			ws.cell(row=i, column=9, value='') 
+			ws.cell(row=i, column=10, value=hours)
+		else: 
+			ws.cell(row=i, column=9, value=hours)
 
 
-#     for i in range(2, ws.max_row + 1):
-#         name = ws.cell(row=i, column=1).value
-#         if not name or 'Total' in name: continue
 
-#         ti = ws.cell(row=i, column=5).value  # Roster In
-#         to = ws.cell(row=i, column=6).value  # Roster Out
-#         ci = ws.cell(row=i, column=7).value  # Clock In (str HH:MM)
-#         co = ws.cell(row=i, column=8).value  # Clock Out (str HH:MM)
-#         day = ws.cell(row=i, column=3).value
-#         date = ws.cell(row=i, column=4).value
-
-#         if (ti and ti > 0 and not ci) or (to and to > 0 and not co):
-#             ws.cell(row=i, column=12, value="No Clock")
-#             continue
-
-#         # Rounding Logic
-#         calc_ti = self._adjust_time(ci, ti, True) if ci else 0
-#         calc_to = self._adjust_time(co, to, False) if co else 0
-
-#         # Special Night Shift Logic
-#         if ti == 18:
-#             hours = 24.0 - calc_ti
-#         elif ti == 0 and to > 0:
-#             hours = calc_to
-#         else:
-#             hours = calc_to - calc_ti
-
-#         # Assign columns
-#         if date in holidays: ws.cell(row=i, column=11, value=hours)
-#         elif day == "Sunday": ws.cell(row=i, column=10, value=hours)
-#         else: ws.cell(row=i, column=9, value=hours)
-
-#     wb.save(WAGE_TIMES_FILE)
-
-# def _adjust_time(self, clock_str, roster_h, is_in):
-#     """The specific rounding logic from your scripts."""
-#     if not clock_str: return float(roster_h)
-#     h, m = map(int, clock_str.split(':'))
-	
-#     if is_in: # Clock In Logic
-#         if h > roster_h or (h == roster_h and m > 0):
-#             if m <= 15: return h + 0.25
-#             elif m <= 30: return h + 0.50
-#             elif m <= 45: return h + 0.75
-#             else: return float(h + 1)
-#         return float(roster_h)
-#     else: # Clock Out Logic
-#         if h < roster_h:
-#             if m <= 4: return float(h)
-#             elif m <= 15: return float(h)
-#             elif m <= 30: return h + 0.25
-#             elif m <= 45: return h + 0.50
-#             else: return h + 0.75
-#         return float(roster_h)
 
 
 
@@ -473,21 +515,21 @@ def calculate_hours(wb, sheet_name):
 # --- Running functions ---
 wb = load_excel()
 
-#  		# - Shifts -
-# sync_shifts_to_excel(wb, 'Att Week One')
-# sync_shifts_to_excel(wb, 'Att Week Two')
-# sync_shifts_to_excel(wb, 'Cashier Week One')
-# sync_shifts_to_excel(wb, 'Cashier Week Two')
+ 		# - Shifts -
+sync_shifts_to_excel(wb, 'Att Week One')
+sync_shifts_to_excel(wb, 'Att Week Two')
+sync_shifts_to_excel(wb, 'Cashier Week One')
+sync_shifts_to_excel(wb, 'Cashier Week Two')
 
 
-# 		# - Clock -
-# sync_clocks_to_excel(wb, 'Att Week One')
-# sync_clocks_to_excel(wb, 'Att Week Two')
-# sync_clocks_to_excel(wb, 'Cashier Week One')
-# sync_clocks_to_excel(wb, 'Cashier Week Two')
+		# - Clock -
+sync_clocks_to_excel(wb, 'Att Week One')
+sync_clocks_to_excel(wb, 'Att Week Two')
+sync_clocks_to_excel(wb, 'Cashier Week One')
+sync_clocks_to_excel(wb, 'Cashier Week Two')
 
 		# - Calculate -
-# calculate_hours(wb, 'Att Week One')
+calculate_hours(wb, 'Att Week One')
 
 
 
@@ -496,6 +538,12 @@ save_workbook(wb)
 
 # collect_clock_times()
 
+
+# Reculculate wages function
+
+# total wages normal, sunday, public
+
+# change public holiday to store in database so that you dont have to reload work book every run
 # --------------------------
 
 
