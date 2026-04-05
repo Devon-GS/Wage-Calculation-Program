@@ -4,8 +4,9 @@ import pandas as pd
 import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
-from config import (WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, 
-					ATT_ROSTER_FILE, CAS_ROSTER_FILE, BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE)
+from openpyxl.styles import Alignment
+from config import (WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE, CAS_ROSTER_FILE, 
+					BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
 
 
 # --- Helper Functions ---
@@ -21,6 +22,7 @@ def load_excel():
 def save_workbook(wb):
 	"""Saves the workbook to the disk."""
 	wb.save(WAGE_TIMES_FILE)
+	wb.close()
 
 def get_badge_mapping():
 	"""Creates a dictionary {Name: BadgeID} from the badges.xlsx file."""
@@ -497,27 +499,76 @@ def calculate_hours(wb, sheet_name):
 
 		# Assign columns
 		# Get cashier dates
-		if sheet_name in ['Cashier Week One', 'Cashier Week Two']:
-			bc = get_cashier_dates()
-			for dy, dt in bc:
-				if dy.upper() == name.upper() and dt == date:
-					ws.cell(row=i, column=9, value='')
-					ws.cell(row=i, column=12, value=hours)
-		elif date in holidays:
+		if date in holidays:
 			ws.cell(row=i, column=9, value='')
 			ws.cell(row=i, column=11, value=hours)
 		elif day == "Sunday":
 			ws.cell(row=i, column=9, value='') 
 			ws.cell(row=i, column=10, value=hours)
+		elif sheet_name in ['Cashier Week One', 'Cashier Week Two']:
+			bc = get_cashier_dates()
+			for dy, dt in bc:
+				if dy.upper() == name.upper() and dt == date:
+					ws.cell(row=i, column=9, value='')
+					ws.cell(row=i, column=13, value=hours)
+				else:
+					ws.cell(row=i, column=9, value=hours)
 		else: 
 			ws.cell(row=i, column=9, value=hours)
 
+
+# step 5 totals
 
 
 
 
 
 # ****** WORKING ******
+
+
+# --- Step 4: Formating Excel (Logic from att_cal_hours.py) ---
+def format_excel(wb):
+	# Get column configs
+	cols_att = COLUMN_WIDTHS_ATT
+	cols_tot = COLUMN_WIDTHS_TOTALS
+	col_diff = COL_DIFF
+
+	# Sheet names
+	weekly_sheets = ['Att Week One', 'Att Week Two', 'Cashier Week One', 'Cashier Week Two']
+	total_sheets = ['Att Total', 'Cashier Total']
+
+	# Apply formats to sheets
+	for sheet_name in weekly_sheets + total_sheets:
+		if sheet_name not in wb.sheetnames: 
+			continue
+		
+		ws = wb[sheet_name]
+
+		if sheet_name in weekly_sheets:
+			# Apply Column Widths
+			for col, size in cols_att.items():
+				ws.column_dimensions[col].width = size + col_diff
+			
+		# 	# Style 'Total' rows
+		# 	style_cols = [1, 2, 9, 10, 11, 12, 13] if 'Cashier' in sheet_name else [1, 2, 9, 10, 11, 12]
+		# 	for row in range(2, ws.max_row + 1):
+		# 		if ws.cell(row=row, column=1).value and 'Total' in str(ws.cell(row=row, column=1).value):
+		# 			for c in style_cols:
+		# 				ws.cell(row=row, column=c).style = "total_format"
+		
+		# else: # Logic for Total sheets
+		# 	# 1. Apply Column Widths
+		# 	for col, size in cols_tot.items():
+		# 		ws.column_dimensions[col].width = size + col_diff
+			
+		# 	# 2. Center Align columns B through F
+		# 	for row in range(2, ws.max_row + 1):
+		# 		for col_idx in range(2, 7):
+		# 			ws.cell(row=row, column=col_idx).alignment = Alignment(horizontal='center')
+
+
+
+
 
 
 
@@ -574,9 +625,19 @@ calculate_hours(wb, 'Att Week Two')
 calculate_hours(wb, 'Cashier Week One')
 calculate_hours(wb, 'Cashier Week Two')
 
+# format_excel(wb)
+
 save_workbook(wb)
 
 
+#  ---- WORKING AND ERRORS ---
+
+# Error - not cal cashier hours
+# Error not deleteing excel
+
+# no clock = 1
+
+# Formats
 
 # Reculculate wages function
 
