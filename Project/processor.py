@@ -520,13 +520,71 @@ def calculate_hours(wb, sheet_name):
 			ws.cell(row=i, column=9, value=hours)
 
 
-# step 5 totals
-
-
-
-
 
 # ****** WORKING ******
+
+# --- Step 5: Total Hours Worked ---
+def cal_total_hours(wb):
+
+    ws = wb['Att Week One']
+    
+    # Initialize accumulators
+    totals = {'std': 0, 'sun': 0, 'prem': 0, 'nc': 0}
+    last_name, last_badge = None, None
+
+    # Iterate through rows (start at row 2 to skip headers)
+    # Using ws.max_row + 1 to ensure the last person's total is written
+    for row in range(2, ws.max_row + 2):
+        name = ws.cell(row=row, column=1).value
+        day = ws.cell(row=row, column=3).value
+        
+        # Determine if this is a "Total" row or an empty break row
+        is_total_row = name and "Total" in str(name)
+        is_empty_row = name is None
+
+        # 1. LOGIC: If it's a normal data row, accumulate hours
+        if name and not is_total_row:
+            # Update tracking for name/badge to use when writing total line
+            last_name = name
+            last_badge = ws.cell(row=row, column=2).value
+            
+            # Accumulate values
+            nc = ws.cell(row=row, column=12).value
+            if nc is not None:
+                totals['nc'] = 1
+            elif day == 'Sunday':
+                totals['sun'] += (ws.cell(row=row, column=10).value or 0)
+            elif ws.cell(row=row, column=11).value is not None:
+                totals['prem'] += ws.cell(row=row, column=11).value
+            else:
+                totals['std'] += (ws.cell(row=row, column=9).value or 0)
+
+        # 2. LOGIC: Write totals if we hit a break (empty row) or an existing Total row
+        elif (recalculate == 'no' and is_empty_row and last_name) or \
+             (recalculate != 'no' and is_total_row):
+            
+            # If creating a new row (not recalculating), set Name and Badge
+            if recalculate == 'no':
+                ws.cell(row=row, column=1, value=f"{last_name} Total")
+                ws.cell(row=row, column=2, value=last_badge)
+
+            # Write the calculated totals
+            ws.cell(row=row, column=9, value=totals['std'])
+            ws.cell(row=row, column=10, value=totals['sun'])
+            ws.cell(row=row, column=11, value=totals['prem'])
+            ws.cell(row=row, column=12, value=totals['nc'])
+
+            # Reset accumulators for next person
+            totals = {'std': 0, 'sun': 0, 'prem': 0, 'nc': 0}
+            last_name = None 
+
+   
+
+
+
+
+
+
 
 
 # --- Step 4: Formating Excel (Logic from att_cal_hours.py) ---
@@ -560,32 +618,15 @@ def format_excel(wb):
 					for c in style_cols:
 						ws.cell(row=row, column=c).style = "total_style"
 		
-		# else: # Logic for Total sheets
-		# 	# 1. Apply Column Widths
-		# 	for col, size in cols_tot.items():
-		# 		ws.column_dimensions[col].width = size + col_diff
+		else: # Logic for Total sheets
+			# Apply Column Widths
+			for col, size in cols_tot.items():
+				ws.column_dimensions[col].width = size + col_diff
 			
-		# 	# 2. Center Align columns B through F
-		# 	for row in range(2, ws.max_row + 1):
-		# 		for col_idx in range(2, 7):
-		# 			ws.cell(row=row, column=col_idx).alignment = Alignment(horizontal='center')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
+			# # Center Align columns B through F
+			# for row in range(2, ws.max_row + 1):
+			# 	for col_idx in range(2, 7):
+			# 		ws.cell(row=row, column=col_idx).alignment = Alignment(horizontal='center')
 
 
 
