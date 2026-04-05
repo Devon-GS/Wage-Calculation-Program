@@ -552,12 +552,13 @@ def format_excel(wb):
 			for col, size in cols_att.items():
 				ws.column_dimensions[col].width = size + col_diff
 			
-		# 	# Style 'Total' rows
-		# 	style_cols = [1, 2, 9, 10, 11, 12, 13] if 'Cashier' in sheet_name else [1, 2, 9, 10, 11, 12]
-		# 	for row in range(2, ws.max_row + 1):
-		# 		if ws.cell(row=row, column=1).value and 'Total' in str(ws.cell(row=row, column=1).value):
-		# 			for c in style_cols:
-		# 				ws.cell(row=row, column=c).style = "total_format"
+			# Style 'Total' rows
+			style_cols = [1, 2, 9, 10, 11, 12, 13] if 'Cashier' in sheet_name else [1, 2, 9, 10, 11, 12]
+
+			for row in range(2, ws.max_row + 1):
+				if ws.cell(row=row, column=1).value and 'Total' in str(ws.cell(row=row, column=1).value):
+					for c in style_cols:
+						ws.cell(row=row, column=c).style = "total_style"
 		
 		# else: # Logic for Total sheets
 		# 	# 1. Apply Column Widths
@@ -628,7 +629,7 @@ calculate_hours(wb, 'Att Week Two')
 calculate_hours(wb, 'Cashier Week One')
 calculate_hours(wb, 'Cashier Week Two')
 
-# format_excel(wb)
+format_excel(wb)
 
 save_workbook(wb)
 

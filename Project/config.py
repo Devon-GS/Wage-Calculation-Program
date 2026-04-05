@@ -25,7 +25,7 @@ THIN_SIDE = Side(style='thin', color="000000")
 DOUBLE_SIDE = Side(style='double', color="000000")
 
 TOTAL_STYLE = NamedStyle(
-	name = "TOTAL_STYLE",
+	name = "total_style",
 	font = Font(bold=True),
 	border = Border(top=THIN_SIDE, bottom=DOUBLE_SIDE)	
 )
@@ -42,6 +42,9 @@ def CREATE_EXCEL():
 
 		# Add named style
 		wb.add_named_style(TOTAL_STYLE)
+
+		# Create the bold font style
+		header_font = Font(bold=True, underline='single')
 
 		# Remove and add sheets
 		wb.remove(wb['Sheet'])
@@ -82,6 +85,10 @@ def CREATE_EXCEL():
 				ws["L1"] = "No Clock"
 				if ws in [wb['Cashier Week One'], wb['Cashier Week Two']]:
 					ws["M1"] = 'Cashier'
+
+			# Bold headings
+			for cell in ws[1]:
+				cell.font = header_font
 
 		wb.save(WAGE_TIMES_FILE)
 		wb.close()
