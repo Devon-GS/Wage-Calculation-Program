@@ -11,10 +11,7 @@ def get_connection():
 def initialize_tables():
 	with get_connection() as con:
 		c = con.cursor()
-		# Roster & Total Tables
-		# for role in ["Att", "Cashier"]:
-		# 	for week in ["One", "Two"]:
-		# 		c.execute(f"CREATE TABLE IF NOT EXISTS roster{role}Week{week} (name TEXT, badge TEXT, thur TEXT, fri TEXT, sat TEXT, sun TEXT, mon TEXT, tue TEXT, wed TEXT)")
+	
 		c.execute("CREATE TABLE IF NOT EXISTS rosterAttendant (name TEXT, badge TEXT, day TEXT, date TEXT, shift TEXT, week TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS rosterCashier (name TEXT, badge TEXT, day TEXT, date TEXT, shift TEXT, week TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS uniclox (badge TEXT, date TEXT, time TEXT)")
@@ -22,20 +19,50 @@ def initialize_tables():
 		c.execute("CREATE TABLE IF NOT EXISTS cashierTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, noClock TEXT, cashier TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS carwashTotal (name TEXT, badge TEXT, normal TEXT, sunday TEXT, public TEXT, extra TEXT)")
 		c.execute("CREATE TABLE IF NOT EXISTS employeeNames (englishName TEXT, fullName TEXT, Surname TEXT, idPass TEXT UNIQUE)")
+		c.execute("CREATE TABLE IF NOT EXISTS publicHolidays (date TEXT)")
+
 		con.commit()
 		CTkMessagebox(title="Success", message="Successfully Initialized The Database", icon="info")
 
-def clear_session_data():
+def clear_session_data(table=None):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		# tables = ['rosterAttendant', 'rosterCashier',
-		# 		  'uniclox', 'attTotal', 'cashierTotal', 'carwashTotal']
-		# for table in tables: c.execute(f"DELETE FROM {table}")
+
+		if table == None:
+			tables_name = ['rosterAttendant', 'rosterCashier',
+				    'uniclox', 'attTotal', 'cashierTotal', 'carwashTotal']
+		else:
+			tables_name = [table]
 		
-		c.execute(f"DELETE FROM uniclox")
+		for table in tables_name: c.execute(f"DELETE FROM {table}")
 		con.commit()
 
-# clear_session_data()
+# --- GET PUBBLIC HOLIDAYS --- 
+def public_holidays_db(holidays):
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		try:
+			clear_session_data('publicHolidays')
+
+			c.executemany(f"INSERT INTO publicHolidays (date) VALUES (?)", holidays)
+			con.commit()
+
+		except Exception as error:
+			CTkMessagebox(title="Error", message=error, icon="cancel")
+
+def get_public_holidays():
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		try:
+			c.execute("SELECT * FROM publicHolidays")
+			
+			public_holidays = [records[0] for records in c.fetchall()]
+			con.commit()
+
+		except Exception as error:
+			CTkMessagebox(title="Error", message=error, icon="cancel")
+	
+	return public_holidays
 
 # --- EMPLOYEE MANAGEMENT --- 
 def add_employees(ename, fname, sname, id):

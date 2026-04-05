@@ -5,10 +5,23 @@ import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
 from config import (WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, 
-					ATT_ROSTER_FILE, CAS_ROSTER_FILE, BADGE_NUMBER_FILE, CARWASH_FILE)
+					ATT_ROSTER_FILE, CAS_ROSTER_FILE, BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE)
 
 
 # --- Helper Functions ---
+def clear_excel():
+	if os.path.isfile(WAGE_TIMES_FILE):
+		os.remove(WAGE_TIMES_FILE)
+
+def load_excel():
+	"""Opens the workbook and returns the object."""
+	wb = load_workbook(WAGE_TIMES_FILE) 
+	return wb  
+
+def save_workbook(wb):
+	"""Saves the workbook to the disk."""
+	wb.save(WAGE_TIMES_FILE)
+
 def get_badge_mapping():
 	"""Creates a dictionary {Name: BadgeID} from the badges.xlsx file."""
 	mapping = {}
@@ -19,6 +32,24 @@ def get_badge_mapping():
 			# row[0] is Name, row[1] is Badge
 			mapping[str(row[0]).strip()] = str(row[1]).strip()
 	return mapping
+
+def get_cashier_dates():
+	"""Gets dates of cashier shifts for employee that works cashier and baker shifts"""
+	if os.path.exists(BAKER_CASHIER_FILE):
+		wb = load_workbook(BAKER_CASHIER_FILE, data_only=True)
+		ws = wb.active
+
+		bc_working = []
+		for row in ws.iter_rows(min_row=2, max_col=2, max_row=20, values_only=True):
+			x = row
+			if x[0] != None:
+				name = x[0]
+				cashier_date = x[1].strftime('%d/%m/%Y')
+				bc = [name, cashier_date]
+				bc_working.append(bc)
+
+		wb.close()
+		return bc_working
 
 def split_roster_time(val):
 	"""Replaces the old first() and second() regex functions."""
@@ -31,25 +62,17 @@ def split_roster_time(val):
 	except:
 		return 0.0, 0.0
 
-def get_public_holidays():
+def collect_public_holidays():
+	"""Get public holidays and save to database"""
 	holidays = []
 	if os.path.exists(PUBLIC_HOILIDAY_FILE):
 		wb = load_workbook(PUBLIC_HOILIDAY_FILE, data_only=True)
 		ws = wb.active
 		for row in ws.iter_rows(min_row=2, max_col=1, values_only=True):
 			if row[0]: 
-				holidays.append(row[0].strftime('%d/%m/%Y'))
+				holidays.append((row[0].strftime('%d/%m/%Y'),))
 		wb.close()
-	return holidays
-
-def load_excel():
-	"""Opens the workbook and returns the object."""
-	wb = load_workbook(WAGE_TIMES_FILE) 
-	return wb  
-
-def save_workbook(wb):
-	"""Saves the workbook to the disk."""
-	wb.save(WAGE_TIMES_FILE)
+	db.public_holidays_db(holidays)
 
 def adjust_time(clock_hours, roster_h, day, is_in):
 	"""
@@ -349,6 +372,8 @@ def sync_clocks_to_excel(wb, sheet_name):
 	"""
 	1. Matches clockings to the shift rows in the Excel sheet.
 	2. ti = Time in | to = Time out [Actual clock times]
+	3. Moves Sunday and Public holiday to right columns
+	4. For cahsiers moves cashier/baker employee's cashiers times to right column
 	"""
 
 	clocks = db.get_clock_times()
@@ -428,15 +453,6 @@ def sync_clocks_to_excel(wb, sheet_name):
 				ws.cell(row=i, column=8, value=to)
 
 
-
-
-
-
-
-
-# ****** WORKING ******
-
-
 # --- Step 4: Calculate Hours (Logic from att_cal_hours.py) ---
 def calculate_hours(wb, sheet_name):
 	"""
@@ -447,7 +463,7 @@ def calculate_hours(wb, sheet_name):
 	ws = wb[sheet_name]
 
 	# Get public holidays
-	holidays = get_public_holidays()
+	holidays = db.get_public_holidays()
 
 	# -- Caculate Shift vs Clocking Times To Get Hours Worked ---
 	for i in range(2, ws.max_row + 1):
@@ -480,7 +496,14 @@ def calculate_hours(wb, sheet_name):
 			hours = calc_to - calc_ti
 
 		# Assign columns
-		if date in holidays:
+		# Get cashier dates
+		if sheet_name in ['Cashier Week One', 'Cashier Week Two']:
+			bc = get_cashier_dates()
+			for dy, dt in bc:
+				if dy.upper() == name.upper() and dt == date:
+					ws.cell(row=i, column=9, value='')
+					ws.cell(row=i, column=12, value=hours)
+		elif date in holidays:
 			ws.cell(row=i, column=9, value='')
 			ws.cell(row=i, column=11, value=hours)
 		elif day == "Sunday":
@@ -494,7 +517,7 @@ def calculate_hours(wb, sheet_name):
 
 
 
-
+# ****** WORKING ******
 
 
 
@@ -513,7 +536,24 @@ def calculate_hours(wb, sheet_name):
 
 
 # --- Running functions ---
+
+	# - Load Workbook -
 wb = load_excel()
+
+		# - Clear database -
+db.clear_session_data()
+
+		# - Clear Excel -
+clear_excel()
+
+		# - Send roster shift to db -
+roster_shift_to_db("Attendant", "WeekOne")
+roster_shift_to_db("Attendant", "WeekTwo")
+roster_shift_to_db("Cashier", "WeekOne")
+roster_shift_to_db("Cashier", "WeekTwo")
+
+		# - Collect Clocks -
+collect_clock_times()
 
  		# - Shifts -
 sync_shifts_to_excel(wb, 'Att Week One')
@@ -530,26 +570,21 @@ sync_clocks_to_excel(wb, 'Cashier Week Two')
 
 		# - Calculate -
 calculate_hours(wb, 'Att Week One')
-
-
+calculate_hours(wb, 'Att Week Two')
+calculate_hours(wb, 'Cashier Week One')
+calculate_hours(wb, 'Cashier Week Two')
 
 save_workbook(wb)
 
-
-# collect_clock_times()
 
 
 # Reculculate wages function
 
 # total wages normal, sunday, public
 
-# change public holiday to store in database so that you dont have to reload work book every run
+# Add error handleing to processor functions
+
 # --------------------------
-
-
-
-
-
 
 
 
@@ -565,45 +600,3 @@ save_workbook(wb)
 #         c = con.cursor()
 #         c.executemany("INSERT INTO carwashTotal VALUES (?,?,?,?,?,?)", data)
 #         con.commit()
-		
-
-
-
-
-
-
-
-
-
-
-# ------- EXTRA ----------
-
-# Assuming header=4 for Cashiers or header=1 for Attendants
-	# hdr = 1 if role == "Att" else 4
-	# cols = ['idx','ATTENDANTS', 'THURS', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED'] if role == "Att" \
-	# 		else ['idx','CASHIERS', 'THU', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED']
-
-# --- to excel ---
-# wb = load_workbook(WAGE_TIMES_FILE)
-		# sheet_name = f"{role} Week One"
-		# if sheet_name not in wb.sheetnames:
-		# 	wb.create_sheet(sheet_name)
-		# ws = wb[sheet_name]
-		
-		# 3. Write to Excel and map Badges
-		# current_row = 2
-		# for index, row in data.iterrows():
-		# 	name = str(row[cols[1]]).strip()
-		# 	badge_id = badges.get(name, "NOT FOUND") # <--- USING THE BADGE FILE HERE
-		# 	print(name)
-			
-			# Write Name and Badge to columns A and B
-			# ws.cell(row=current_row, column=1, value=name)
-			# ws.cell(row=current_row, column=2, value=badge_id)
-			
-			# ... rest of your logic to fill dates and rostered times ...
-			# current_row += 1
-			
-		# wb.save(WAGE_TIMES_FILE)
-
-# ------- EXTRA END ----------

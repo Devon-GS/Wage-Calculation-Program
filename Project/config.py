@@ -29,7 +29,6 @@ if not os.path.isfile(WAGE_TIMES_FILE):
 	
 	for sheet in sheet_list:
 		wb.create_sheet(sheet)
-
 	
 	# Create heading
 	for ws in wb.worksheets:
@@ -46,6 +45,8 @@ if not os.path.isfile(WAGE_TIMES_FILE):
 			ws["J1"] = "Sunday Hours"
 			ws["K1"] = "Public Hours"
 			ws["L1"] = "No Clock"
+			if ws in [wb['Cashier Week One'], wb['Cashier Week Two']]:
+				ws["M1"] = 'Cashier'
 
 	wb.save(WAGE_TIMES_FILE)
 	wb.close()
@@ -60,3 +61,7 @@ TOTAL_STYLE = {
 }
 
 COLUMN_WIDTHS_ATT = {'A':15, 'B':12, 'C':10, 'D':10, 'E':8, 'F':8, 'G':12, 'H':12, 'I':8, 'J':12, 'K':12, 'L':10}
+
+
+
+print('config')

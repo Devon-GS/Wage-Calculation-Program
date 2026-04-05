@@ -8,7 +8,7 @@ import traceback
 
 # Import your logic classes
 import database as db
-# import processor as Processor
+import processor as processor
 from payroll_logic import PayrollManager
 from payslips import PayslipGenerator
 
@@ -88,7 +88,7 @@ class WageApp(ctk.CTk):
 
 		# Public holiday button
 		ctk.CTkButton(self.setup_card, text="Public Holidays", fg_color="#4f46e5", hover_color="#4338ca", 
-				command=lambda: os.startfile(config.PUBLIC_HOILIDAY_FILE)).grid(row=1, column=1, padx=5, pady=(0, 15), sticky="ew")
+				command=self.public_holidays).grid(row=1, column=1, padx=5, pady=(0, 15), sticky="ew")
 		
 		# Rosters button
 		ctk.CTkButton(self.setup_card, text="Rosters", fg_color="#4f46e5", hover_color="#4338ca", 
@@ -102,7 +102,7 @@ class WageApp(ctk.CTk):
 		ctk.CTkButton(self.setup_card, text="Employee Infomation", fg_color="#4f46e5", hover_color="#4338ca",
 				command=pop_up).grid(row=3, column=0, columnspan=2, padx=5, pady=(0, 15), sticky="ew")
 		
-		# Uniclox burron
+		# Uniclox button
 		ctk.CTkButton(self.setup_card, text="Open Uniclox", fg_color="#4f46e5", hover_color="#4338ca", 
 				command=lambda: os.startfile(config.UNICLOX_FOLDER)).grid(row=4, column=0, columnspan=2, padx=5, pady=(0, 15), sticky="ew")
 
@@ -147,6 +147,21 @@ class WageApp(ctk.CTk):
 			CTkMessagebox(title="Initialize Database", 
 				message="Operation Canceled",
 				icon="cancel")
+			
+	def public_holidays(self):
+		msg = CTkMessagebox(title="Public Holidays", 
+				message="Do you want edit public holidays or update database?",
+				icon="question", 
+				option_1="Update", 
+				option_2="Edit")
+		
+		# Get response
+		response = msg.get()
+
+		if response == 'Edit':
+			os.startfile(config.PUBLIC_HOILIDAY_FILE)
+		else:
+			processor.collect_public_holidays()
 
 	# def run_wages(self):
 	# 	try:
