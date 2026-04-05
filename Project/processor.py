@@ -5,7 +5,7 @@ import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
-from config import (WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE, CAS_ROSTER_FILE, 
+from config import (CREATE_EXCEL, WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE, CAS_ROSTER_FILE, 
 					BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
 
 
@@ -16,6 +16,9 @@ def clear_excel():
 
 def load_excel():
 	"""Opens the workbook and returns the object."""
+	if not os.path.isfile(WAGE_TIMES_FILE):
+		CREATE_EXCEL()
+
 	wb = load_workbook(WAGE_TIMES_FILE) 
 	return wb  
 
@@ -588,14 +591,14 @@ def format_excel(wb):
 
 # --- Running functions ---
 
+		# - Clear Excel -
+clear_excel()
+
 	# - Load Workbook -
 wb = load_excel()
 
 		# - Clear database -
 db.clear_session_data()
-
-		# - Clear Excel -
-clear_excel()
 
 		# - Send roster shift to db -
 roster_shift_to_db("Attendant", "WeekOne")
@@ -632,8 +635,6 @@ save_workbook(wb)
 
 #  ---- WORKING AND ERRORS ---
 
-# Error - not cal cashier hours
-# Error not deleteing excel
 
 # no clock = 1
 

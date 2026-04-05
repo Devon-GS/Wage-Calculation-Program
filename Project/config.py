@@ -36,51 +36,52 @@ COLUMN_WIDTHS_TOTALS = {'A':11.00, 'B':16.44, 'C':16.00, 'D':21.78, 'E':11.11, '
 COL_DIFF = 0.78
 
 # --- INITILIZE EXCEL WORKBOOK ---
-if not os.path.isfile(WAGE_TIMES_FILE):
-	wb = Workbook()
+def CREATE_EXCEL():
+	if not os.path.isfile(WAGE_TIMES_FILE):
+		wb = Workbook()
 
-	# Add named style
-	wb.add_named_style(TOTAL_STYLE)
+		# Add named style
+		wb.add_named_style(TOTAL_STYLE)
 
-	# Remove and add sheets
-	wb.remove(wb['Sheet'])
-	sheet_list = ['Att Week One', 'Att Week Two', 'Att Total', 
-			   'Cashier Week One', 'Cashier Week Two', 'Cashier Total']
-	
-	for sheet in sheet_list:
-		wb.create_sheet(sheet)
-	
-	# Create heading
-	for ws in wb.worksheets:
-		if ws in [wb['Att Total'], wb['Cashier Total']]:
-			if ws == wb['Att Total']:
-				ws["A1"] = 'Name'
-				ws["B1"] = 'Total Normal Hours'
-				ws["C1"] = 'Total Sunday Hours'
-				ws["D1"] = 'Total Public Holiday Hours'
-				ws["E1"] = 'No Clock'
+		# Remove and add sheets
+		wb.remove(wb['Sheet'])
+		sheet_list = ['Att Week One', 'Att Week Two', 'Att Total', 
+				'Cashier Week One', 'Cashier Week Two', 'Cashier Total']
+		
+		for sheet in sheet_list:
+			wb.create_sheet(sheet)
+		
+		# Create heading
+		for ws in wb.worksheets:
+			if ws in [wb['Att Total'], wb['Cashier Total']]:
+				if ws == wb['Att Total']:
+					ws["A1"] = 'Name'
+					ws["B1"] = 'Total Normal Hours'
+					ws["C1"] = 'Total Sunday Hours'
+					ws["D1"] = 'Total Public Holiday Hours'
+					ws["E1"] = 'No Clock'
+				else:
+					ws["A1"] = 'Name'
+					ws["B1"] = 'Total Normal Hours'
+					ws["C1"] = 'Total Sunday Hours'
+					ws["D1"] = 'Total Public Holiday Hours'
+					ws["E1"] = 'No Clock'
+					ws["F1"] = 'Baker/Cashier Hours'
 			else:
-				ws["A1"] = 'Name'
-				ws["B1"] = 'Total Normal Hours'
-				ws["C1"] = 'Total Sunday Hours'
-				ws["D1"] = 'Total Public Holiday Hours'
-				ws["E1"] = 'No Clock'
-				ws["F1"] = 'Baker/Cashier Hours'
-		else:
-			ws["A1"] = "Name"
-			ws["B1"] = "Badge Number"
-			ws["C1"] = "Week Day"
-			ws["D1"] = "Date"
-			ws["E1"] = "Time In"
-			ws["F1"] = "Time Out"
-			ws["G1"] = "Clock Time In"
-			ws["H1"] = "Clock Time Out"
-			ws["I1"] = "Hours"
-			ws["J1"] = "Sunday Hours"
-			ws["K1"] = "Public Hours"
-			ws["L1"] = "No Clock"
-			if ws in [wb['Cashier Week One'], wb['Cashier Week Two']]:
-				ws["M1"] = 'Cashier'
+				ws["A1"] = "Name"
+				ws["B1"] = "Badge Number"
+				ws["C1"] = "Week Day"
+				ws["D1"] = "Date"
+				ws["E1"] = "Time In"
+				ws["F1"] = "Time Out"
+				ws["G1"] = "Clock Time In"
+				ws["H1"] = "Clock Time Out"
+				ws["I1"] = "Hours"
+				ws["J1"] = "Sunday Hours"
+				ws["K1"] = "Public Hours"
+				ws["L1"] = "No Clock"
+				if ws in [wb['Cashier Week One'], wb['Cashier Week Two']]:
+					ws["M1"] = 'Cashier'
 
-	wb.save(WAGE_TIMES_FILE)
-	wb.close()
+		wb.save(WAGE_TIMES_FILE)
+		wb.close()
