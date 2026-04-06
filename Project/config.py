@@ -69,7 +69,7 @@ def CREATE_EXCEL():
 					ws["C1"] = 'Total Sunday Hours'
 					ws["D1"] = 'Total Public Holiday Hours'
 					ws["E1"] = 'No Clock'
-					ws["F1"] = 'Baker/Cashier Hours'
+					ws["F1"] = "Baker's Cashier Hours"
 			else:
 				ws["A1"] = "Name"
 				ws["B1"] = "Badge Number"

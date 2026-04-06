@@ -305,7 +305,7 @@ def sync_shifts_to_excel(wb, sheet_name):
 	# Write shifts, badges, days, dates to Excel 
 	current_row = 2
 	prev_name = None
-	prev_shift = []
+	prev_shift = 0
 
 	for row in data:
 		name = row[0]
@@ -319,15 +319,14 @@ def sync_shifts_to_excel(wb, sheet_name):
 			pass
 		elif prev_name != name:
 			ws.cell(row=current_row, column=1, value=f'{prev_name.upper()} Total')
+			prev_shift = 0
 			current_row += 2
-		# else:
-		# 	ws.cell(row=current_row, column=1, value=f'{prev_name.upper()} Total')
 		
 		# Split shift times into start and end
 		shift_times = split_roster_time(shift)
 		shift_start = shift_times[0]
 		shift_end = shift_times[1]	
-
+				
 		# Logic for night shift
 		if shift_start == 0 and prev_shift >= 18:
 			current_row -= 1
@@ -532,18 +531,20 @@ def cal_total_hours(wb, role="Attendant"):
 
 	# Check what role is being calculated
 	if role == "Attendant":
-		sheets = ['Att Week One', 'Att Week Two'] 
+		sheets = ['Att Week One', 'Att Week Two']
+		total_sheet = "Att Total" 
 	else:	
 		sheets = ['Cashier Week One', 'Cashier Week Two']
+		total_sheet = "Cashier Total" 
 
-	# Initilize dic
-	# totals = {}	
+	# Initilize totals dic
+	totals = {}	
 
 	# Loop through sheets an calulate totals
 	for sheet in sheets:
 		ws = wb[sheet]
 
-		totals = {}	
+		w_totals = {}	
     
 		# Iterate through rows (start at row 2 to skip headers)
 		# Using ws.max_row + 1 to ensure the last person's total is written
@@ -558,39 +559,63 @@ def cal_total_hours(wb, role="Attendant"):
 			# If it's a normal day row, accumulate hours
 			if name and not is_total_row:
 				# Create name key in dic
-				totals.setdefault(name, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
+				w_totals.setdefault(name, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
 				
 				# Accumulate values
 				nc = ws.cell(row=row, column=12).value
 				if nc is not None:
-					totals[name]['nc'] = 1
+					w_totals[name]['nc'] = 1
 				elif day == 'Sunday':
-					totals[name]['sun'] += (ws.cell(row=row, column=10).value or 0)
+					w_totals[name]['sun'] += (ws.cell(row=row, column=10).value or 0)
 				elif ws.cell(row=row, column=11).value is not None:
-					totals[name]['pub'] += ws.cell(row=row, column=11).value
+					w_totals[name]['pub'] += ws.cell(row=row, column=11).value
 				else:
-					totals[name]['std'] += (ws.cell(row=row, column=9).value or 0)
+					w_totals[name]['std'] += (ws.cell(row=row, column=9).value or 0)
 			
 			elif name and is_total_row:
 				# Get name without 'Total'
 				name_total = ws.cell(row=row - 1, column=1).value
 
 				# Add to total coloumn in excel
-				ws.cell(row=row, column=9, value=totals[name_total]['std'])
-				ws.cell(row=row, column=10, value=totals[name_total]['sun'])
-				ws.cell(row=row, column=11, value=totals[name_total]['pub'])
-				ws.cell(row=row, column=12, value=totals[name_total]['nc'])
+				ws.cell(row=row, column=9, value=w_totals[name_total]['std'])
+				ws.cell(row=row, column=10, value=w_totals[name_total]['sun'])
+				ws.cell(row=row, column=11, value=w_totals[name_total]['pub'])
+				ws.cell(row=row, column=12, value=w_totals[name_total]['nc'])
 
-		# for data in totals.items():
-		# 	print(data[0])
+				# Add to totals dic
+				totals.setdefault(name_total, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
 
-		print(totals)
+				totals[name_total]['std'] += w_totals[name_total]['std']
+				totals[name_total]['sun'] += w_totals[name_total]['sun']
+				totals[name_total]['pub'] += w_totals[name_total]['pub']
+				totals[name_total]['nc'] += w_totals[name_total]['nc']
+
+	# Sync data to total sheets in excel
+	ws = wb[total_sheet]
+
+	current_row = 2
+
+	for name, hours in totals.items():
+		ws.cell(row=current_row, column=1, value=name)
+		ws.cell(row=current_row, column=2, value=hours['std'])
+		ws.cell(row=current_row, column=3, value=hours['sun'])
+		ws.cell(row=current_row, column=4, value=hours['pub'])
+		if hours['nc'] == 1:
+			ws.cell(row=current_row, column=5, value="No Clock")
+		else:
+			ws.cell(row=current_row, column=5, value="")
+
+		current_row += 1
+
+		
+
+
+
+
 
 				
 
-			
-	
-
+		
    
 
 
@@ -636,10 +661,10 @@ def format_excel(wb):
 			for col, size in cols_tot.items():
 				ws.column_dimensions[col].width = size + col_diff
 			
-			# # Center Align columns B through F
-			# for row in range(2, ws.max_row + 1):
-			# 	for col_idx in range(2, 7):
-			# 		ws.cell(row=row, column=col_idx).alignment = Alignment(horizontal='center')
+			# Center Align columns B through F
+			for row in range(2, ws.max_row + 1):
+				for col_idx in range(2, 7):
+					ws.cell(row=row, column=col_idx).alignment = Alignment(horizontal='center')
 
 
 
@@ -651,9 +676,6 @@ def format_excel(wb):
 
 	# - Load Workbook -
 wb = load_excel()
-
-
-cal_total_hours(wb)
 
 # 		# - Clear database -
 # db.clear_session_data()
@@ -686,23 +708,28 @@ cal_total_hours(wb)
 # calculate_hours(wb, 'Cashier Week One')
 # calculate_hours(wb, 'Cashier Week Two')
 
-# format_excel(wb)
+		# - Calculate Hours -
+# cal_total_hours(wb)
+cal_total_hours(wb, "Cashiers")
 
+		#  - Format Excel -
+format_excel(wb)
+
+		# - Save Workbook -
 save_workbook(wb)
 
 
 #  ---- WORKING AND ERRORS ---
 
+# total wages normal, sunday, public
 
-# no clock = 1
-
-# Formats
+# format total sheet
 
 # Reculculate wages function
 
-# total wages normal, sunday, public
-
 # Add error handleing to processor functions
+
+# Remove print statements
 
 # --------------------------
 
