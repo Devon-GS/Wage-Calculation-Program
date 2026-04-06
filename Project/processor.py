@@ -320,6 +320,8 @@ def sync_shifts_to_excel(wb, sheet_name):
 		elif prev_name != name:
 			ws.cell(row=current_row, column=1, value=f'{prev_name.upper()} Total')
 			current_row += 2
+		# else:
+		# 	ws.cell(row=current_row, column=1, value=f'{prev_name.upper()} Total')
 		
 		# Split shift times into start and end
 		shift_times = split_roster_time(shift)
@@ -371,6 +373,8 @@ def sync_shifts_to_excel(wb, sheet_name):
 		current_row += 1
 		prev_name = name
 		prev_shift = shift_start
+
+	ws.cell(row=current_row, column=1, value=f'{prev_name.upper()} Total')
 
 # --- Step 3: Write Clocks to Excel ---
 def sync_clocks_to_excel(wb, sheet_name):
@@ -524,59 +528,68 @@ def calculate_hours(wb, sheet_name):
 # ****** WORKING ******
 
 # --- Step 5: Total Hours Worked ---
-def cal_total_hours(wb):
+def cal_total_hours(wb, role="Attendant"):
 
-    ws = wb['Att Week One']
+	# Check what role is being calculated
+	if role == "Attendant":
+		sheets = ['Att Week One', 'Att Week Two'] 
+	else:	
+		sheets = ['Cashier Week One', 'Cashier Week Two']
+
+	# Initilize dic
+	# totals = {}	
+
+	# Loop through sheets an calulate totals
+	for sheet in sheets:
+		ws = wb[sheet]
+
+		totals = {}	
     
-    # Initialize accumulators
-    totals = {'std': 0, 'sun': 0, 'prem': 0, 'nc': 0}
-    last_name, last_badge = None, None
+		# Iterate through rows (start at row 2 to skip headers)
+		# Using ws.max_row + 1 to ensure the last person's total is written
+		for row in range(2, ws.max_row + 2):
+			name = ws.cell(row=row, column=1).value
+			day = ws.cell(row=row, column=3).value
 
-    # Iterate through rows (start at row 2 to skip headers)
-    # Using ws.max_row + 1 to ensure the last person's total is written
-    for row in range(2, ws.max_row + 2):
-        name = ws.cell(row=row, column=1).value
-        day = ws.cell(row=row, column=3).value
-        
-        # Determine if this is a "Total" row or an empty break row
-        is_total_row = name and "Total" in str(name)
-        is_empty_row = name is None
+			# Determine if this is a "Total" row or an empty break row
+			is_total_row = name and "Total" in str(name)
+			# is_empty_row = name is None
 
-        # 1. LOGIC: If it's a normal data row, accumulate hours
-        if name and not is_total_row:
-            # Update tracking for name/badge to use when writing total line
-            last_name = name
-            last_badge = ws.cell(row=row, column=2).value
-            
-            # Accumulate values
-            nc = ws.cell(row=row, column=12).value
-            if nc is not None:
-                totals['nc'] = 1
-            elif day == 'Sunday':
-                totals['sun'] += (ws.cell(row=row, column=10).value or 0)
-            elif ws.cell(row=row, column=11).value is not None:
-                totals['prem'] += ws.cell(row=row, column=11).value
-            else:
-                totals['std'] += (ws.cell(row=row, column=9).value or 0)
+			# If it's a normal day row, accumulate hours
+			if name and not is_total_row:
+				# Create name key in dic
+				totals.setdefault(name, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
+				
+				# Accumulate values
+				nc = ws.cell(row=row, column=12).value
+				if nc is not None:
+					totals[name]['nc'] = 1
+				elif day == 'Sunday':
+					totals[name]['sun'] += (ws.cell(row=row, column=10).value or 0)
+				elif ws.cell(row=row, column=11).value is not None:
+					totals[name]['pub'] += ws.cell(row=row, column=11).value
+				else:
+					totals[name]['std'] += (ws.cell(row=row, column=9).value or 0)
+			
+			elif name and is_total_row:
+				# Get name without 'Total'
+				name_total = ws.cell(row=row - 1, column=1).value
 
-        # 2. LOGIC: Write totals if we hit a break (empty row) or an existing Total row
-        elif (recalculate == 'no' and is_empty_row and last_name) or \
-             (recalculate != 'no' and is_total_row):
-            
-            # If creating a new row (not recalculating), set Name and Badge
-            if recalculate == 'no':
-                ws.cell(row=row, column=1, value=f"{last_name} Total")
-                ws.cell(row=row, column=2, value=last_badge)
+				# Add to total coloumn in excel
+				ws.cell(row=row, column=9, value=totals[name_total]['std'])
+				ws.cell(row=row, column=10, value=totals[name_total]['sun'])
+				ws.cell(row=row, column=11, value=totals[name_total]['pub'])
+				ws.cell(row=row, column=12, value=totals[name_total]['nc'])
 
-            # Write the calculated totals
-            ws.cell(row=row, column=9, value=totals['std'])
-            ws.cell(row=row, column=10, value=totals['sun'])
-            ws.cell(row=row, column=11, value=totals['prem'])
-            ws.cell(row=row, column=12, value=totals['nc'])
+		# for data in totals.items():
+		# 	print(data[0])
 
-            # Reset accumulators for next person
-            totals = {'std': 0, 'sun': 0, 'prem': 0, 'nc': 0}
-            last_name = None 
+		print(totals)
+
+				
+
+			
+	
 
    
 
@@ -631,46 +644,49 @@ def format_excel(wb):
 
 
 
-# --- Running functions ---
+# # --- Running functions ---
 
-		# - Clear Excel -
-clear_excel()
+# 		# - Clear Excel -
+# clear_excel()
 
 	# - Load Workbook -
 wb = load_excel()
 
-		# - Clear database -
-db.clear_session_data()
 
-		# - Send roster shift to db -
-roster_shift_to_db("Attendant", "WeekOne")
-roster_shift_to_db("Attendant", "WeekTwo")
-roster_shift_to_db("Cashier", "WeekOne")
-roster_shift_to_db("Cashier", "WeekTwo")
+cal_total_hours(wb)
 
-		# - Collect Clocks -
-collect_clock_times()
+# 		# - Clear database -
+# db.clear_session_data()
 
- 		# - Shifts -
-sync_shifts_to_excel(wb, 'Att Week One')
-sync_shifts_to_excel(wb, 'Att Week Two')
-sync_shifts_to_excel(wb, 'Cashier Week One')
-sync_shifts_to_excel(wb, 'Cashier Week Two')
+# 		# - Send roster shift to db -
+# roster_shift_to_db("Attendant", "WeekOne")
+# roster_shift_to_db("Attendant", "WeekTwo")
+# roster_shift_to_db("Cashier", "WeekOne")
+# roster_shift_to_db("Cashier", "WeekTwo")
+
+# 		# - Collect Clocks -
+# collect_clock_times()
+
+#  		# - Shifts -
+# sync_shifts_to_excel(wb, 'Att Week One')
+# sync_shifts_to_excel(wb, 'Att Week Two')
+# sync_shifts_to_excel(wb, 'Cashier Week One')
+# sync_shifts_to_excel(wb, 'Cashier Week Two')
 
 
-		# - Clock -
-sync_clocks_to_excel(wb, 'Att Week One')
-sync_clocks_to_excel(wb, 'Att Week Two')
-sync_clocks_to_excel(wb, 'Cashier Week One')
-sync_clocks_to_excel(wb, 'Cashier Week Two')
+# 		# - Clock -
+# sync_clocks_to_excel(wb, 'Att Week One')
+# sync_clocks_to_excel(wb, 'Att Week Two')
+# sync_clocks_to_excel(wb, 'Cashier Week One')
+# sync_clocks_to_excel(wb, 'Cashier Week Two')
 
-		# - Calculate -
-calculate_hours(wb, 'Att Week One')
-calculate_hours(wb, 'Att Week Two')
-calculate_hours(wb, 'Cashier Week One')
-calculate_hours(wb, 'Cashier Week Two')
+# 		# - Calculate -
+# calculate_hours(wb, 'Att Week One')
+# calculate_hours(wb, 'Att Week Two')
+# calculate_hours(wb, 'Cashier Week One')
+# calculate_hours(wb, 'Cashier Week Two')
 
-format_excel(wb)
+# format_excel(wb)
 
 save_workbook(wb)
 
