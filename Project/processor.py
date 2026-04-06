@@ -473,6 +473,9 @@ def calculate_hours(wb, sheet_name):
 	# Get public holidays
 	holidays = db.get_public_holidays()
 
+	# Get baker's cashier hours
+	bc = get_cashier_dates()
+
 	# -- Caculate Shift vs Clocking Times To Get Hours Worked ---
 	for i in range(2, ws.max_row + 1):
 		name = ws.cell(row=i, column=1).value
@@ -512,13 +515,11 @@ def calculate_hours(wb, sheet_name):
 			ws.cell(row=i, column=9, value='') 
 			ws.cell(row=i, column=10, value=hours)
 		elif sheet_name in ['Cashier Week One', 'Cashier Week Two']:
-			bc = get_cashier_dates()
-			for dy, dt in bc:
-				if dy.upper() == name.upper() and dt == date:
-					ws.cell(row=i, column=9, value='')
-					ws.cell(row=i, column=13, value=hours)
-				else:
-					ws.cell(row=i, column=9, value=hours)
+			if [name, date] in bc:
+				ws.cell(row=i, column=9, value='')
+				ws.cell(row=i, column=13, value=hours)
+			else:
+				ws.cell(row=i, column=9, value=hours)
 		else: 
 			ws.cell(row=i, column=9, value=hours)
 
@@ -671,44 +672,44 @@ def format_excel(wb):
 
 # # --- Running functions ---
 
-# 		# - Clear Excel -
-# clear_excel()
+		# - Clear Excel -
+clear_excel()
 
 	# - Load Workbook -
 wb = load_excel()
 
-# 		# - Clear database -
-# db.clear_session_data()
+		# - Clear database -
+db.clear_session_data()
 
-# 		# - Send roster shift to db -
-# roster_shift_to_db("Attendant", "WeekOne")
-# roster_shift_to_db("Attendant", "WeekTwo")
-# roster_shift_to_db("Cashier", "WeekOne")
-# roster_shift_to_db("Cashier", "WeekTwo")
+		# - Send roster shift to db -
+roster_shift_to_db("Attendant", "WeekOne")
+roster_shift_to_db("Attendant", "WeekTwo")
+roster_shift_to_db("Cashier", "WeekOne")
+roster_shift_to_db("Cashier", "WeekTwo")
 
-# 		# - Collect Clocks -
-# collect_clock_times()
+		# - Collect Clocks -
+collect_clock_times()
 
-#  		# - Shifts -
-# sync_shifts_to_excel(wb, 'Att Week One')
-# sync_shifts_to_excel(wb, 'Att Week Two')
-# sync_shifts_to_excel(wb, 'Cashier Week One')
-# sync_shifts_to_excel(wb, 'Cashier Week Two')
+ 		# - Shifts -
+sync_shifts_to_excel(wb, 'Att Week One')
+sync_shifts_to_excel(wb, 'Att Week Two')
+sync_shifts_to_excel(wb, 'Cashier Week One')
+sync_shifts_to_excel(wb, 'Cashier Week Two')
 
 
-# 		# - Clock -
-# sync_clocks_to_excel(wb, 'Att Week One')
-# sync_clocks_to_excel(wb, 'Att Week Two')
-# sync_clocks_to_excel(wb, 'Cashier Week One')
-# sync_clocks_to_excel(wb, 'Cashier Week Two')
-
-# 		# - Calculate -
-# calculate_hours(wb, 'Att Week One')
-# calculate_hours(wb, 'Att Week Two')
-# calculate_hours(wb, 'Cashier Week One')
-# calculate_hours(wb, 'Cashier Week Two')
+		# - Clock -
+sync_clocks_to_excel(wb, 'Att Week One')
+sync_clocks_to_excel(wb, 'Att Week Two')
+sync_clocks_to_excel(wb, 'Cashier Week One')
+sync_clocks_to_excel(wb, 'Cashier Week Two')
 
 		# - Calculate Hours -
+calculate_hours(wb, 'Att Week One')
+calculate_hours(wb, 'Att Week Two')
+calculate_hours(wb, 'Cashier Week One')
+calculate_hours(wb, 'Cashier Week Two')
+
+		# - Calculate Total Hours -
 # cal_total_hours(wb)
 cal_total_hours(wb, "Cashiers")
 
@@ -721,7 +722,7 @@ save_workbook(wb)
 
 #  ---- WORKING AND ERRORS ---
 
-# total wages normal, sunday, public
+# total wages normal, sunday, public - cahier baker not calulating
 
 # format total sheet
 
