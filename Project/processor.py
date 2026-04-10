@@ -722,6 +722,16 @@ save_workbook(wb)
 
 #  ---- WORKING AND ERRORS ---
 
+# Add no leeway on public holidays when calculating hours
+
+# Add feature if employee who works baker and cashier positions works as cashier on sunday or public holiday 
+# to automatically calculate total hours add to dic under label c_pub, c_sun
+
+# Add/change headings in cashier total sheet:
+#												- Change "Baker's Cashier Hours" -> "B - Cashier Hours"
+#												- Add "B - Cashier Sunday Hours"
+# 												- Add "B - Cashier Public Holiday Hours"
+
 # total wages normal, sunday, public - cahier baker not calulating
 
 # format total sheet
