@@ -79,39 +79,56 @@ def collect_public_holidays():
 		wb.close()
 	db.public_holidays_db(holidays)
 
-def adjust_time(clock_hours, roster_h, day, is_in):
+def adjust_time(clock_hours, roster_h, day, date, is_in):
 	"""
 	1. Rounding logic - changes the dicimal to 15, 30 or 45
 	2. m = Minutes and h = Hours 
+	3. is_in = Clock in or out
+	4. Check if Sunday or public holiday and gives no leeway
 	"""
-	if not clock_hours: return float(roster_h)
+	# Get public holidays
+	holidays = db.get_public_holidays()
+
+	if not clock_hours: 
+		return float(roster_h)
+	
+	# Split hours and minites
 	h, m = map(int, clock_hours.split(':'))
+
+	# Set flag
+	flag = 'norm'
 
 	# Clock In Logic
 	if is_in: 
 		if h > roster_h or (h == roster_h and m > 0):
 			# Special logic for Sunday: No 4-minute grace period
-			if day == "Sunday":
+			if day == "Sunday" or date in holidays:
+				# Set flag
+				if day == "Sunday":
+					flag = 'sun'
+				else:
+					flag = 'pub'
+
 				if m <= 15: 
-					return h + 0.25
+					return h + 0.25, flag
 				elif m <= 30: 
-					return h + 0.50
+					return h + 0.50, flag
 				elif m <= 45: 
-					return h + 0.75
+					return h + 0.75, flag
 				else: 
-					return float(h + 1)
+					return float(h + 1), flag
 			 # Standard logic for all other days
 			else:
 				if m <= 4: 
-					return float(h) # Gives employee 4 min to clock in
+					return float(h), flag # Gives employee 4 min to clock in
 				elif m <= 15: 
-					return h + 0.25
+					return h + 0.25, flag
 				elif m <= 30: 
-					return h + 0.50
+					return h + 0.50, flag
 				elif m <= 45: 
-					return h + 0.75
+					return h + 0.75, flag
 				else: 
-					return float(h + 1)
+					return float(h + 1), flag
 		return float(roster_h)
 	# Clock Out Logic
 	else: 
@@ -119,14 +136,14 @@ def adjust_time(clock_hours, roster_h, day, is_in):
 			# if m <= 4: 
 			# 	return float(h)
 			if m <= 15: 
-				return float(h)
+				return float(h), flag
 			elif m <= 30: 
-				return h + 0.25
+				return h + 0.25, flag
 			elif m <= 45: 
-				return h + 0.50
+				return h + 0.50, flag
 			else: 
-				return h + 0.75
-		return float(roster_h)
+				return h + 0.75, flag
+		return float(roster_h), flag
 
 
 # --- Helper Functions End ---
@@ -398,6 +415,7 @@ def sync_clocks_to_excel(wb, sheet_name):
 
 		for c_badge, c_date, c_time in clocks:
 			if badge == c_badge and date == c_date:
+				# print(badge, date, c_time)
 				clocking_times.append(c_time)
 
 		ti_roster = ws.cell(row=i, column=5).value
@@ -407,15 +425,26 @@ def sync_clocks_to_excel(wb, sheet_name):
 		if ti_roster == 0.0 and to_roster == 0.0:
 			continue
 
+		if not clocking_times:
+			continue
+
 		# Handle night shift
 		elif ti_roster == 18:
-			t = time.fromisoformat(max(clocking_times)).strftime('%H:%M')
-			ws.cell(row=i, column=7, value=t)
+			t = time.fromisoformat(max(clocking_times))
+
+			# Checks double night shift if only one clock
+			if t.hour > 14:
+				t = time.fromisoformat(max(clocking_times)).strftime('%H:%M')
+				ws.cell(row=i, column=7, value=t)
 
 		# Handle morning of night shift
 		elif to_roster == 6 or to_roster == 7:
-			t = time.fromisoformat(min(clocking_times)).strftime('%H:%M')
-			ws.cell(row=i, column=8, value=t)
+			t = time.fromisoformat(min(clocking_times))
+
+			# Checks double night shift if only one clock
+			if t.hour < 14:
+				t = time.fromisoformat(min(clocking_times)).strftime('%H:%M')
+				ws.cell(row=i, column=8, value=t)
 
 		# Handle when employee clocks in/out only once 
 		elif ti_roster > 0 and to_roster > 0 and len(clocking_times) == 1:
@@ -470,9 +499,6 @@ def calculate_hours(wb, sheet_name):
 	# wb = load_workbook(WAGE_TIMES_FILE)
 	ws = wb[sheet_name]
 
-	# Get public holidays
-	holidays = db.get_public_holidays()
-
 	# Get baker's cashier hours
 	bc = get_cashier_dates()
 
@@ -494,24 +520,30 @@ def calculate_hours(wb, sheet_name):
 			ws.cell(row=i, column=12, value="No Clock")
 			continue
 
-		# Rounding Logic
-		calc_ti = adjust_time(ci, ti, day, True) if ci else 0
-		calc_to = adjust_time(co, to, day, False) if co else 0
+		# Rounding Logic and spliting time and flag
+		calc_ti = adjust_time(ci, ti, day, date, True) if ci else 0
+		calc_to = adjust_time(co, to, day, date, False) if co else 0
+
+		calc_ti_t = calc_ti[0]		# Set time
+		calc_ti_f = calc_ti[1]		# Set flag
+
+		calc_to_t = calc_to[0]		# Set time
+		calc_to_f = calc_to[1] 		# Set flag
 
 		# Night Shift Logic
 		if ti == 18:
-			hours = 24.0 - calc_ti
+			hours = 24.0 - calc_ti_t
 		elif ti == 0 and to > 0:
-			hours = calc_to
+			hours = calc_to_t
 		else:
-			hours = calc_to - calc_ti
+			hours = calc_to_t[0] - calc_ti_t[0]
 
 		# Assign columns
 		# Get cashier dates
-		if date in holidays:
+		if calc_ti_f == 'pub' or calc_to_f == 'pub':
 			ws.cell(row=i, column=9, value='')
 			ws.cell(row=i, column=11, value=hours)
-		elif day == "Sunday":
+		elif calc_ti_f == 'sun' or calc_to_f == 'sun':
 			ws.cell(row=i, column=9, value='') 
 			ws.cell(row=i, column=10, value=hours)
 		elif sheet_name in ['Cashier Week One', 'Cashier Week Two']:
@@ -703,15 +735,15 @@ sync_clocks_to_excel(wb, 'Att Week Two')
 sync_clocks_to_excel(wb, 'Cashier Week One')
 sync_clocks_to_excel(wb, 'Cashier Week Two')
 
-		# - Calculate Hours -
-calculate_hours(wb, 'Att Week One')
-calculate_hours(wb, 'Att Week Two')
-calculate_hours(wb, 'Cashier Week One')
-calculate_hours(wb, 'Cashier Week Two')
+# 		# - Calculate Hours -
+# calculate_hours(wb, 'Att Week One')
+# calculate_hours(wb, 'Att Week Two')
+# calculate_hours(wb, 'Cashier Week One')
+# calculate_hours(wb, 'Cashier Week Two')
 
 		# - Calculate Total Hours -
 # cal_total_hours(wb)
-cal_total_hours(wb, "Cashiers")
+# cal_total_hours(wb, "Cashiers")
 
 		#  - Format Excel -
 format_excel(wb)

@@ -51,6 +51,7 @@ def public_holidays_db(holidays):
 			CTkMessagebox(title="Error", message=error, icon="cancel")
 
 def get_public_holidays():
+	public_holidays = []
 	with closing(get_connection()) as con:
 		c = con.cursor()
 		try:
