@@ -492,6 +492,11 @@ def sync_clocks_to_excel(wb, sheet_name):
 				ws.cell(row=i, column=8, value=to)
 
 
+
+
+# Not moving public holidays of some employees
+# cashiers baker not working
+
 # --- Step 4: Calculate Hours (Logic from att_cal_hours.py) ---
 def calculate_hours(wb, sheet_name):
 	"""
