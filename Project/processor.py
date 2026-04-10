@@ -79,30 +79,34 @@ def collect_public_holidays():
 		wb.close()
 	db.public_holidays_db(holidays)
 
-def adjust_time(clock_hours, roster_h, day, date, is_in):
+def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 	"""
 	1. Rounding logic - changes the dicimal to 15, 30 or 45
 	2. m = Minutes and h = Hours 
 	3. is_in = Clock in or out
 	4. Check if Sunday or public holiday and gives no leeway
 	"""
-	# Get public holidays
-	holidays = db.get_public_holidays()
 
-	if not clock_hours: 
-		return float(roster_h)
+	# Set flag
+	if day == 'Sunday':
+		flag = 'sun'
+	elif date in holidays:
+		flag = 'pub'
+	else:
+		flag = 'norm'
+
+	if not clock_hours:
+		return float(roster_h), flag
 	
 	# Split hours and minites
 	h, m = map(int, clock_hours.split(':'))
-
-	# Set flag
-	flag = 'norm'
 
 	# Clock In Logic
 	if is_in: 
 		if h > roster_h or (h == roster_h and m > 0):
 			# Special logic for Sunday: No 4-minute grace period
-			if day == "Sunday" or date in holidays:
+			if date in holidays or day == "Sunday":
+				print(clock_hours, roster_h, day, date)
 				# Set flag
 				if day == "Sunday":
 					flag = 'sun'
@@ -129,12 +133,10 @@ def adjust_time(clock_hours, roster_h, day, date, is_in):
 					return h + 0.75, flag
 				else: 
 					return float(h + 1), flag
-		return float(roster_h)
+		return float(roster_h), flag
 	# Clock Out Logic
 	else: 
 		if h < roster_h:
-			# if m <= 4: 
-			# 	return float(h)
 			if m <= 15: 
 				return float(h), flag
 			elif m <= 30: 
@@ -502,6 +504,9 @@ def calculate_hours(wb, sheet_name):
 	# Get baker's cashier hours
 	bc = get_cashier_dates()
 
+	# Get public holidays
+	holidays = db.get_public_holidays()
+
 	# -- Caculate Shift vs Clocking Times To Get Hours Worked ---
 	for i in range(2, ws.max_row + 1):
 		name = ws.cell(row=i, column=1).value
@@ -521,8 +526,25 @@ def calculate_hours(wb, sheet_name):
 			continue
 
 		# Rounding Logic and spliting time and flag
-		calc_ti = adjust_time(ci, ti, day, date, True) if ci else 0
-		calc_to = adjust_time(co, to, day, date, False) if co else 0
+		calc_ti = adjust_time(ci, ti, day, date, holidays, True) if ci else 0
+		calc_to = adjust_time(co, to, day, date, holidays, False) if co else 0
+		
+		# Set flag for shifts where employee is off
+		if calc_ti == 0:
+			if day == 'Sunday':
+				calc_ti = (0, 'sun')
+			elif date in holidays:
+				calc_ti = (0, 'pub')
+			else:
+				calc_ti = (0, 'norm')
+
+		if calc_to == 0:
+			if day == 'Sunday':
+				calc_to = (0, 'sun')
+			elif date in holidays:
+				calc_to = (0, 'pub')
+			else:
+				calc_to = (0, 'norm')
 
 		calc_ti_t = calc_ti[0]		# Set time
 		calc_ti_f = calc_ti[1]		# Set flag
@@ -536,7 +558,7 @@ def calculate_hours(wb, sheet_name):
 		elif ti == 0 and to > 0:
 			hours = calc_to_t
 		else:
-			hours = calc_to_t[0] - calc_ti_t[0]
+			hours = calc_to_t - calc_ti_t
 
 		# Assign columns
 		# Get cashier dates
@@ -737,7 +759,7 @@ sync_clocks_to_excel(wb, 'Cashier Week Two')
 
 # 		# - Calculate Hours -
 # calculate_hours(wb, 'Att Week One')
-# calculate_hours(wb, 'Att Week Two')
+calculate_hours(wb, 'Att Week Two')
 # calculate_hours(wb, 'Cashier Week One')
 # calculate_hours(wb, 'Cashier Week Two')
 
