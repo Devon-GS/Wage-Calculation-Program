@@ -8,10 +8,13 @@
     - [x] Add "B - Cashier Public Holiday Hours"
 - [x] Fix: Total wages (normal, Sunday, public) for cashier/baker not calculating
 - [x] Format total sheet
-- [ ] Carwash time to database for export to payroll
-- [ ] Recalculate wages function
+- [x] Carwash time to database for export to payroll
+- [x] Remove print statements
 - [ ] Add error handling to processor functions
-- [ ] Remove print statements
+- [ ] Recalculate wages function
 - [ ] Payrol can make sheet any name
+- [ ] Tax
+- [ ] Payslips 
+- [ ] Copy for backup/keep
 
 ---

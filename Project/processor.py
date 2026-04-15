@@ -86,6 +86,11 @@ def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 	3. is_in = Clock in or out
 	4. Check if Sunday or public holiday and gives no leeway
 	"""
+
+	# Check if manual clock for recaculation
+	if type(clock_hours) != str:
+		clock_hours = clock_hours.strftime("%H:%M")
+
 	# Set flag
 	if day == 'Sunday':
 		flag = 'sun'
@@ -105,7 +110,6 @@ def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 		if h > roster_h or (h == roster_h and m > 0):
 			# Special logic for Sunday: No 4-minute grace period
 			if date in holidays or day == "Sunday":
-				# print(clock_hours, roster_h, day, date)
 				# Set flag
 				if day == "Sunday":
 					flag = 'sun'
@@ -416,7 +420,6 @@ def sync_clocks_to_excel(wb, sheet_name):
 
 		for c_badge, c_date, c_time in clocks:
 			if badge == c_badge and date == c_date:
-				# print(badge, date, c_time)
 				clocking_times.append(c_time)
 
 		ti_roster = ws.cell(row=i, column=5).value
@@ -725,8 +728,6 @@ def format_excel(wb):
 				for col_idx in range(2, 9):
 					ws.cell(row=row, column=col_idx).alignment = Alignment(horizontal='center')
 
-# ****** WORKING ******
-
 # --- Step 5: Carwash (Logic from carwash_db.py) ---
 def carwash_hours():
 	wb = load_workbook(CARWASH_FILE, data_only=True)
@@ -755,54 +756,3 @@ def carwash_hours():
 
 	# Add carwash times to database
 	db.carwash_db(data)
-
-
-
-# # --- Running functions ---
-
-# 		# - Clear Excel -
-# clear_excel()
-
-# 	# - Load Workbook -
-# wb = load_excel()
-
-# 		# - Clear database -
-# db.clear_session_data()
-
-# 		# - Send roster shift to db -
-# roster_shift_to_db("Attendant", "WeekOne")
-# roster_shift_to_db("Attendant", "WeekTwo")
-# roster_shift_to_db("Cashier", "WeekOne")
-# roster_shift_to_db("Cashier", "WeekTwo")
-
-# 		# - Collect Clocks -
-# collect_clock_times()
-
-#  		# - Shifts -
-# sync_shifts_to_excel(wb, 'Att Week One')
-# sync_shifts_to_excel(wb, 'Att Week Two')
-# sync_shifts_to_excel(wb, 'Cashier Week One')
-# sync_shifts_to_excel(wb, 'Cashier Week Two')
-
-
-# 		# - Clock -
-# sync_clocks_to_excel(wb, 'Att Week One')
-# sync_clocks_to_excel(wb, 'Att Week Two')
-# sync_clocks_to_excel(wb, 'Cashier Week One')
-# sync_clocks_to_excel(wb, 'Cashier Week Two')
-
-# # 		# - Calculate Hours -
-# calculate_hours(wb, 'Att Week One')
-# calculate_hours(wb, 'Att Week Two')
-# calculate_hours(wb, 'Cashier Week One')
-# calculate_hours(wb, 'Cashier Week Two')
-
-# 		# - Calculate Total Hours -
-# cal_total_hours(wb)
-# cal_total_hours(wb, "Cashiers")
-
-# 		#  - Format Excel -
-# format_excel(wb)
-
-# 		# - Save Workbook -
-# save_workbook(wb)

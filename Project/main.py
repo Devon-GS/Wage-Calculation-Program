@@ -112,7 +112,8 @@ class WageApp(ctk.CTk):
 		
 		ctk.CTkLabel(self.ops_card, text="Data Processing", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
 		
-		ctk.CTkButton(self.ops_card, text="RUN MAIN WAGE PROGRAM", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", command=self.run_wages).pack(fill="x", padx=20, pady=5)
+		ctk.CTkButton(self.ops_card, text="RUN WAGE TIME CALCULATION", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
+				command=self.run_wages).pack(fill="x", padx=20, pady=5)
 		
 		ctk.CTkButton(self.ops_card, text="Recalculate Hours", command=self.run_recal).pack(fill="x", padx=20, pady=5)
 		ctk.CTkButton(self.ops_card, text="Open Hours Sheet", fg_color="transparent", border_width=1, command=lambda: os.startfile("Wage Times.xlsx")).pack(fill="x", padx=20, pady=(5, 15))
@@ -126,8 +127,10 @@ class WageApp(ctk.CTk):
 		self.final_grid = ctk.CTkFrame(self.final_card, fg_color="transparent")
 		self.final_grid.pack(fill="x", padx=20, pady=(0, 15))
 		
-		ctk.CTkButton(self.final_grid, text="Calculate Tax", command=self.run_tax).grid(row=0, column=0, padx=(0, 5), sticky="ew")
-		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", command=self.run_slips).grid(row=0, column=1, padx=(5, 0), sticky="ew")
+		ctk.CTkButton(self.final_grid, text="RUN PAYROLL", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
+				command=self.run_tax).grid(row=0, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+		ctk.CTkButton(self.final_grid, text="Calculate Tax", command=self.run_tax).grid(row=1, column=0, padx=(0, 5), sticky="ew")
+		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", command=self.run_slips).grid(row=1, column=1, padx=(5, 0), sticky="ew")
 		self.final_grid.grid_columnconfigure((0, 1), weight=1)
 
 	# --- Logic Wrappers ---
@@ -163,43 +166,82 @@ class WageApp(ctk.CTk):
 		else:
 			processor.collect_public_holidays()
 
-	# def run_wages(self):
-	# 	try:
-	# 		# Add your specific workflow here
-	# 		# self.db.clear_session_data()
-	# 		self.processor.get_public_holidays()
-	# 		# self.processor.collect_clock_times("Att")
-	# 		self.processor.calculate_sheet_hours("Att Week One", "Att")
-	# 		messagebox.showinfo("Success", "Wage program finished successfully")
-	# 	except Exception:
-	# 		messagebox.showerror("Error", traceback.format_exc())
-
 	def run_wages(self):
 		try:
-			# 1. Clear old session data
-			self.db.clear_session_data()
-			
-			# 2. Collect from raw files
-			self.processor.collect_clock_times("Att")
-			self.processor.collect_clock_times("Cashier")
-			
-			# 3. Match clocks to Excel sheets
-			# Assuming "Att Week One" was already created by an initialization step
-			for sheet in ["Att Week One", "Att Week Two", "Cashier Week One", "Cashier Week Two"]:
-				role = "Att" if "Att" in sheet else "Cashier"
-				self.processor.sync_clocks_to_excel(sheet, role)
-				# self.processor.calculate_hours(sheet)
-			
-			# 4. Process Carwash
-			# self.processor.process_carwash()
+			# - Clear Excel -
+			processor.clear_excel()
 
-			messagebox.showinfo("Success", "Wages processed and matched to Excel successfully.")
-		except Exception as e:
-			messagebox.showerror("Error", f"An error occurred: {str(e)}")
+			# - Load Workbook -
+			wb = processor.load_excel()
+
+			# - Clear database -
+			db.clear_session_data()
+
+			# - Send roster shift to db -
+			processor.roster_shift_to_db("Attendant", "WeekOne")
+			processor.roster_shift_to_db("Attendant", "WeekTwo")
+			processor.roster_shift_to_db("Cashier", "WeekOne")
+			processor.roster_shift_to_db("Cashier", "WeekTwo")
+
+				# - Collect Clocks -
+			processor.collect_clock_times()
+
+			# - Shifts -
+			processor.sync_shifts_to_excel(wb, 'Att Week One')
+			processor.sync_shifts_to_excel(wb, 'Att Week Two')
+			processor.sync_shifts_to_excel(wb, 'Cashier Week One')
+			processor.sync_shifts_to_excel(wb, 'Cashier Week Two')
+
+
+			# - Clock -
+			processor.sync_clocks_to_excel(wb, 'Att Week One')
+			processor.sync_clocks_to_excel(wb, 'Att Week Two')
+			processor.sync_clocks_to_excel(wb, 'Cashier Week One')
+			processor.sync_clocks_to_excel(wb, 'Cashier Week Two')
+
+			# - Calculate Hours -
+			processor.calculate_hours(wb, 'Att Week One')
+			processor.calculate_hours(wb, 'Att Week Two')
+			processor.calculate_hours(wb, 'Cashier Week One')
+			processor.calculate_hours(wb, 'Cashier Week Two')
+
+			# - Calculate Total Hours -
+			processor.cal_total_hours(wb)
+			processor.cal_total_hours(wb, "Cashiers")
+
+			#  - Format Excel -
+			processor.format_excel(wb)
+
+			# - Save Workbook -
+			processor.save_workbook(wb)
+
+			#  - Carwash Times -
+			processor.carwash_hours()
+
+			messagebox.showinfo("Success", "Wage program finished successfully")
+		except Exception:
+			messagebox.showerror("Error", traceback.format_exc())
 
 	def run_recal(self):
-		self.processor.calculate_sheet_hours("Att Week One", "Att")
-		messagebox.showinfo("Recal", "Hours updated.")
+		try:
+			# - Load Workbook -
+			wb = processor.load_excel()
+			# - Calculate Hours -
+			processor.calculate_hours(wb, 'Att Week One')
+			processor.calculate_hours(wb, 'Att Week Two')
+			processor.calculate_hours(wb, 'Cashier Week One')
+			processor.calculate_hours(wb, 'Cashier Week Two')
+
+			# - Calculate Total Hours -
+			processor.cal_total_hours(wb)
+			processor.cal_total_hours(wb, "Cashiers")
+
+			# - Save Workbook -
+			processor.save_workbook(wb)
+
+			messagebox.showinfo("Success", "Recalculation finished successfully")
+		except Exception:
+			messagebox.showerror("Error", traceback.format_exc())
 
 	def run_tax(self):
 		self.payroll.calculate_tax()
