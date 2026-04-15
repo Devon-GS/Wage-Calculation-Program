@@ -30,8 +30,9 @@ TOTAL_STYLE = NamedStyle(
 	border = Border(top=THIN_SIDE, bottom=DOUBLE_SIDE)	
 )
 
-COLUMN_WIDTHS_ATT = {'A':15.00, 'B':13.57, 'C':10.71, 'D':10.0, 'E':6.86, 'F':8.43, 'G':12.00, 'H':13.71, 'I':5.43, 'J':12.43, 'K':11.29, 'L':8.00, 'M':6.68}
-COLUMN_WIDTHS_TOTALS = {'A':11.00, 'B':17.57, 'C':17.43, 'D':23.71, 'E':11.11, 'F':18.57}
+COLUMN_WIDTHS_ATT = {'A':15.00, 'B':13.57, 'C':10.71, 'D':10.0, 'E':6.86, 'F':8.43, 'G':12.00, 'H':13.71,
+					'I':5.43, 'J':12.43, 'K':11.29, 'L':8.00, 'M':12.39, 'N':14.83, 'O':13.61}
+COLUMN_WIDTHS_TOTALS = {'A':11.00, 'B':17.57, 'C':17.43, 'D':23.71, 'E':11.11, 'F':12.39, 'G':14.83, 'H':13.61}
 
 COL_DIFF = 0.78
 
@@ -69,7 +70,9 @@ def CREATE_EXCEL():
 					ws["C1"] = 'Total Sunday Hours'
 					ws["D1"] = 'Total Public Holiday Hours'
 					ws["E1"] = 'No Clock'
-					ws["F1"] = "Baker's Cashier Hours"
+					ws["F1"] = "Cashier Hours"
+					ws["G1"] = "C. Sunday Hours"
+					ws["H1"] = "C. Public Hours"
 			else:
 				ws["A1"] = "Name"
 				ws["B1"] = "Badge Number"
@@ -84,7 +87,9 @@ def CREATE_EXCEL():
 				ws["K1"] = "Public Hours"
 				ws["L1"] = "No Clock"
 				if ws in [wb['Cashier Week One'], wb['Cashier Week Two']]:
-					ws["M1"] = 'Cashier'
+					ws["M1"] = 'Cashier Hours'
+					ws["N1"] = 'C. Sunday Hours'
+					ws["O1"] = 'C. Public Hours'
 
 			# Bold headings
 			for cell in ws[1]:

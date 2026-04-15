@@ -86,7 +86,6 @@ def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 	3. is_in = Clock in or out
 	4. Check if Sunday or public holiday and gives no leeway
 	"""
-	# print(holidays)
 	# Set flag
 	if day == 'Sunday':
 		flag = 'sun'
@@ -494,7 +493,9 @@ def sync_clocks_to_excel(wb, sheet_name):
 
 
 
-# cashier baker add coulmns and 
+
+
+
 
 # --- Step 4: Calculate Hours (Logic from att_cal_hours.py) ---
 def calculate_hours(wb, sheet_name):
@@ -565,21 +566,35 @@ def calculate_hours(wb, sheet_name):
 			hours = calc_to_t - calc_ti_t
 
 		# Assign columns
-		# Get cashier dates
-		if calc_ti_f == 'pub' or calc_to_f == 'pub':
+		# Check if employee is a baker and a cashier
+		if sheet_name in ['Cashier Week One', 'Cashier Week Two']:
+			if [name, date] in bc:
+				if calc_ti_f == 'pub' or calc_to_f == 'pub':
+					ws.cell(row=i, column=9, value='')
+					ws.cell(row=i, column=15, value=hours)
+				elif calc_ti_f == 'sun' or calc_to_f == 'sun':
+					ws.cell(row=i, column=9, value='')
+					ws.cell(row=i, column=14, value=hours)
+				else:
+					ws.cell(row=i, column=9, value='')
+					ws.cell(row=i, column=13, value=hours)
+			else:
+				ws.cell(row=i, column=9, value=hours)
+		# All other employees
+		elif calc_ti_f == 'pub' or calc_to_f == 'pub':
 			ws.cell(row=i, column=9, value='')
 			ws.cell(row=i, column=11, value=hours)
 		elif calc_ti_f == 'sun' or calc_to_f == 'sun':
 			ws.cell(row=i, column=9, value='') 
 			ws.cell(row=i, column=10, value=hours)
-		elif sheet_name in ['Cashier Week One', 'Cashier Week Two']:
-			if [name, date] in bc:
-				ws.cell(row=i, column=9, value='')
-				ws.cell(row=i, column=13, value=hours)
-			else:
-				ws.cell(row=i, column=9, value=hours)
 		else: 
 			ws.cell(row=i, column=9, value=hours)
+
+
+
+
+
+
 
 
 
@@ -587,7 +602,6 @@ def calculate_hours(wb, sheet_name):
 
 # --- Step 5: Total Hours Worked ---
 def cal_total_hours(wb, role="Attendant"):
-
 	# Check what role is being calculated
 	if role == "Attendant":
 		sheets = ['Att Week One', 'Att Week Two']
@@ -665,7 +679,6 @@ def cal_total_hours(wb, role="Attendant"):
 			ws.cell(row=current_row, column=5, value="")
 
 		current_row += 1
-
 		
 
 
@@ -768,7 +781,7 @@ calculate_hours(wb, 'Cashier Week One')
 calculate_hours(wb, 'Cashier Week Two')
 
 		# - Calculate Total Hours -
-# cal_total_hours(wb)
+cal_total_hours(wb)
 # cal_total_hours(wb, "Cashiers")
 
 		#  - Format Excel -
