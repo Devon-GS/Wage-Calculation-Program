@@ -490,13 +490,6 @@ def sync_clocks_to_excel(wb, sheet_name):
 				to = time.fromisoformat(max(clocking_times)).strftime('%H:%M')
 				ws.cell(row=i, column=8, value=to)
 
-
-
-
-
-
-
-
 # --- Step 4: Calculate Hours (Logic from att_cal_hours.py) ---
 def calculate_hours(wb, sheet_name):
 	"""
@@ -567,19 +560,16 @@ def calculate_hours(wb, sheet_name):
 
 		# Assign columns
 		# Check if employee is a baker and a cashier
-		if sheet_name in ['Cashier Week One', 'Cashier Week Two']:
-			if [name, date] in bc:
-				if calc_ti_f == 'pub' or calc_to_f == 'pub':
-					ws.cell(row=i, column=9, value='')
-					ws.cell(row=i, column=15, value=hours)
-				elif calc_ti_f == 'sun' or calc_to_f == 'sun':
-					ws.cell(row=i, column=9, value='')
-					ws.cell(row=i, column=14, value=hours)
-				else:
-					ws.cell(row=i, column=9, value='')
-					ws.cell(row=i, column=13, value=hours)
+		if [name, date] in bc:
+			if calc_ti_f == 'pub' or calc_to_f == 'pub':
+				ws.cell(row=i, column=9, value='')
+				ws.cell(row=i, column=15, value=hours)
+			elif calc_ti_f == 'sun' or calc_to_f == 'sun':
+				ws.cell(row=i, column=9, value='')
+				ws.cell(row=i, column=14, value=hours)
 			else:
-				ws.cell(row=i, column=9, value=hours)
+				ws.cell(row=i, column=9, value='')
+				ws.cell(row=i, column=13, value=hours)
 		# All other employees
 		elif calc_ti_f == 'pub' or calc_to_f == 'pub':
 			ws.cell(row=i, column=9, value='')
@@ -589,16 +579,6 @@ def calculate_hours(wb, sheet_name):
 			ws.cell(row=i, column=10, value=hours)
 		else: 
 			ws.cell(row=i, column=9, value=hours)
-
-
-
-
-
-
-
-
-
-# ****** WORKING still do cashiers******
 
 # --- Step 5: Total Hours Worked ---
 def cal_total_hours(wb, role="Attendant"):
@@ -629,39 +609,59 @@ def cal_total_hours(wb, role="Attendant"):
 			is_total_row = name and "Total" in str(name)
 			# is_empty_row = name is None
 
-			# If it's a normal day row, accumulate hours
+			# If it's a normal day row, accumulate hours - Adds daily hours
 			if name and not is_total_row:
 				# Create name key in dic
-				w_totals.setdefault(name, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
-				
+				if role == 'Attendant':
+					w_totals.setdefault(name, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
+				else:
+					w_totals.setdefault(name, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0, 'cstd':0, 'csun':0, 'cpub':0})
+
 				# Accumulate values
 				nc = ws.cell(row=row, column=12).value
 				if nc is not None:
 					w_totals[name]['nc'] = 1
-				elif day == 'Sunday':
+				elif day == 'Sunday' and ws.cell(row=row, column=10).value is not None:
 					w_totals[name]['sun'] += (ws.cell(row=row, column=10).value or 0)
 				elif ws.cell(row=row, column=11).value is not None:
 					w_totals[name]['pub'] += ws.cell(row=row, column=11).value
+				elif role != 'Attendant':
+					w_totals[name]['std'] += (ws.cell(row=row, column=9).value or 0)
+					w_totals[name]['cstd'] += ws.cell(row=row, column=13).value or 0
+					w_totals[name]['csun'] += ws.cell(row=row, column=14).value or 0
+					w_totals[name]['cpub'] += ws.cell(row=row, column=15).value or 0
 				else:
 					w_totals[name]['std'] += (ws.cell(row=row, column=9).value or 0)
-			
+
+			# Write weekly total hours at end of week and adds the two weeks total hours 
 			elif name and is_total_row:
 				# Get name without 'Total'
 				name_total = ws.cell(row=row - 1, column=1).value
 
-				# Add to total coloumn in excel
+				# Add weekly to total coloumn in excel
 				ws.cell(row=row, column=9, value=w_totals[name_total]['std'])
 				ws.cell(row=row, column=10, value=w_totals[name_total]['sun'])
 				ws.cell(row=row, column=11, value=w_totals[name_total]['pub'])
 				ws.cell(row=row, column=12, value=w_totals[name_total]['nc'])
+				if role != 'Attendant':
+					ws.cell(row=row, column=13, value=w_totals[name_total]['cstd'])
+					ws.cell(row=row, column=14, value=w_totals[name_total]['csun'])
+					ws.cell(row=row, column=15, value=w_totals[name_total]['cpub'])
 
-				# Add to totals dic
-				totals.setdefault(name_total, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
+				# Add two weeks to totals dic
+				if role == "Attendant":
+					totals.setdefault(name_total, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
+				else:
+					totals.setdefault(name_total, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0, 'cstd':0, 'csun':0,'cpub':0})
 
 				totals[name_total]['std'] += w_totals[name_total]['std']
 				totals[name_total]['sun'] += w_totals[name_total]['sun']
 				totals[name_total]['pub'] += w_totals[name_total]['pub']
 				totals[name_total]['nc'] += w_totals[name_total]['nc']
+				if role != 'Attendant':
+					totals[name_total]['cstd'] += w_totals[name_total]['cstd']
+					totals[name_total]['csun'] += w_totals[name_total]['csun']
+					totals[name_total]['cpub'] += w_totals[name_total]['cpub']
 
 	# Sync data to total sheets in excel
 	ws = wb[total_sheet]
@@ -677,25 +677,12 @@ def cal_total_hours(wb, role="Attendant"):
 			ws.cell(row=current_row, column=5, value="No Clock")
 		else:
 			ws.cell(row=current_row, column=5, value="")
+		if role != 'Attendant':
+			ws.cell(row=current_row, column=6, value=hours['cstd'])
+			ws.cell(row=current_row, column=7, value=hours['csun'])
+			ws.cell(row=current_row, column=8, value=hours['cpub'])
 
 		current_row += 1
-		
-
-
-
-
-
-				
-
-		
-   
-
-
-
-
-
-
-
 
 # --- Step 4: Formating Excel (Logic from att_cal_hours.py) ---
 def format_excel(wb):
@@ -721,7 +708,7 @@ def format_excel(wb):
 				ws.column_dimensions[col].width = size + col_diff
 			
 			# Style 'Total' rows
-			style_cols = [1, 2, 9, 10, 11, 12, 13] if 'Cashier' in sheet_name else [1, 2, 9, 10, 11, 12]
+			style_cols = [1, 2, 9, 10, 11, 12, 13, 14, 15] if 'Cashier' in sheet_name else [1, 2, 9, 10, 11, 12]
 
 			for row in range(2, ws.max_row + 1):
 				if ws.cell(row=row, column=1).value and 'Total' in str(ws.cell(row=row, column=1).value):
@@ -735,8 +722,26 @@ def format_excel(wb):
 			
 			# Center Align columns B through F
 			for row in range(2, ws.max_row + 1):
-				for col_idx in range(2, 7):
+				for col_idx in range(2, 9):
 					ws.cell(row=row, column=col_idx).alignment = Alignment(horizontal='center')
+
+# ****** WORKING ******
+
+# # --- Step 5: Carwash (Logic from carwash_db.py) ---
+# def process_carwash(self):
+#     wb = load_workbook(CARWASH_FILE, data_only=True)
+#     ws = wb['Times']
+#     data = []
+#     for row in ws.iter_rows(min_row=3, max_row=10, min_col=12, max_col=16, values_only=True):
+#         if row[0]: data.append((row[0], row[1], row[2], row[3], '0', '0'))
+	
+#     with self.db.get_connection() as con:
+#         c = con.cursor()
+#         c.executemany("INSERT INTO carwashTotal VALUES (?,?,?,?,?,?)", data)
+#         con.commit()
+
+
+
 
 
 
@@ -782,27 +787,10 @@ calculate_hours(wb, 'Cashier Week Two')
 
 		# - Calculate Total Hours -
 cal_total_hours(wb)
-# cal_total_hours(wb, "Cashiers")
+cal_total_hours(wb, "Cashiers")
 
 		#  - Format Excel -
 format_excel(wb)
 
 		# - Save Workbook -
 save_workbook(wb)
-
-
-
-
-
-# # --- Step 5: Carwash (Logic from carwash_db.py) ---
-# def process_carwash(self):
-#     wb = load_workbook(CARWASH_FILE, data_only=True)
-#     ws = wb['Times']
-#     data = []
-#     for row in ws.iter_rows(min_row=3, max_row=10, min_col=12, max_col=16, values_only=True):
-#         if row[0]: data.append((row[0], row[1], row[2], row[3], '0', '0'))
-	
-#     with self.db.get_connection() as con:
-#         c = con.cursor()
-#         c.executemany("INSERT INTO carwashTotal VALUES (?,?,?,?,?,?)", data)
-#         con.commit()
