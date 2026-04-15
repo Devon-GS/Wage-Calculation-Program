@@ -616,9 +616,9 @@ def cal_total_hours(wb, role="Attendant"):
 			if name and not is_total_row:
 				# Create name key in dic
 				if role == 'Attendant':
-					w_totals.setdefault(name, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
+					w_totals.setdefault(name, {'badge':0, 'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
 				else:
-					w_totals.setdefault(name, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0, 'cstd':0, 'csun':0, 'cpub':0})
+					w_totals.setdefault(name, {'badge':0, 'std': 0, 'sun': 0, 'pub': 0, 'nc': 0, 'cstd':0, 'csun':0, 'cpub':0})
 
 				# Accumulate values
 				nc = ws.cell(row=row, column=12).value
@@ -640,6 +640,8 @@ def cal_total_hours(wb, role="Attendant"):
 			elif name and is_total_row:
 				# Get name without 'Total'
 				name_total = ws.cell(row=row - 1, column=1).value
+				# Get badge of empoyee
+				badge = ws.cell(row=row - 1, column=2).value 
 
 				# Add weekly to total coloumn in excel
 				ws.cell(row=row, column=9, value=w_totals[name_total]['std'])
@@ -653,9 +655,11 @@ def cal_total_hours(wb, role="Attendant"):
 
 				# Add two weeks to totals dic
 				if role == "Attendant":
-					totals.setdefault(name_total, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
+					totals.setdefault(name_total, {'badge':0, 'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
 				else:
-					totals.setdefault(name_total, {'std': 0, 'sun': 0, 'pub': 0, 'nc': 0, 'cstd':0, 'csun':0,'cpub':0})
+					totals.setdefault(name_total, {'badge':0, 'std': 0, 'sun': 0, 'pub': 0, 'nc': 0, 'cstd':0, 'csun':0,'cpub':0})
+				
+				totals[name_total]['badge'] = badge 
 
 				totals[name_total]['std'] += w_totals[name_total]['std']
 				totals[name_total]['sun'] += w_totals[name_total]['sun']
@@ -665,8 +669,11 @@ def cal_total_hours(wb, role="Attendant"):
 					totals[name_total]['cstd'] += w_totals[name_total]['cstd']
 					totals[name_total]['csun'] += w_totals[name_total]['csun']
 					totals[name_total]['cpub'] += w_totals[name_total]['cpub']
+	
+	# Send total to database
+	db.add_total_hours_db(totals, role)
 
-	# Sync data to total sheets in excel
+	# Sync totals to excel sheets 
 	ws = wb[total_sheet]
 
 	current_row = 2
