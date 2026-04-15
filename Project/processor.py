@@ -598,7 +598,7 @@ def cal_total_hours(wb, role="Attendant"):
 		ws = wb[sheet]
 
 		w_totals = {}	
-    
+	
 		# Iterate through rows (start at row 2 to skip headers)
 		# Using ws.max_row + 1 to ensure the last person's total is written
 		for row in range(2, ws.max_row + 2):
@@ -727,70 +727,82 @@ def format_excel(wb):
 
 # ****** WORKING ******
 
-# # --- Step 5: Carwash (Logic from carwash_db.py) ---
-# def process_carwash(self):
-#     wb = load_workbook(CARWASH_FILE, data_only=True)
-#     ws = wb['Times']
-#     data = []
-#     for row in ws.iter_rows(min_row=3, max_row=10, min_col=12, max_col=16, values_only=True):
-#         if row[0]: data.append((row[0], row[1], row[2], row[3], '0', '0'))
-	
-#     with self.db.get_connection() as con:
-#         c = con.cursor()
-#         c.executemany("INSERT INTO carwashTotal VALUES (?,?,?,?,?,?)", data)
-#         con.commit()
+# --- Step 5: Carwash (Logic from carwash_db.py) ---
+def carwash_hours():
+	wb = load_workbook(CARWASH_FILE, data_only=True)
+	ws = wb['Times']
 
+	# Create dic to save all hours
+	data = {}
 
+	# Loop through rows to get normal hours
+	for row in ws.iter_rows(min_row=3, max_row=10, min_col=12, max_col=16, values_only=True):
+		name = row[0]
+		badge = row[1]
+		n_hours = row[2]
+		s_hours = row[3]
 
+		if name and name != '---': 
+			data[badge] = [name, n_hours, s_hours]
 
+	# Loop through rows to get extra time  
+	for erow in ws.iter_rows(min_row=14, max_row=21, min_col=12, max_col=16, values_only=True):
+		ebadge = erow[1]
+		amount = erow[3]
+
+		if ebadge in data:
+			data[ebadge].append(amount)
+
+	# Add carwash times to database
+	db.carwash_db(data)
 
 
 
 # # --- Running functions ---
 
-		# - Clear Excel -
-clear_excel()
+# 		# - Clear Excel -
+# clear_excel()
 
-	# - Load Workbook -
-wb = load_excel()
+# 	# - Load Workbook -
+# wb = load_excel()
 
-		# - Clear database -
-db.clear_session_data()
+# 		# - Clear database -
+# db.clear_session_data()
 
-		# - Send roster shift to db -
-roster_shift_to_db("Attendant", "WeekOne")
-roster_shift_to_db("Attendant", "WeekTwo")
-roster_shift_to_db("Cashier", "WeekOne")
-roster_shift_to_db("Cashier", "WeekTwo")
+# 		# - Send roster shift to db -
+# roster_shift_to_db("Attendant", "WeekOne")
+# roster_shift_to_db("Attendant", "WeekTwo")
+# roster_shift_to_db("Cashier", "WeekOne")
+# roster_shift_to_db("Cashier", "WeekTwo")
 
-		# - Collect Clocks -
-collect_clock_times()
+# 		# - Collect Clocks -
+# collect_clock_times()
 
- 		# - Shifts -
-sync_shifts_to_excel(wb, 'Att Week One')
-sync_shifts_to_excel(wb, 'Att Week Two')
-sync_shifts_to_excel(wb, 'Cashier Week One')
-sync_shifts_to_excel(wb, 'Cashier Week Two')
+#  		# - Shifts -
+# sync_shifts_to_excel(wb, 'Att Week One')
+# sync_shifts_to_excel(wb, 'Att Week Two')
+# sync_shifts_to_excel(wb, 'Cashier Week One')
+# sync_shifts_to_excel(wb, 'Cashier Week Two')
 
 
-		# - Clock -
-sync_clocks_to_excel(wb, 'Att Week One')
-sync_clocks_to_excel(wb, 'Att Week Two')
-sync_clocks_to_excel(wb, 'Cashier Week One')
-sync_clocks_to_excel(wb, 'Cashier Week Two')
+# 		# - Clock -
+# sync_clocks_to_excel(wb, 'Att Week One')
+# sync_clocks_to_excel(wb, 'Att Week Two')
+# sync_clocks_to_excel(wb, 'Cashier Week One')
+# sync_clocks_to_excel(wb, 'Cashier Week Two')
 
-# 		# - Calculate Hours -
-calculate_hours(wb, 'Att Week One')
-calculate_hours(wb, 'Att Week Two')
-calculate_hours(wb, 'Cashier Week One')
-calculate_hours(wb, 'Cashier Week Two')
+# # 		# - Calculate Hours -
+# calculate_hours(wb, 'Att Week One')
+# calculate_hours(wb, 'Att Week Two')
+# calculate_hours(wb, 'Cashier Week One')
+# calculate_hours(wb, 'Cashier Week Two')
 
-		# - Calculate Total Hours -
-cal_total_hours(wb)
-cal_total_hours(wb, "Cashiers")
+# 		# - Calculate Total Hours -
+# cal_total_hours(wb)
+# cal_total_hours(wb, "Cashiers")
 
-		#  - Format Excel -
-format_excel(wb)
+# 		#  - Format Excel -
+# format_excel(wb)
 
-		# - Save Workbook -
-save_workbook(wb)
+# 		# - Save Workbook -
+# save_workbook(wb)

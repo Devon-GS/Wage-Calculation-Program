@@ -263,3 +263,18 @@ def get_clock_times():
 			CTkMessagebox(title="Error", message=error, icon="cancel")
 		
 		return clocks
+	
+# --- CARWASH TIMES ---
+def carwash_db(data):
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		try:
+			query = """INSERT INTO carwashTotal (name, badge, normal, sunday, public, extra)
+				  			VALUES (?, ?, ?, ?, ?, ?)"""
+			
+			for k, v in data.items():
+				c.execute(query,(v[0], k, v[1], v[2], 0, v[3]))			
+				con.commit()
+
+		except Exception as error:
+			CTkMessagebox(title="Error", message=error, icon="cancel")	
