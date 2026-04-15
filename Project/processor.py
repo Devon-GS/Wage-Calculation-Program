@@ -86,7 +86,7 @@ def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 	3. is_in = Clock in or out
 	4. Check if Sunday or public holiday and gives no leeway
 	"""
-
+	# print(holidays)
 	# Set flag
 	if day == 'Sunday':
 		flag = 'sun'
@@ -106,7 +106,7 @@ def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 		if h > roster_h or (h == roster_h and m > 0):
 			# Special logic for Sunday: No 4-minute grace period
 			if date in holidays or day == "Sunday":
-				print(clock_hours, roster_h, day, date)
+				# print(clock_hours, roster_h, day, date)
 				# Set flag
 				if day == "Sunday":
 					flag = 'sun'
@@ -494,8 +494,7 @@ def sync_clocks_to_excel(wb, sheet_name):
 
 
 
-# Not moving public holidays of some employees
-# cashiers baker not working
+# cashier baker add coulmns and 
 
 # --- Step 4: Calculate Hours (Logic from att_cal_hours.py) ---
 def calculate_hours(wb, sheet_name):
@@ -763,10 +762,10 @@ sync_clocks_to_excel(wb, 'Cashier Week One')
 sync_clocks_to_excel(wb, 'Cashier Week Two')
 
 # 		# - Calculate Hours -
-# calculate_hours(wb, 'Att Week One')
+calculate_hours(wb, 'Att Week One')
 calculate_hours(wb, 'Att Week Two')
-# calculate_hours(wb, 'Cashier Week One')
-# calculate_hours(wb, 'Cashier Week Two')
+calculate_hours(wb, 'Cashier Week One')
+calculate_hours(wb, 'Cashier Week Two')
 
 		# - Calculate Total Hours -
 # cal_total_hours(wb)

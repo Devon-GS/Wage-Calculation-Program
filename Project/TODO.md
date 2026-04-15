@@ -1,6 +1,6 @@
 # Working and Errors
 
-- [ ] Add no leeway on public holidays when calculating hours
+- [x] Add no leeway on public holidays when calculating hours
 - [ ] Add feature: If an employee who works both baker and cashier positions works as a cashier on a Sunday or public holiday, automatically calculate total hours and add to dict under labels `c_pub` and `c_sun`
 - [ ] Add/change headings in cashier total sheet:
     - [ ] Change "Baker's Cashier Hours" -> "B - Cashier Hours"
