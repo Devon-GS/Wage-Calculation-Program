@@ -120,26 +120,48 @@ class WageApp(ctk.CTk):
 		ctk.CTkButton(self.ops_card, text="Open Wage Times Sheet", fg_color="transparent", border_width=1, 
 				command=lambda: os.startfile(config.WAGE_TIMES_FILE)).pack(fill="x", padx=20, pady=(5, 15))
 
-		# --- Card 3: Finalization ---
+		# --- Card 3: Payroll and Taxes ---
+		self.pay_card = ctk.CTkFrame(self.main_container)
+		self.pay_card.pack(fill="x", pady=10)
+		
+		ctk.CTkLabel(self.pay_card, text="Payroll & Taxes", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
+		
+		self.pay_grid = ctk.CTkFrame(self.pay_card, fg_color="transparent")
+		self.pay_grid.pack(fill="x", padx=20, pady=(0, 15))
+
+		ctk.CTkButton(self.pay_grid, text="Open Payroll Folder", fg_color="transparent", border_width=1,
+				command=lambda: os.startfile(config.PAYROLL_FOLDER)).grid(row=0, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+		
+		ctk.CTkButton(self.pay_grid, text="RUN PAYROLL", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
+				command=self.run_payroll).grid(row=1, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+		
+		ctk.CTkButton(self.pay_grid, text="Open Payroll File", fg_color="transparent", border_width=1,
+				command=self.run_payroll).grid(row=2, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+		
+		ctk.CTkButton(self.pay_grid, text="Calculate Tax", 
+				command=self.run_tax).grid(row=3, column=0, columnspan=2, padx=(0, 5), sticky="ew")
+		
+		self.pay_grid.grid_columnconfigure((0, 1), weight=1)
+		
+		# --- Card 4: Finalization ---
 		self.final_card = ctk.CTkFrame(self.main_container)
 		self.final_card.pack(fill="x", pady=10)
 		
-		ctk.CTkLabel(self.final_card, text="Payroll & Payslips", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
+		ctk.CTkLabel(self.final_card, text="Payslips and Backup", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
 		
 		self.final_grid = ctk.CTkFrame(self.final_card, fg_color="transparent")
 		self.final_grid.pack(fill="x", padx=20, pady=(0, 15))
 		
-		ctk.CTkButton(self.final_grid, text="RUN PAYROLL", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
-				command=self.run_payroll).grid(row=0, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
-		
-		ctk.CTkButton(self.final_grid, text="Open Payroll File", fg_color="transparent", border_width=1,
-				command=self.run_payroll).grid(row=1, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
-		
-		ctk.CTkButton(self.final_grid, text="Calculate Tax", command=self.run_tax).grid(row=2, column=0, padx=(0, 5), sticky="ew")
+
 		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", 
-				command=self.run_slips).grid(row=2, column=1, padx=(5, 0), sticky="ew")
+				command=self.run_slips).grid(row=0, column=0, padx=(5, 0), sticky="ew")
+		
+		ctk.CTkButton(self.final_grid, text="Copy For Back Up", fg_color="#4f46e5", 
+				command=self.run_slips).grid(row=0, column=1, padx=(5, 0), sticky="ew")
 		
 		self.final_grid.grid_columnconfigure((0, 1), weight=1)
+		
+		
 
 	# --- Logic Wrappers ---
 	def init_sys(self):
@@ -253,20 +275,28 @@ class WageApp(ctk.CTk):
 
 	def run_payroll(self):
 		try:
-			if config.PAYROLL_FILE == None:
+			PAYROLL_FILE = config.PAYROLL_FILE_LOC()
+			if PAYROLL_FILE == None:
 				raise Exception('Error Occured with Payroll File')
 			
-			payroll_manager.run_payroll()
+			payroll_manager.run_payroll(PAYROLL_FILE)
 			messagebox.showinfo("Payroll", "Payroll Run Finished")
 
 		except Exception as error:
 			messagebox.showerror("Error", error)
 		
-
 	def run_tax(self):
-		self.payroll.calculate_tax()
-		messagebox.showinfo("Tax", "Tax logic finished.")
+		try:
+			PAYROLL_FILE = config.PAYROLL_FILE_LOC()
+			if PAYROLL_FILE == None:
+				raise Exception('Error Occured with Payroll File')
+			
+			payroll_manager.tax(PAYROLL_FILE)
+			messagebox.showinfo("Tax", "Tax logic finished.")
 
+		except Exception as error:
+			messagebox.showerror("Error", error)
+		
 	def run_slips(self):
 		self.payslips.generate_all()
 		messagebox.showinfo("Payslips", "Payslips generated in /Payslips.")

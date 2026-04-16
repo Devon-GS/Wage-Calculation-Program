@@ -5,9 +5,13 @@ from openpyxl.styles import Alignment, Font, Border, Side,  NamedStyle
 
 # --- SETUP PATHS ---
 
+
 # Get payroll excel file - don't have to change name of file to payroll
-def get_payroll_path(relative_folder_path):
-	folder = Path(relative_folder_path)
+def PAYROLL_FILE_LOC():
+	cwd = Path(__file__).parent 
+	excel_file = cwd / "Payroll"
+
+	folder = Path(excel_file)
 	
 	# Search for Excel files and filter out hidden/temp files
 	excel_files = folder.glob("*.xlsx*")
@@ -21,11 +25,6 @@ def get_payroll_path(relative_folder_path):
 	else: 
 		return None
 
-cwd = Path(__file__).parent 
-excel_file = cwd / "Payroll" 
-payroll_path = get_payroll_path(excel_file)
-
-PAYROLL_FILE = payroll_path
 DB_PATH = "wageTimes.db"
 WAGE_TIMES_FILE = "Wage Times.xlsx"
 
@@ -43,6 +42,7 @@ CAS_ROSTER_FILE = os.path.join(ROSTER_FOLDER, "CASHIERS_ROSTER.xlsx")
 CARWASH_FILE = os.path.join(BASE_DIR, "Carwash Times", "Carwash Times.xlsx")
 TAX_RATES_FILE = os.path.join(BASE_DIR, "Tax", "Tax_rates", "PAYE_Fortnight.xlsx")
 TAX_RESULTS = os.path.join(BASE_DIR, "Tax", "tax_results.xlsx")
+PAYROLL_FOLDER = os.path.join(BASE_DIR, "Payroll")
 
 # --- STYLES FOR EXCEL ---
 THIN_SIDE = Side(style='thin', color="000000")

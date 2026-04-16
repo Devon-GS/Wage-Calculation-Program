@@ -6,10 +6,10 @@ import pandas as pd
 from openpyxl.utils import get_column_letter
 from CTkMessagebox import CTkMessagebox
 from openpyxl import load_workbook
-from config import PAYROLL_FILE, TAX_RATES_FILE, TAX_RESULTS
+from config import TAX_RATES_FILE, TAX_RESULTS
 
 
-def run_payroll():
+def run_payroll(PAYROLL_FILE):
 	try:
 		wb = load_workbook(PAYROLL_FILE)
 		ws = wb['Wages']
@@ -133,7 +133,7 @@ def get_tax_amount(gross_wage, tax_brackets):
 
 # --- TAX CACULATION ---
 
-def tax():
+def tax(PAYROLL_FILE):
 	# 1. Recalculate initial formulas in Payroll file
 	recalculate_excel_formulas(PAYROLL_FILE)
 

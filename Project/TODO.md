@@ -14,7 +14,7 @@
 - [x] Recalculate wages function
 - [x] Add run payroll
 - [x] Payroll can make sheet any name
-- [ ] Tax
+- [x] Tax
 - [ ] Payslips 
 - [ ] Copy for backup/keep
 - [ ] Check messageboxs are all CTkMessagebox
