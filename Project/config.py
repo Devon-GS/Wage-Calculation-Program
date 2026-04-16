@@ -1,11 +1,34 @@
 import os
+from pathlib import Path
 from openpyxl import Workbook 
 from openpyxl.styles import Alignment, Font, Border, Side,  NamedStyle
 
 # --- SETUP PATHS ---
 DB_PATH = "wageTimes.db"
 WAGE_TIMES_FILE = "Wage Times.xlsx"
-PAYROLL_FILE = "Payroll/Payroll.xlsx"
+
+# Get payroll excel file - don't have to change name of file to payroll
+def get_payroll_path(relative_folder_path):
+	folder = Path(relative_folder_path)
+	
+	# Search for Excel files and filter out hidden/temp files
+	excel_files = folder.glob("*.xlsx*")
+	valid_files =[file for file in excel_files if not file.name.startswith("~$")]
+	
+	# Check only one file in folder 
+	if len(valid_files) == 1:
+		return str(valid_files[0].resolve())
+		
+	elif len(valid_files) == 0:
+		return None   
+	else:
+		return None
+
+cwd = Path(__file__).parent 
+excel_file = cwd / "Payroll" 
+payroll_path = get_payroll_path(excel_file)
+
+PAYROLL_FILE = payroll_path
 
 # --- GET ALL STATIC DIRECTORIES --
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

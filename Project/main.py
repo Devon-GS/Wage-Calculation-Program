@@ -116,7 +116,9 @@ class WageApp(ctk.CTk):
 				command=self.run_wages).pack(fill="x", padx=20, pady=5)
 		
 		ctk.CTkButton(self.ops_card, text="Recalculate Hours", command=self.run_recal).pack(fill="x", padx=20, pady=5)
-		ctk.CTkButton(self.ops_card, text="Open Hours Sheet", fg_color="transparent", border_width=1, command=lambda: os.startfile("Wage Times.xlsx")).pack(fill="x", padx=20, pady=(5, 15))
+
+		ctk.CTkButton(self.ops_card, text="Open Hours Sheet", fg_color="transparent", border_width=1, 
+				command=lambda: os.startfile(config.WAGE_TIMES_FILE)).pack(fill="x", padx=20, pady=(5, 15))
 
 		# --- Card 3: Finalization ---
 		self.final_card = ctk.CTkFrame(self.main_container)
@@ -129,8 +131,14 @@ class WageApp(ctk.CTk):
 		
 		ctk.CTkButton(self.final_grid, text="RUN PAYROLL", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
 				command=self.run_payroll).grid(row=0, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
-		ctk.CTkButton(self.final_grid, text="Calculate Tax", command=self.run_tax).grid(row=1, column=0, padx=(0, 5), sticky="ew")
-		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", command=self.run_slips).grid(row=1, column=1, padx=(5, 0), sticky="ew")
+		
+		ctk.CTkButton(self.final_grid, text="Open Payroll File", 
+				command=lambda: os.startfile(config.PAYROLL_FILE)).grid(row=1, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+		
+		ctk.CTkButton(self.final_grid, text="Calculate Tax", command=self.run_tax).grid(row=2, column=0, padx=(0, 5), sticky="ew")
+		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", 
+				command=self.run_slips).grid(row=2, column=1, padx=(5, 0), sticky="ew")
+		
 		self.final_grid.grid_columnconfigure((0, 1), weight=1)
 
 	# --- Logic Wrappers ---

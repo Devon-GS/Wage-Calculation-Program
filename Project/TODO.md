@@ -13,10 +13,11 @@
 - [ ] Add error handling to processor functions
 - [x] Recalculate wages function
 - [x] Add run payroll
-- [ ] Payrol can make sheet any name
+- [x] Payroll can make sheet any name
 - [ ] Tax
 - [ ] Payslips 
 - [ ] Copy for backup/keep
 - [ ] Check messageboxs are all CTkMessagebox
+- [ ] Change program openning size
 
 ---
