@@ -6,10 +6,10 @@ import config
 import os
 import traceback
 
-# Import your logic classes
+# Import logic files
 import database as db
 import processor as processor
-from payroll_logic import PayrollManager
+import payroll_logic as payroll_manager
 from payslips import PayslipGenerator
 
 # Set the visual theme
@@ -128,7 +128,7 @@ class WageApp(ctk.CTk):
 		self.final_grid.pack(fill="x", padx=20, pady=(0, 15))
 		
 		ctk.CTkButton(self.final_grid, text="RUN PAYROLL", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
-				command=self.run_tax).grid(row=0, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+				command=self.run_payroll).grid(row=0, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		ctk.CTkButton(self.final_grid, text="Calculate Tax", command=self.run_tax).grid(row=1, column=0, padx=(0, 5), sticky="ew")
 		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", command=self.run_slips).grid(row=1, column=1, padx=(5, 0), sticky="ew")
 		self.final_grid.grid_columnconfigure((0, 1), weight=1)
@@ -242,6 +242,10 @@ class WageApp(ctk.CTk):
 			messagebox.showinfo("Success", "Recalculation finished successfully")
 		except Exception:
 			messagebox.showerror("Error", traceback.format_exc())
+
+	def run_payroll(self):
+		payroll_manager.run_payroll()
+		messagebox.showinfo("Payroll", "Payroll Run Finished")
 
 	def run_tax(self):
 		self.payroll.calculate_tax()

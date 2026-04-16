@@ -11,10 +11,12 @@
 - [x] Carwash time to database for export to payroll
 - [x] Remove print statements
 - [ ] Add error handling to processor functions
-- [ ] Recalculate wages function
+- [x] Recalculate wages function
+- [x] Add run payroll
 - [ ] Payrol can make sheet any name
 - [ ] Tax
 - [ ] Payslips 
 - [ ] Copy for backup/keep
+- [ ] Check messageboxs are all CTkMessagebox
 
 ---
