@@ -133,7 +133,7 @@ class WageApp(ctk.CTk):
 				command=self.run_payroll).grid(row=0, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.final_grid, text="Open Payroll File", fg_color="transparent", border_width=1,
-				command=lambda: os.startfile(config.PAYROLL_FILE)).grid(row=1, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+				command=self.run_payroll).grid(row=1, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.final_grid, text="Calculate Tax", command=self.run_tax).grid(row=2, column=0, padx=(0, 5), sticky="ew")
 		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", 
@@ -252,8 +252,16 @@ class WageApp(ctk.CTk):
 			messagebox.showerror("Error", traceback.format_exc())
 
 	def run_payroll(self):
-		payroll_manager.run_payroll()
-		messagebox.showinfo("Payroll", "Payroll Run Finished")
+		try:
+			if config.PAYROLL_FILE == None:
+				raise Exception('Error Occured with Payroll File')
+			
+			payroll_manager.run_payroll()
+			messagebox.showinfo("Payroll", "Payroll Run Finished")
+
+		except Exception as error:
+			messagebox.showerror("Error", error)
+		
 
 	def run_tax(self):
 		self.payroll.calculate_tax()

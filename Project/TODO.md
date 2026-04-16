@@ -19,6 +19,7 @@
 - [ ] Copy for backup/keep
 - [ ] Check messageboxs are all CTkMessagebox
 - [ ] Change program openning size
+- [ ] Sort out payroll file errors if more that one file ing folder [make function that is call once in payroll.py file]
 - [ ] Clean up
 
 ---

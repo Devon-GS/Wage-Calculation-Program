@@ -1,9 +1,12 @@
+import os
+import re
 import xlwings as xw
+import database as db
 import pandas as pd
+from openpyxl.utils import get_column_letter
 from CTkMessagebox import CTkMessagebox
 from openpyxl import load_workbook
 from config import PAYROLL_FILE, TAX_RATES_FILE, TAX_RESULTS
-import database as db
 
 
 def run_payroll():
@@ -97,13 +100,9 @@ def run_payroll():
 		CTkMessagebox(title="Error", message=str(error), icon="cancel")
 
 
-# --------------------------------------------------------------------------------------------------
-# --------------------------------------------------------------------------------------------------
-# --------------------------------------------------------------------------------------------------
-
-from openpyxl.utils import get_column_letter
-import os
-import re
+# =========================================================================================
+#  CALCULATE TAX
+# =========================================================================================
 
 # --- HELPER FUNCTIONS ---
 
@@ -131,7 +130,6 @@ def get_tax_amount(gross_wage, tax_brackets):
 		if min_income <= gross_wage <= max_income:
 			return row['Under 65']
 	return 0
-
 
 # --- TAX CACULATION ---
 
@@ -200,27 +198,23 @@ def tax():
 	for col in range(3, ws_dot.max_column):
 		col_letter = get_column_letter(col)
 		name = ws_dot[f'{col_letter}1'].value
-		uif = ws_dot[f'{col_letter}22'].value
+		uif = ws_dot[f'{col_letter}23'].value
 		
 		tax_amt = 0
-		
-		print(name, uif) # WORKING ON  
 
-	# 	if uif is not None and uif > 0:
-	# 		# Look up the base name in case the column header is "John 1"
-	# 		base_name = re.sub(r'\s*\.?\d+$', '', str(emp)).strip()
-			
-	# 		if base_name not in names_done:
-	# 			tax_amt = results.get(base_name, {}).get('Tax Payable', 0)
-	# 			names_done.add(base_name)
+		if uif is not None and uif > 0:
+			# Look up the base name in case the column header is "John 1"
+			base_name = re.sub(r'\s*\.?\d+$', '', str(name)).strip()
 
-	# 	ws[f'{col_letter}30'] = tax_amt
+			if base_name not in names_done:
+				tax_amt = results.get(base_name, {}).get('Tax Payable', 0)
+				names_done.add(base_name)
 
-	# wb.save(PAYROLL_FILE)
-	# wb.close()
-	# wb_dot.close()
+		ws[f'{col_letter}30'] = tax_amt
 
-	# # 7. Final recalculation of formulas
-	# recalculate_excel_formulas(PAYROLL_FILE)
+	wb.save(PAYROLL_FILE)
+	wb.close()
+	wb_dot.close()
 
-tax()
+	# 7. Final recalculation of formulas
+	recalculate_excel_formulas(PAYROLL_FILE)

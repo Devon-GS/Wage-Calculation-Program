@@ -15,11 +15,10 @@ def get_payroll_path(relative_folder_path):
 	
 	# Check only one file in folder 
 	if len(valid_files) == 1:
-		return str(valid_files[0].resolve())
-		
+		return str(valid_files[0].resolve())	
 	elif len(valid_files) == 0:
-		return None   
-	else:
+		return None
+	else: 
 		return None
 
 cwd = Path(__file__).parent 
