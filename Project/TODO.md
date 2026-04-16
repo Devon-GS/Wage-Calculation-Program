@@ -19,5 +19,6 @@
 - [ ] Copy for backup/keep
 - [ ] Check messageboxs are all CTkMessagebox
 - [ ] Change program openning size
+- [ ] Clean up
 
 ---
