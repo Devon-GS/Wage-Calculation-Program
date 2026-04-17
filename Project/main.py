@@ -298,9 +298,8 @@ class WageApp(ctk.CTk):
 		os.startfile(config.PAYSLIP_FOLDER)
 	
 	def run_backup(self):
-		pass
-		# doc_generator.gen_payslips()
-		# # os.startfile(config.PAYSLIP_FOLDER)
+		doc_generator.copy_files()
+		os.startfile(config.COPY_FOLDER)
 
 	def change_appearance_mode(self, new_mode):
 		ctk.set_appearance_mode(new_mode)

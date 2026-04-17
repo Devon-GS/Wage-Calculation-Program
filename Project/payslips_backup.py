@@ -1,9 +1,16 @@
-import os
+import shutil
 import pandas as pd
 import database as db
-from config import PAYROLL_FILE_LOC, PAYSLIP_TEMPLATE, PAYSLIP_FOLDER
 from openpyxl import load_workbook
+from CTkMessagebox import CTkMessagebox
 from openpyxl.styles import Border, Side, Font, Alignment
+from config import (PAYROLL_FILE_LOC, PAYSLIP_TEMPLATE, PAYSLIP_FOLDER, COPY_FOLDER, WAGE_TIMES_FILE, PAYROLL_FILE_LOC, 
+                    ATT_ROSTER_FILE, CAS_ROSTER_FILE, CARWASH_FILE, TAX_RESULTS)
+
+
+# =================================================================================================
+# GENERATE PAYSLIPS
+# =================================================================================================
 
 # --- HELPER FUNCTIONS ---
 def get_employee_details(name_key, emp_info_dict):
@@ -112,3 +119,32 @@ def gen_payslips():
 		# 3. Save Workbook
 		suffix = ' Bakery' if is_bakery else ''
 		wb.save(f'{PAYSLIP_FOLDER}/{clean_name}{suffix}.xlsx')
+
+# =================================================================================================
+# BACKUP FILES
+# =================================================================================================
+
+def copy_files():
+    # Define the destination
+    dest_folder = COPY_FOLDER
+    
+	# Get payroll file
+    PAYROLL_FILE = PAYROLL_FILE_LOC()
+    
+    # List of source files
+    files_to_copy = [
+        WAGE_TIMES_FILE,
+        PAYROLL_FILE,
+        ATT_ROSTER_FILE,
+        CAS_ROSTER_FILE,
+        CARWASH_FILE,
+        TAX_RESULTS
+    ]
+    
+    for file_path in files_to_copy:
+        try:
+            shutil.copy2(file_path, dest_folder)
+        except FileNotFoundError:
+            CTkMessagebox(title="Error", message="Could Not Find File", icon="cancel")
+        except Exception as error:
+            CTkMessagebox(title="Error", message=error, icon="cancel")

@@ -44,6 +44,7 @@ TAX_RESULTS = os.path.join(BASE_DIR, "Tax", "tax_results.xlsx")
 PAYROLL_FOLDER = os.path.join(BASE_DIR, "Payroll")
 PAYSLIP_TEMPLATE = os.path.join(BASE_DIR, "Templates", "Payslip_Template.xlsx")
 PAYSLIP_FOLDER = os.path.join(BASE_DIR, "Payslips")
+COPY_FOLDER = os.path.join(BASE_DIR, "Copy Folder")
 
 # --- STYLES FOR EXCEL ---
 THIN_SIDE = Side(style='thin', color="000000")
