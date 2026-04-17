@@ -5,7 +5,6 @@ from openpyxl.styles import Alignment, Font, Border, Side,  NamedStyle
 
 # --- SETUP PATHS ---
 
-
 # Get payroll excel file - don't have to change name of file to payroll
 def PAYROLL_FILE_LOC():
 	cwd = Path(__file__).parent 
@@ -43,6 +42,8 @@ CARWASH_FILE = os.path.join(BASE_DIR, "Carwash Times", "Carwash Times.xlsx")
 TAX_RATES_FILE = os.path.join(BASE_DIR, "Tax", "Tax_rates", "PAYE_Fortnight.xlsx")
 TAX_RESULTS = os.path.join(BASE_DIR, "Tax", "tax_results.xlsx")
 PAYROLL_FOLDER = os.path.join(BASE_DIR, "Payroll")
+PAYSLIP_TEMPLATE = os.path.join(BASE_DIR, "Templates", "Payslip_Template.xlsx")
+PAYSLIP_FOLDER = os.path.join(BASE_DIR, "Payslips")
 
 # --- STYLES FOR EXCEL ---
 THIN_SIDE = Side(style='thin', color="000000")
@@ -60,7 +61,7 @@ COLUMN_WIDTHS_TOTALS = {'A':11.00, 'B':17.57, 'C':17.43, 'D':23.71, 'E':11.11, '
 
 COL_DIFF = 0.78
 
-# --- INITILIZE EXCEL WORKBOOK ---
+# --- INITILIZE EXCEL WAGE TIMES WORKBOOK ---
 def CREATE_EXCEL():
 	if not os.path.isfile(WAGE_TIMES_FILE):
 		wb = Workbook()

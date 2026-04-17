@@ -2,15 +2,15 @@ import customtkinter as ctk
 from employee_info import pop_up
 from tkinter import messagebox
 from CTkMessagebox import CTkMessagebox
-import config
 import os
 import traceback
 
 # Import logic files
+import config
 import database as db
 import processor as processor
 import payroll_logic as payroll_manager
-from payslips import PayslipGenerator
+import payslips_backup as doc_generator
 
 # Set the visual theme
 ctk.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
@@ -23,12 +23,6 @@ class WageApp(ctk.CTk):
 		# --- Configuration ---
 		self.title("Bracken Hill Fuel Wages Caclulator v2.0")
 		self.geometry("900x600")
-		
-		# Initialize Logic
-		# self.db = DatabaseManager()
-		# self.processor = WageProcessor(self.db)
-		# self.payroll = PayrollManager(self.db)
-		# self.payslips = PayslipGenerator(self.db)
 
 		# Create Layout
 		self.grid_columnconfigure(1, weight=1)
@@ -130,13 +124,16 @@ class WageApp(ctk.CTk):
 		self.pay_grid.pack(fill="x", padx=20, pady=(0, 15))
 
 		ctk.CTkButton(self.pay_grid, text="Open Payroll Folder", fg_color="transparent", border_width=1,
-				command=lambda: os.startfile(config.PAYROLL_FOLDER)).grid(row=0, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+				command=lambda: os.startfile(config.PAYROLL_FOLDER)
+				).grid(row=0, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
-		ctk.CTkButton(self.pay_grid, text="RUN PAYROLL", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
+		ctk.CTkButton(self.pay_grid, text="RUN PAYROLL", height=40, font=ctk.CTkFont(weight="bold"), 
+				fg_color="#10b981", hover_color="#059669", 
 				command=self.run_payroll).grid(row=1, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Open Payroll File", fg_color="transparent", border_width=1,
-				command=self.run_payroll).grid(row=2, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+				command=lambda PAYROLL_FILE=config.PAYROLL_FILE_LOC(): os.startfile(PAYROLL_FILE)
+				).grid(row=2, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Calculate Tax", 
 				command=self.run_tax).grid(row=3, column=0, columnspan=2, padx=(0, 5), sticky="ew")
@@ -147,22 +144,21 @@ class WageApp(ctk.CTk):
 		self.final_card = ctk.CTkFrame(self.main_container)
 		self.final_card.pack(fill="x", pady=10)
 		
-		ctk.CTkLabel(self.final_card, text="Payslips and Backup", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
+		ctk.CTkLabel(self.final_card, text="Payslips and Backup", font=ctk.CTkFont(weight="bold")
+			   ).pack(anchor="w", padx=20, pady=10)
 		
 		self.final_grid = ctk.CTkFrame(self.final_card, fg_color="transparent")
 		self.final_grid.pack(fill="x", padx=20, pady=(0, 15))
 		
 
 		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", 
-				command=self.run_slips).grid(row=0, column=0, padx=(5, 0), sticky="ew")
+				command=self.run_payslips).grid(row=0, column=0, padx=(5, 0), sticky="ew")
 		
 		ctk.CTkButton(self.final_grid, text="Copy For Back Up", fg_color="#4f46e5", 
-				command=self.run_slips).grid(row=0, column=1, padx=(5, 0), sticky="ew")
+				command=self.run_backup).grid(row=0, column=1, padx=(5, 0), sticky="ew")
 		
 		self.final_grid.grid_columnconfigure((0, 1), weight=1)
 		
-		
-
 	# --- Logic Wrappers ---
 	def init_sys(self):
 		msg = CTkMessagebox(title="Initialize Database", 
@@ -297,9 +293,14 @@ class WageApp(ctk.CTk):
 		except Exception as error:
 			messagebox.showerror("Error", error)
 		
-	def run_slips(self):
-		self.payslips.generate_all()
-		messagebox.showinfo("Payslips", "Payslips generated in /Payslips.")
+	def run_payslips(self):
+		doc_generator.gen_payslips()
+		os.startfile(config.PAYSLIP_FOLDER)
+	
+	def run_backup(self):
+		pass
+		# doc_generator.gen_payslips()
+		# # os.startfile(config.PAYSLIP_FOLDER)
 
 	def change_appearance_mode(self, new_mode):
 		ctk.set_appearance_mode(new_mode)
