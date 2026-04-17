@@ -2,6 +2,21 @@
 
 A Python-based automation tool designed to streamline payroll management. This programme automatically calculates employee hours, processes tax deductions, updates your payroll Excel sheets, and generates individual payslips.
 
+## ⚠️ Important Notice: Branch Changes
+
+Please note that the branch structure for this repository has recently been updated:
+
+* **New Default Branch (`main`)**: The branch previously known as `refactor` has been renamed to `main` and is now set as the default branch. This contains the latest refactored code.
+
+* **Original Code (`original-program`)**: The old `main` branch, which contains the original version of the program, has been renamed to `original-program`. 
+
+If you are looking for the original version of the program, you will need to switch to the `original-program` branch. 
+
+You can do this locally by running:
+```bash
+git checkout original-program
+```
+
 ## 🚀 What's New in Version 2.0
 The application has undergone a major architectural and visual overhaul:
 - **Modernized GUI:** Completely redesigned using **CustomTkinter**, replacing the older layout with a sleek, responsive, and dark-mode-ready interface.

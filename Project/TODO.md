@@ -36,7 +36,6 @@
 	-[ ] get imployee info function if return empty dic handel it (database.py)
 - [ ] Clean up
 - [ ] Clean up unsed branchs (git)
-- [ ] Version old work (main branch) before merging new code (refactor)
-
+- [x] Changes branchs (main to orginal-program) and (refactor to main). Refactor now default branch gtihub
 
 ---
