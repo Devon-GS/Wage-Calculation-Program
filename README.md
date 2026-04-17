@@ -1,4 +1,4 @@
-# 💼 Automated Payroll & Payslip Generator
+# 💼 Automated Payroll & Payslip Generator (v1.3.3)
 
 A Python-based automation tool designed to streamline payroll management. This programme automatically calculates employee hours, processes tax deductions, updates your payroll Excel sheets, and generates individual payslips.
 
@@ -51,42 +51,6 @@ Once your environment is set up and activated, you can run the main script. Make
 python Project/main.py
 ```
 *(Alternatively, you can `cd Project` and run `python main.py`)*
-
-## 🗺️ Roadmap / In Progress
-
-- Minimize code by creating classes
-- Update gui to more modernized and sleek layout
-
-## Phase 1: Analysis & Architectural Design
-*Before touching the code, we define the "blueprint" for the new structure.*
-
-* **Code Audit:** Identify redundant functions, global variables, and "spaghetti code" that can be grouped into logical objects.
-* **Class Mapping:** Define a new Class Hierarchy (e.g., `User`, `DataManager`, `UIController`) to handle specific responsibilities, adhering to the Single Responsibility Principle.
-* **UI Benchmarking:** Research modern design languages (e.g., Google’s Material 3, Apple’s Glassmorphism, or Microsoft’s Fluent Design) to establish a "Sleek & Professional" style guide.
-
-## Phase 2: Backend Refactoring (Structural Cleanup)
-*The goal here is to reduce the "weight" of the codebase and improve maintainability.*
-
-* **Object-Oriented Migration:** Convert procedural scripts into reusable classes. Use **Inheritance** to share common traits and **Methods** to eliminate duplicated logic.
-* **Encapsulation:** Protect data by making class variables private, ensuring that the GUI only interacts with the backend through controlled "getters" and "setters."
-* **API/Service Layer:** Separate the core logic from the UI so that the backend can run independently of the layout updates.
-
-## Phase 3: GUI Modernization (Visual Overhaul)
-*Moving away from dated, clunky layouts toward a fluid, minimalist experience.*
-
-* **Layout Restructuring:** Replace fixed-size windows with **Responsive Grid Layouts** that adapt to different screen resolutions.
-* **Visual Refresh:**
-    * **Typography:** Switch to clean, sans-serif fonts (e.g., Inter, Roboto).
-    * **Color Palette:** Implement a balanced palette with a focus on "Dark Mode" compatibility and high-contrast accessibility.
-    * **Sleek Elements:** Add rounded corners, subtle shadows (soft depth), and generous white space to reduce cognitive load.
-* **Micro-interactions:** Add smooth transitions for button clicks, hover states, and loading sequences to make the app feel "alive."
-
-## Phase 4: Optimization & Deployment
-*Fine-tuning the integration between the new classes and the new layout.*
-
-* **Component Binding:** Connect the new Class Methods to the modernized UI components using an **Observer pattern** (ensuring the UI updates automatically when data changes).
-* **Performance Testing:** Verify that the "minimized code" results in faster load times and lower memory usage.
-* **User Acceptance (UAT):** Gather feedback on the new sleek layout to ensure it improves the actual workflow rather than just looking good.
 
 ## 📝 Changelog & Fixed Issues
 
