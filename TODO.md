@@ -9,7 +9,7 @@
 - [x] 7. Send carwash times to payroll workbook
 - [x] 8. Calculate tax
 - [x] 9. Generate payslips
-- [ ] 10. Copy files for saving
+- [x] 10. Copy files for saving
 
 # Working and Errors
 
