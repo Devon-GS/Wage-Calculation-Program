@@ -21,5 +21,8 @@
 - [ ] Change program openning size
 - [x] Sort out payroll file errors if more that one file ing folder [make function that is call once in payroll.py file]
 - [ ] Clean up
+- [ ] Clean up unsed branchs (git)
+- [ ] Version old work (main branch) before merging new code (refactor)
+
 
 ---

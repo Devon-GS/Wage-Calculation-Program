@@ -192,7 +192,7 @@ def bulk_add_employees():
                 c.execute(query, (ename, fname, sname, id))
 
                 con.commit()
-                CTkMessagebox(title="Bulk Add", message="Bulk Add Complete Successfuly", icon="info")
+            CTkMessagebox(title="Bulk Add", message="Bulk Add Complete Successfuly", icon="info")
         except Exception as error:
             CTkMessagebox(title="Error", message=error, icon="cancel")
 
