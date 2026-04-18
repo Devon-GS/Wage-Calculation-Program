@@ -242,7 +242,7 @@ class WageApp(ctk.CTk):
 			processor.save_workbook(wb)
 
 			#  - Carwash Times -
-			processor.carwash_hours()
+			processor.carwash_times()
 
 			messagebox.showinfo("Success", "Wage program finished successfully")
 		except Exception:

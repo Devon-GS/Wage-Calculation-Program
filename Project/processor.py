@@ -4,9 +4,9 @@ import pandas as pd
 import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, Font
 from config import (CREATE_EXCEL, WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE, CAS_ROSTER_FILE, 
-					BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
+					BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, CARWASH_HOURS_FILE, COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
 
 
 # --- Helper Functions ---
@@ -736,7 +736,171 @@ def format_excel(wb):
 					ws.cell(row=row, column=col_idx).alignment = Alignment(horizontal='center')
 
 # --- Step 5: Carwash (Logic from carwash_db.py) ---
-def carwash_hours():
+def carwash_work_hours():
+	df = pd.read_excel(CARWASH_HOURS_FILE, header=None, usecols='A:J', nrows=20)
+	
+	# 2. FIX THE HEADERS
+	# Set the column names using the first row (index 0)
+	df.columns = df.iloc[0]
+
+	# 3. EXTRACT THE BADGE ROW 
+	# This is the second row in your Excel (index 1)
+	badge_row = df.iloc[1]
+
+	# 4. EXTRACT THE DATA ROWS
+	# These are the dates and hours (everything from index 2 onwards)
+	data_rows = df.iloc[2:].copy()
+
+	# 5. DYNAMICALLY IDENTIFY NAME COLUMNS
+	# We take all columns after 'TOTAL' (index 2 onwards) 
+	# and make sure they are valid strings (not 0.0 or empty)
+	name_cols = [col for col in df.columns[2:] if isinstance(col, str) and col.strip() != '' and col != 0.0]
+
+	# 6. MELT THE DATAFRAME
+	# Now 'DATE' exists as a column name, so this won't crash
+	df_long = data_rows.melt(
+		id_vars=['DATE'], 
+		value_vars=name_cols,
+		var_name='Name', 
+		value_name='Hours'
+	)
+
+	# 7. ADD THE BADGES
+	# Create a dictionary from the badge row to map Name -> Badge
+	badge_map = badge_row.to_dict()
+	df_long['Badge'] = df_long['Name'].map(badge_map)
+
+
+	# 8. CLEANUP
+	# Remove extra spaces from names and convert Badge to integer
+	df_long['Name'] = df_long['Name'].str.strip()
+	df_long['Badge'] = pd.to_numeric(df_long['Badge']).astype(int)
+
+	# Final Order: Name, Badge, Date, Hours
+	result = df_long[['Name', 'Badge', 'DATE', 'Hours']]
+
+	# 9. RETURN AS DICTIONARY
+	# 'records' -> [{column: value}, {column: value}]
+	# return result.to_dict(orient='records')
+	result_dic = result.to_dict(orient='records')
+
+	carwash_total_hours = {}
+
+	for x in result_dic:
+		name = x['Name']
+		badge = x['Badge']
+		date = x['DATE']
+		hours = x['Hours']
+
+		# If badge not in dic create 
+		if badge not in carwash_total_hours:
+			carwash_total_hours[badge] = {}
+			carwash_total_hours[badge]['date'] = {}
+			carwash_total_hours[badge]['sun'] = 0
+			carwash_total_hours[badge]['norm'] = 0
+
+		# Add name and date and total norm and sun hours
+		carwash_total_hours[badge]['name'] = name 
+		carwash_total_hours[badge]['date'][date] = hours
+
+		if date.strftime('%A') == 'Sunday':
+			carwash_total_hours[badge]['sun'] += hours
+		else: 
+			carwash_total_hours[badge]['norm'] += hours 
+
+
+		
+	# Write data to excel
+	wb = load_workbook('Carwash Times/Carwash Hours/Carwash Times.xlsx')
+	ws = wb['Times']
+
+	# Set Headers for Week 1
+	ws['A1'] = 'Name'
+	ws['B1'] = 'Badge'
+	ws['C1'] = 'Day'
+	ws['D1'] = 'Date'
+	ws['E1'] = 'Hour'
+
+	# Set Headers for Week 2
+	ws['G1'] = 'Name'
+	ws['H1'] = 'Badge'
+	ws['I1'] = 'Day'
+	ws['J1'] = 'Date'
+	ws['K1'] = 'Hour'
+
+	# Tracks the starting row for each employee block
+	current_base_row = 2 
+
+	for badge, info in carwash_total_hours.items():
+		# Use enumerate to get the index (0 to 13) of each date entry
+		for i, (date_obj, hours) in enumerate(info['date'].items()):
+			
+			# Logic: 
+			# index 0-6 (Week 1) -> col_offset 0 (Cols A-E)
+			# index 7-13 (Week 2) -> col_offset 6 (Cols G-K)
+			week_num = i // 7 
+			day_offset = i % 7
+			
+			target_row = current_base_row + day_offset
+			col_start = 1 + (week_num * 6) # Starts at 1 for Week 1, 6 for Week 2
+
+			# Write the data
+			ws.cell(row=target_row, column=col_start, value=info['name'])
+			ws.cell(row=target_row, column=col_start + 1, value=badge)
+			ws.cell(row=target_row, column=col_start + 2, value=date_obj.strftime('%A'))
+			ws.cell(row=target_row, column=col_start + 3, value=date_obj.strftime('%d/%m/%Y'))
+			ws.cell(row=target_row, column=col_start + 4, value=hours)
+
+		# After finishing one employee (both weeks), jump past the 7 rows + 1 spacer row
+		current_base_row += 8
+
+
+	# # bold row 1
+	# from openpyxl.styles import Font
+
+	# # Define the bold font
+	# bold_font = Font(bold=True)
+
+	# # Loop through the first row (1) from column 1 to 10
+	# for col_num in range(1, 11):
+	# 	ws.cell(row=1, column=col_num).font = bold_font
+
+
+
+	# from openpyxl.styles import Font
+
+	# # Create the bold font object
+	# bold_font = Font(bold=True)
+
+	# # Loop from row 2 to the last used row in the sheet
+	# for row_num in range(2, ws.max_row + 1):
+	# 	# Column 1 (A)
+    # ws.cell(row=row_num, column=1).font = bold_font
+    
+    # # Column 7 (G) - which corresponds to w2Badge
+    # ws.cell(row=row_num, column=7).font = bold_font
+
+	wb.save('Carwash Times/Carwash Hours/Carwash Times.xlsx')
+	wb.close()
+
+
+
+
+
+
+carwash_work_hours()
+
+
+
+
+
+
+
+
+
+
+
+def carwash_times():
 	wb = load_workbook(CARWASH_FILE, data_only=True)
 	ws = wb['Times']
 

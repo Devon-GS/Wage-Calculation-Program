@@ -29,6 +29,9 @@
 - [x] Tax
 - [x] Payslips 
 - [x] Copy for backup/keep
+- [ ] Automate Carwash hours
+	- [ ] File can be any name
+	- [ ] Add button to open file on side
 - [ ] Check messageboxs are all CTkMessagebox
 - [ ] Change program openning size
 - [x] Sort out payroll file errors if more that one file ing folder [make function that is call once in payroll.py file]

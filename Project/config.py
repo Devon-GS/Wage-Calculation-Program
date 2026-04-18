@@ -39,6 +39,7 @@ PUBLIC_HIOLIDAY_FILE = os.path.join(BASE_DIR, "Public Holidays", "Public Holiday
 ATT_ROSTER_FILE = os.path.join(ROSTER_FOLDER, "Attendant_Carwash_Roster.xlsx")
 CAS_ROSTER_FILE = os.path.join(ROSTER_FOLDER, "CASHIERS_ROSTER.xlsx")
 CARWASH_FILE = os.path.join(BASE_DIR, "Carwash Times", "Carwash Times.xlsx")
+CARWASH_HOURS_FILE = os.path.join(BASE_DIR, "Carwash Times", "Carwash Hours", "Carwash Hours.xlsx")
 TAX_RATES_FILE = os.path.join(BASE_DIR, "Tax", "Tax_rates", "PAYE_Fortnight.xlsx")
 TAX_RESULTS = os.path.join(BASE_DIR, "Tax", "tax_results.xlsx")
 PAYROLL_FOLDER = os.path.join(BASE_DIR, "Payroll")
