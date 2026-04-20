@@ -71,11 +71,13 @@ python Project/main.py
 ```
 *(Alternatively, you can `cd Project` and run `python main.py`)*
 
+---
 ## 🗺️ Roadmap / In Progress
 
 - **Please see** [TODO.md](TODO.md)
 
-## Phases (v2.0 Overhaul)
+---
+## 🛠️ Phases (v2.0 Overhaul)
 
 ### Phase 1: Analysis & Architectural Design
 * **Code Audit:** Identified redundant functions, global variables, and "spaghetti code" that could be grouped into logical objects.
@@ -96,3 +98,19 @@ python Project/main.py
 ### Phase 4: Optimization & Deployment
 * **Component Binding:** Connected the new functions to the modernized UI components.
 * **Performance Testing:** Verified that the "minimized code" results in faster load times and lower memory usage.
+
+---
+## 🤖 Phases (v2.1 Testing and AI)
+
+### Phase 1: v2.0 Testing & Error Resolution
+* **System Evaluation:** Conducted comprehensive testing on the v2.0 release to identify functional anomalies, edge cases, and unexpected behaviors.
+* **Bug Fixing:** Debugged and deployed targeted patches for all identified errors to ensure a stable baseline before further optimization.
+
+### Phase 2: AI-Driven Optimization (v2.1)
+* **Algorithmic Correction:** Processed the stabilized v2.0 codebase through AI tools to detect deeper inefficiencies and automatically correct structural flaws.
+* **Runtime Minimization:** Minimized overall code footprint and streamlined functions to significantly reduce execution times and resource consumption.
+
+### Phase 3: v2.1 Validation & Accuracy Testing
+* **Regression Testing:** Rigorously tested the newly optimized v2.1 build to ensure no new bugs were introduced during the AI refactoring process.
+* **Accuracy Verification:** Validated all system outputs to confirm that the minimized code maintains strict functional accuracy and reliability.
+---

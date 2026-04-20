@@ -289,15 +289,21 @@ def carwash_db(data):
 		c = con.cursor()
 		try:
 			query = """INSERT INTO carwashTotal (name, badge, normal, sunday, public, extra)
-							  VALUES (?, ?, ?, ?, ?, ?)"""
+						VALUES (:name, :badge, :n_hours, :s_hours, 0, :amount)"""
+		
+			records = []
 			
-			for k, v in data.items():
-				c.execute(query,(v[0], k, v[1], v[2], 0, v[3]))			
-				
+			# Add badge to data, so SQL has access
+			for badge, emp_data in data.items():
+				emp_data['badge'] = badge 
+				records.append(emp_data)
+
+			c.executemany(query, records)			
+			
 			con.commit()
 
 		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
+			CTkMessagebox(title="Database Error", message=str(error), icon="cancel")
 
 # --- ADD TOTAL HOURS ---
 def add_total_hours_db(totals, role):

@@ -35,11 +35,14 @@ class WageApp(ctk.CTk):
 		self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="WAGE ENGINE", font=ctk.CTkFont(size=20, weight="bold"))
 		self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-		self.btn_init = ctk.CTkButton(self.sidebar_frame, text="Initialize Database", command=self.init_sys)
-		self.btn_init.grid(row=1, column=0, padx=20, pady=10)
+		self.btn_init = ctk.CTkButton(self.sidebar_frame, text="Initialize Database",
+								command=self.init_sys).grid(row=1, column=0, padx=20, pady=10)
 
-		self.btn_files = ctk.CTkButton(self.sidebar_frame, text="Open Folder", fg_color="transparent", border_width=1, command=lambda: os.startfile("."))
-		self.btn_files.grid(row=2, column=0, padx=20, pady=10)
+		self.btn_files = ctk.CTkButton(self.sidebar_frame, text="Open Folder", fg_color="transparent", border_width=1, 
+								command=lambda: os.startfile(".")).grid(row=2, column=0, padx=20, pady=10)
+
+		self.btn_carwash = ctk.CTkButton(self.sidebar_frame, text="Open Carwash Folder", fg_color="transparent", border_width=1, 
+								command=lambda: os.startfile(config.CARWASH_FOLDER)).grid(row=3, column=0, padx=20, pady=10)
 
 		self.appearance_mode_label = ctk.CTkLabel(self.sidebar_frame, text="Appearance:", anchor="w")
 		self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(150, 0))

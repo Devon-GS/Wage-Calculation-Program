@@ -5,14 +5,18 @@ import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Font
-from config import (CREATE_EXCEL, WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE, CAS_ROSTER_FILE, 
-					BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, CARWASH_HOURS_FILE, COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
-
+from config import (CREATE_EXCEL,CREATE_CARWASH_TIMES, WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE,
+					CAS_ROSTER_FILE, BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, CARWASH_HOURS_FILE, 
+					COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
 
 # --- Helper Functions ---
 def clear_excel():
 	if os.path.isfile(WAGE_TIMES_FILE):
 		os.remove(WAGE_TIMES_FILE)
+
+def clear_carwash_excel():
+	if os.path.isfile(CARWASH_FILE):
+		os.remove(CARWASH_FILE)
 
 def load_excel():
 	"""Opens the workbook and returns the object."""
@@ -737,27 +741,31 @@ def format_excel(wb):
 
 # --- Step 5: Carwash (Logic from carwash_db.py) ---
 def carwash_work_hours():
+	# Remove old and recreate new carwash times
+	clear_carwash_excel()
+	CREATE_CARWASH_TIMES()
+	
+	# Read data from carwash hours 
 	df = pd.read_excel(CARWASH_HOURS_FILE, header=None, usecols='A:J', nrows=20)
 	
-	# 2. FIX THE HEADERS
+	# 1. FIX THE HEADERS
 	# Set the column names using the first row (index 0)
 	df.columns = df.iloc[0]
 
-	# 3. EXTRACT THE BADGE ROW 
-	# This is the second row in your Excel (index 1)
+	# 2. EXTRACT THE BADGE ROW 
+	# This is the second row in the excel sheet (index 1)
 	badge_row = df.iloc[1]
 
-	# 4. EXTRACT THE DATA ROWS
+	# 3. EXTRACT THE DATA ROWS
 	# These are the dates and hours (everything from index 2 onwards)
 	data_rows = df.iloc[2:].copy()
 
-	# 5. DYNAMICALLY IDENTIFY NAME COLUMNS
-	# We take all columns after 'TOTAL' (index 2 onwards) 
+	# 4. DYNAMICALLY IDENTIFY NAME COLUMNS
+	# Take all columns after 'TOTAL' (index 2 onwards) 
 	# and make sure they are valid strings (not 0.0 or empty)
 	name_cols = [col for col in df.columns[2:] if isinstance(col, str) and col.strip() != '' and col != 0.0]
 
-	# 6. MELT THE DATAFRAME
-	# Now 'DATE' exists as a column name, so this won't crash
+	# 5. MELT THE DATAFRAME
 	df_long = data_rows.melt(
 		id_vars=['DATE'], 
 		value_vars=name_cols,
@@ -765,13 +773,12 @@ def carwash_work_hours():
 		value_name='Hours'
 	)
 
-	# 7. ADD THE BADGES
+	# 6. ADD THE BADGES
 	# Create a dictionary from the badge row to map Name -> Badge
 	badge_map = badge_row.to_dict()
 	df_long['Badge'] = df_long['Name'].map(badge_map)
 
-
-	# 8. CLEANUP
+	# 7. CLEANUP
 	# Remove extra spaces from names and convert Badge to integer
 	df_long['Name'] = df_long['Name'].str.strip()
 	df_long['Badge'] = pd.to_numeric(df_long['Badge']).astype(int)
@@ -779,7 +786,7 @@ def carwash_work_hours():
 	# Final Order: Name, Badge, Date, Hours
 	result = df_long[['Name', 'Badge', 'DATE', 'Hours']]
 
-	# 9. RETURN AS DICTIONARY
+	# 8. RETURN AS DICTIONARY
 	# 'records' -> [{column: value}, {column: value}]
 	# return result.to_dict(orient='records')
 	result_dic = result.to_dict(orient='records')
@@ -809,271 +816,87 @@ def carwash_work_hours():
 			carwash_total_hours[badge]['norm'] += hours 
 
 
-		
-	# Write data to excel
-	wb = load_workbook('Carwash Times/Carwash Hours/Carwash Times.xlsx')
-	ws = wb['Times']
+	# -- WRITE WEEK DAY TIMES TO EXCEL (CARWASH_FILE) --- 
+	# Constants 
+	WEEK1_COL = 1      # Column A
+	WEEK2_COL = 7      # Column G
+	SUMMARY_COL = 13   # Column M
 
-	# Set Headers for Week 1
-	ws['A1'] = 'Name'
-	ws['B1'] = 'Badge'
-	ws['C1'] = 'Day'
-	ws['D1'] = 'Date'
-	ws['E1'] = 'Hour'
+	wb = load_workbook(CARWASH_FILE)
+	ws = wb['Times']	
 
-	# Set Headers for Week 2
-	ws['G1'] = 'Name'
-	ws['H1'] = 'Badge'
-	ws['I1'] = 'Day'
-	ws['J1'] = 'Date'
-	ws['K1'] = 'Hour'
-
-	# Set total hours headings
-	ws['M1'] = 'Name'
-	ws['N1'] = 'Badge Number'
-	ws['O1'] = 'Total Normal'
-	ws['P1'] = 'Total Sunday'
-
-	# Set extra times headings
-	ws['M11'] = 'EXTRA'
-	ws['M12'] = 'Name'
-	ws['N12'] = 'Badge Number'
-	ws['O12'] = 'Early Times'
-	ws['P12'] = 'Amount'
-
-	# Tracks the starting row for each employee block
+	# Start rows
 	current_base_row = 2 
+	total_row = 2 
+	extra_row = 13 
 
 	for badge, info in carwash_total_hours.items():
-		# Use enumerate to get the index (0 to 13) of each date entry
-		for i, (date_obj, hours) in enumerate(info['date'].items()):
+		# Sort the dates chronologically to guarantee correct week grouping
+		sorted_dates = sorted(info['date'].items())
+		
+		for i, (date_obj, hours) in enumerate(sorted_dates):
 			
-			# Logic: 
-			# index 0-6 (Week 1) -> col_offset 0 (Cols A-E)
-			# index 7-13 (Week 2) -> col_offset 6 (Cols G-K)
 			week_num = i // 7 
 			day_offset = i % 7
 			
 			target_row = current_base_row + day_offset
-			col_start = 1 + (week_num * 6) # Starts at 1 for Week 1, 6 for Week 2
+			col_start = WEEK2_COL if week_num else WEEK1_COL
 
-			# Write the data
+			# Write daily info
 			ws.cell(row=target_row, column=col_start, value=info['name'])
 			ws.cell(row=target_row, column=col_start + 1, value=badge)
 			ws.cell(row=target_row, column=col_start + 2, value=date_obj.strftime('%A'))
-			ws.cell(row=target_row, column=col_start + 3, value=date_obj.strftime('%d/%m/%Y'))
+			
+			# BEST PRACTICE: Write actual date objects and apply Excel number formatting
+			date_cell = ws.cell(row=target_row, column=col_start + 3, value=date_obj)
+			date_cell.number_format = 'DD/MM/YYYY'
+			
 			ws.cell(row=target_row, column=col_start + 4, value=hours)
 
-		# After finishing one employee (both weeks), jump past the 7 rows + 1 spacer row
+		# Move to the next employee block
 		current_base_row += 8
 
-	# FORMATING 
-	from openpyxl.styles import Font, PatternFill, Border, Side
+		# Write Total Hours block
+		ws.cell(row=total_row, column=SUMMARY_COL, value=info['name'])
+		ws.cell(row=total_row, column=SUMMARY_COL + 1, value=badge)
+		ws.cell(row=total_row, column=SUMMARY_COL + 2, value=info['norm'])
+		ws.cell(row=total_row, column=SUMMARY_COL + 3, value=info['sun'])
 
-	# -- STYLES --
-	left_alignment = Alignment(horizontal='left')
-	bold_font = Font(bold=True, underline='single')
-	center_alignment = Alignment(horizontal='center') 
-
-	# Define the yellow fill (using the hex code for standard yellow)
-	yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
-
-	# Define a thin border for all four sides
-	thin_border = Border(
-	left=Side(style='thin', color='000000'),
-	right=Side(style='thin', color='000000'),
-	top=Side(style='thin', color='000000'),
-	bottom=Side(style='thin', color='000000')
-	)
-
-	# Border line styles
-	thick_side = Side(style='thick', color='000000')
-	thin_side = Side(style='thin', color='000000')
-
-	# -- --
-
-	# Loop through the first row (1) from column 1 to 16
-	for col_num in range(1, 17):
-		# Assign the cell to a variable to make it cleaner to apply multiple styles
-		cell = ws.cell(row=1, column=col_num)
+		# Write Extra Details block
+		ws.cell(row=extra_row, column=SUMMARY_COL, value=info['name'])
+		ws.cell(row=extra_row, column=SUMMARY_COL + 1, value=badge)
 		
-		# Apply the font and the alignment
-		cell.font = bold_font
-		cell.alignment = center_alignment
+		total_row += 1
+		extra_row += 1
 
-	# CHANGE WIDTH OF COLUMNS
-	# 2. Define your desired column widths in a dictionary
-	column_widths = {
-		'A': 9.72,
-		'B': 8.83,
-		'C': 10.42,
-		'D': 10.52,
-		'E': 8.83,
-		'G': 9.72,
-		'H': 8.83,
-		'I': 10.42,
-		'J': 10.52,
-		'K': 8.83,
-		'M': 9.72,
-		'N': 12.90,
-		'O': 11.83,
-		'P': 11.94
-	}
-
-	# Loop through the dictionary and apply the widths
-	for col_letter, width_value in column_widths.items():
-		ws.column_dimensions[col_letter].width = width_value
-
-	# Loop through rows starting from row 2 up to the last row with data
-	for row in range(2, ws.max_row + 1):
-		ws[f'B{row}'].alignment = left_alignment
-		ws[f'H{row}'].alignment = left_alignment
-
-	# Merge the cells foe extra time heading
-	ws.merge_cells('M11:P11')
-	ws['M11'].alignment = center_alignment
-
-	# Align cells for extra time
-	for row in ws['M12:P12']:
-		for cell in row:
-			cell.alignment = center_alignment
-
-	# Range M2:P9 yellow highlight
-	for row in ws['M2:P9']:
-		for cell in row:
-			cell.fill = yellow_fill
-
-
-	# Range M2:P9 border with thick outside border
-	for row in ws['M2:P9']:
-		for cell in row:
-			# Start by assuming the cell just needs regular thin inner borders
-			top_border = thin_side
-			bottom_border = thin_side
-			left_border = thin_side
-			right_border = thin_side
-			
-			# Check if the cell is on the TOP edge of our box
-			if cell.row == 2:
-				top_border = thick_side
-				
-			# Check if the cell is on the BOTTOM edge of our box
-			if cell.row == 9:
-				bottom_border = thick_side
-				
-			# Check if the cell is on the LEFT edge of our box
-			if cell.column_letter == 'M':
-				left_border = thick_side
-				
-			# Check if the cell is on the RIGHT edge of our box
-			if cell.column_letter == 'P':
-				right_border = thick_side
-				
-			# Apply the combined border to the cell
-			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
-
-	# 1. Define your styles
-	thick_side = Side(style='thick', color='000000')
-	thin_side = Side(style='thin', color='000000')
-	yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
-
-	# ---------------------------------------------------------
-	# TASK 1: Thick outside border around merged cells M11:P11
-	# ---------------------------------------------------------
-	for row in ws['M11:P11']:
-		for cell in row:
-			# Top and bottom are thick for the whole merged block
-			top_border = thick_side
-			bottom_border = thick_side
-			
-			# cell.column returns an integer: M is 13, P is 16
-			left_border = thick_side if cell.column == 13 else None
-			right_border = thick_side if cell.column == 16 else None
-			
-			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
-
-
-	# ---------------------------------------------------------
-	# TASK 2 & 3: Borders for M12:P20 and Highlighting N & P
-	# ---------------------------------------------------------
-	for row in ws['M12:P20']:
-		for cell in row:
-			
-			# --- BORDER LOGIC ---
-			# Start by assuming normal (thin) borders inside the grid
-			top_border = thin_side
-			bottom_border = thin_side
-			left_border = thin_side
-			right_border = thin_side
-			
-			# Apply thick borders to the outside edges
-			if cell.row == 12:
-				top_border = thick_side
-			if cell.row == 20:
-				bottom_border = thick_side
-			if cell.column == 13: # Column M
-				left_border = thick_side
-			if cell.column == 16: # Column P
-				right_border = thick_side
-				
-			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
-			
-			# --- HIGHLIGHT LOGIC ---
-			# Highlight columns N (14) and P (16), but only for rows 13 through 20
-			if cell.row >= 13 and cell.row <= 20:
-				if cell.column == 14 or cell.column == 16: 
-					cell.fill = yellow_fill
-
-
-
-
-	# recreate times excel book
-	# move stuff to config
-
-	wb.save('Carwash Times/Carwash Hours/Carwash Times.xlsx')
-	wb.close()
-
-
-
-
-
-
-carwash_work_hours()
-
-
-
-
-
-
-
-
-
-
+		wb.save(CARWASH_FILE)
+		wb.close()
 
 def carwash_times():
+	# Load the workbook
 	wb = load_workbook(CARWASH_FILE, data_only=True)
-	ws = wb['Times']
+	
+	try:
+		ws = wb['Times']
+		data = {}
 
-	# Create dic to save all hours
-	data = {}
+		# 1. Get normal and sunday hours
+		for name, badge, norm, sun in ws.iter_rows(min_row=2, max_row=9, min_col=13, max_col=16, values_only=True):
+			if name:
+				# 2. Create dictionary 
+				data[badge] = {
+					'name': name,
+					'n_hours': norm,
+					's_hours': sun,
+					'amount': 0  # Default value 
+				}
 
-	# Loop through rows to get normal hours
-	for row in ws.iter_rows(min_row=3, max_row=10, min_col=12, max_col=16, values_only=True):
-		name = row[0]
-		badge = row[1]
-		n_hours = row[2]
-		s_hours = row[3]
+		# 3. Add extra time
+		for _, ebadge, _, amount in ws.iter_rows(min_row=13, max_row=20, min_col=13, max_col=16, values_only=True):
+			if ebadge in data:
+				data[ebadge]['amount'] = amount
 
-		if name and name != '---': 
-			data[badge] = [name, n_hours, s_hours]
-
-	# Loop through rows to get extra time  
-	for erow in ws.iter_rows(min_row=14, max_row=21, min_col=12, max_col=16, values_only=True):
-		ebadge = erow[1]
-		amount = erow[3]
-
-		if ebadge in data:
-			data[ebadge].append(amount)
-
-	# Add carwash times to database
-	db.carwash_db(data)
+		# Add carwash times to database
+		db.carwash_db(data)
+	finally:
+		wb.close()

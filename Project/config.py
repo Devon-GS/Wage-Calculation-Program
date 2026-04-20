@@ -38,6 +38,7 @@ UNICLOX_FOLDER = os.path.join(BASE_DIR, "Uniclox")
 PUBLIC_HIOLIDAY_FILE = os.path.join(BASE_DIR, "Public Holidays", "Public Holidays.xlsx")
 ATT_ROSTER_FILE = os.path.join(ROSTER_FOLDER, "Attendant_Carwash_Roster.xlsx")
 CAS_ROSTER_FILE = os.path.join(ROSTER_FOLDER, "CASHIERS_ROSTER.xlsx")
+CARWASH_FOLDER = os.path.join(BASE_DIR, "Carwash Times")
 CARWASH_FILE = os.path.join(BASE_DIR, "Carwash Times", "Carwash Times.xlsx")
 CARWASH_HOURS_FILE = os.path.join(BASE_DIR, "Carwash Times", "Carwash Hours", "Carwash Hours.xlsx")
 TAX_RATES_FILE = os.path.join(BASE_DIR, "Tax", "Tax_rates", "PAYE_Fortnight.xlsx")
@@ -49,7 +50,13 @@ COPY_FOLDER = os.path.join(BASE_DIR, "Copy Folder")
 
 # --- STYLES FOR EXCEL ---
 THIN_SIDE = Side(style='thin', color="000000")
+THICK_SIDE = Side(style='thick', color='000000')
 DOUBLE_SIDE = Side(style='double', color="000000")
+
+LEFT_ALIGN = Alignment(horizontal='left')
+CENTER_ALIGN = Alignment(horizontal='center')
+BOLD_FONT = Font(bold=True, underline='single')
+YELLOW_FILL = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
 
 TOTAL_STYLE = NamedStyle(
 	name = "total_style",
@@ -127,164 +134,95 @@ def CREATE_EXCEL():
 
 # --- INITILIZE EXCEL CARWASH TIMES WORKBOOK ---
 def CREATE_CARWASH_TIMES():
-	if not os.path.isfile(CARWASH_FILE):
-		wb = Workbook()
+	# 1. Stop if the file already exists
+	if os.path.isfile(CARWASH_FILE):
+		return
 
-		# Remove and add sheets
-		wb.remove(wb['Sheet'])
-		wb.create_sheet('Times')
-		ws = wb['Times']
+	wb = Workbook()
+	ws = wb.active
+	ws.title = 'Times'
 
-	# -- STYLES --
-	left_alignment = Alignment(horizontal='left')
-	bold_font = Font(bold=True, underline='single')
-	center_alignment = Alignment(horizontal='center') 
+	# --- HELPER FUNCTION FOR BORDERS ---
+	def apply_box_borders(cell_range):
+		"""Applies a thick outside border and thin inside borders to any range."""
+		rows = ws[cell_range]
+		for i, row in enumerate(rows):
+			for j, cell in enumerate(row):
+				top = THICK_SIDE if i == 0 else THIN_SIDE
+				bottom = THICK_SIDE if i == len(rows) - 1 else THIN_SIDE
+				left = THICK_SIDE if j == 0 else THIN_SIDE
+				right = THICK_SIDE if j == len(row) - 1 else THIN_SIDE
+				
+				cell.border = Border(top=top, bottom=bottom, left=left, right=right)
 
-	# Define the yellow fill (using the hex code for standard yellow)
-	yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+	# 2. INSERT HEADERS
+	# Week 1
+	ws['A1'], ws['B1'], ws['C1'], ws['D1'], ws['E1'] = 'Name', 'Badge', 'Day', 'Date', 'Hour'
+	
+	# Week 2
+	ws['G1'], ws['H1'], ws['I1'], ws['J1'], ws['K1'] = 'Name', 'Badge', 'Day', 'Date', 'Hour'
+	
+	# Total Hours
+	ws['M1'], ws['N1'], ws['O1'], ws['P1'] = 'Name', 'Badge Number', 'Total Normal', 'Total Sunday'
+	
+	# Extra Times
+	ws['M11'] = 'EXTRA'
+	ws['M12'], ws['N12'], ws['O12'], ws['P12'] = 'Name', 'Badge Number', 'Early Times', 'Amount'
 
-	# Define a thin border for all four sides
-	thin_border = Border(
-	left=Side(style='thin', color='000000'),
-	right=Side(style='thin', color='000000'),
-	top=Side(style='thin', color='000000'),
-	bottom=Side(style='thin', color='000000')
-	)
-
-	# Border line styles
-	thick_side = Side(style='thick', color='000000')
-	thin_side = Side(style='thin', color='000000')
-
-	# -- --
-
-	# Loop through the first row (1) from column 1 to 16
+	# 3. APPLY HEADER STYLES (Row 1)
 	for col_num in range(1, 17):
-		# Assign the cell to a variable to make it cleaner to apply multiple styles
 		cell = ws.cell(row=1, column=col_num)
-		
-		# Apply the font and the alignment
-		cell.font = bold_font
-		cell.alignment = center_alignment
+		cell.font = BOLD_FONT
+		cell.alignment = CENTER_ALIGN
 
-	# CHANGE WIDTH OF COLUMNS
-	# 2. Define your desired column widths in a dictionary
+	# 4. SET COLUMN WIDTHS
 	column_widths = {
-		'A': 9.72,
-		'B': 8.83,
-		'C': 10.42,
-		'D': 10.52,
-		'E': 8.83,
-		'G': 9.72,
-		'H': 8.83,
-		'I': 10.42,
-		'J': 10.52,
-		'K': 8.83,
-		'M': 9.72,
-		'N': 12.90,
-		'O': 11.83,
-		'P': 11.94
+		'A': 9.72, 'B': 8.83, 'C': 10.42, 'D': 10.52, 'E': 8.83,
+		'G': 9.72, 'H': 8.83, 'I': 10.42, 'J': 10.52, 'K': 8.83,
+		'M': 9.72, 'N': 12.90, 'O': 11.83, 'P': 11.94
 	}
+	for col_letter, width in column_widths.items():
+		ws.column_dimensions[col_letter].width = width
 
-	# Loop through the dictionary and apply the widths
-	for col_letter, width_value in column_widths.items():
-		ws.column_dimensions[col_letter].width = width_value
+	# Format Badge columns (B and H) to be left-aligned 
+	# (Pre-formatting up to row 20)
+	for row in range(2, 65): 
+		ws[f'B{row}'].alignment = LEFT_ALIGN
+		ws[f'H{row}'].alignment = LEFT_ALIGN
 
-	# Loop through rows starting from row 2 up to the last row with data
-	for row in range(2, ws.max_row + 1):
-		ws[f'B{row}'].alignment = left_alignment
-		ws[f'H{row}'].alignment = left_alignment
-
-	# Merge the cells foe extra time heading
+	# 5. MERGED CELLS & ALIGNMENT FOR "EXTRA TIMES"
 	ws.merge_cells('M11:P11')
-	ws['M11'].alignment = center_alignment
-
-	# Align cells for extra time
-	for row in ws['M12:P12']:
+	
+	# Apply center alignment (and bold) to rows 11 and 12
+	for row in ws['M11:P12']:
 		for cell in row:
-			cell.alignment = center_alignment
+			cell.alignment = CENTER_ALIGN
+			cell.font = BOLD_FONT  
 
-	# Range M2:P9 yellow highlight
+	# 6. APPLY YELLOW HIGHLIGHTS
+	# Top grid highlights
 	for row in ws['M2:P9']:
 		for cell in row:
-			cell.fill = yellow_fill
+			cell.fill = YELLOW_FILL
 
+			# Don't align coloumn M			
+			if cell.column_letter != 'M':
+				cell.alignment = CENTER_ALIGN
 
-	# Range M2:P9 border with thick outside border
-	for row in ws['M2:P9']:
+	# Highlight columns N and P for rows 13 through 20
+	for row in ws['M13:P20']:
 		for cell in row:
-			# Start by assuming the cell just needs regular thin inner borders
-			top_border = thin_side
-			bottom_border = thin_side
-			left_border = thin_side
-			right_border = thin_side
-			
-			# Check if the cell is on the TOP edge of our box
-			if cell.row == 2:
-				top_border = thick_side
-				
-			# Check if the cell is on the BOTTOM edge of our box
-			if cell.row == 9:
-				bottom_border = thick_side
-				
-			# Check if the cell is on the LEFT edge of our box
-			if cell.column_letter == 'M':
-				left_border = thick_side
-				
-			# Check if the cell is on the RIGHT edge of our box
-			if cell.column_letter == 'P':
-				right_border = thick_side
-				
-			# Apply the combined border to the cell
-			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
+			# Don't align coloumn M	
+			if cell.column_letter != 'M':
+				cell.alignment = CENTER_ALIGN
+			# Yellow fill
+			if cell.column_letter in ('N', 'P'):
+				cell.fill = YELLOW_FILL
 
-	# 1. Define your styles
-	thick_side = Side(style='thick', color='000000')
-	thin_side = Side(style='thin', color='000000')
-	yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+	# 7. APPLY BORDERS
+	apply_box_borders('M2:P9')
+	apply_box_borders('M11:P11')
+	apply_box_borders('M12:P20')
 
-	# ---------------------------------------------------------
-	# TASK 1: Thick outside border around merged cells M11:P11
-	# ---------------------------------------------------------
-	for row in ws['M11:P11']:
-		for cell in row:
-			# Top and bottom are thick for the whole merged block
-			top_border = thick_side
-			bottom_border = thick_side
-			
-			# cell.column returns an integer: M is 13, P is 16
-			left_border = thick_side if cell.column == 13 else None
-			right_border = thick_side if cell.column == 16 else None
-			
-			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
-
-
-	# ---------------------------------------------------------
-	# TASK 2 & 3: Borders for M12:P20 and Highlighting N & P
-	# ---------------------------------------------------------
-	for row in ws['M12:P20']:
-		for cell in row:
-			
-			# --- BORDER LOGIC ---
-			# Start by assuming normal (thin) borders inside the grid
-			top_border = thin_side
-			bottom_border = thin_side
-			left_border = thin_side
-			right_border = thin_side
-			
-			# Apply thick borders to the outside edges
-			if cell.row == 12:
-				top_border = thick_side
-			if cell.row == 20:
-				bottom_border = thick_side
-			if cell.column == 13: # Column M
-				left_border = thick_side
-			if cell.column == 16: # Column P
-				right_border = thick_side
-				
-			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
-			
-			# --- HIGHLIGHT LOGIC ---
-			# Highlight columns N (14) and P (16), but only for rows 13 through 20
-			if cell.row >= 13 and cell.row <= 20:
-				if cell.column == 14 or cell.column == 16: 
-					cell.fill = yellow_fill
+	# SAVE WORKBOOK
+	wb.save(CARWASH_FILE)
