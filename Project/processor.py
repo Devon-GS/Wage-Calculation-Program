@@ -828,6 +828,19 @@ def carwash_work_hours():
 	ws['J1'] = 'Date'
 	ws['K1'] = 'Hour'
 
+	# Set total hours headings
+	ws['M1'] = 'Name'
+	ws['N1'] = 'Badge Number'
+	ws['O1'] = 'Total Normal'
+	ws['P1'] = 'Total Sunday'
+
+	# Set extra times headings
+	ws['M11'] = 'EXTRA'
+	ws['M12'] = 'Name'
+	ws['N12'] = 'Badge Number'
+	ws['O12'] = 'Early Times'
+	ws['P12'] = 'Amount'
+
 	# Tracks the starting row for each employee block
 	current_base_row = 2 
 
@@ -854,31 +867,168 @@ def carwash_work_hours():
 		# After finishing one employee (both weeks), jump past the 7 rows + 1 spacer row
 		current_base_row += 8
 
+	# FORMATING 
+	from openpyxl.styles import Font, PatternFill, Border, Side
 
-	# # bold row 1
-	# from openpyxl.styles import Font
+	# -- STYLES --
+	left_alignment = Alignment(horizontal='left')
+	bold_font = Font(bold=True, underline='single')
+	center_alignment = Alignment(horizontal='center') 
 
-	# # Define the bold font
-	# bold_font = Font(bold=True)
+	# Define the yellow fill (using the hex code for standard yellow)
+	yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
 
-	# # Loop through the first row (1) from column 1 to 10
-	# for col_num in range(1, 11):
-	# 	ws.cell(row=1, column=col_num).font = bold_font
+	# Define a thin border for all four sides
+	thin_border = Border(
+	left=Side(style='thin', color='000000'),
+	right=Side(style='thin', color='000000'),
+	top=Side(style='thin', color='000000'),
+	bottom=Side(style='thin', color='000000')
+	)
+
+	# Border line styles
+	thick_side = Side(style='thick', color='000000')
+	thin_side = Side(style='thin', color='000000')
+
+	# -- --
+
+	# Loop through the first row (1) from column 1 to 16
+	for col_num in range(1, 17):
+		# Assign the cell to a variable to make it cleaner to apply multiple styles
+		cell = ws.cell(row=1, column=col_num)
+		
+		# Apply the font and the alignment
+		cell.font = bold_font
+		cell.alignment = center_alignment
+
+	# CHANGE WIDTH OF COLUMNS
+	# 2. Define your desired column widths in a dictionary
+	column_widths = {
+		'A': 9.72,
+		'B': 8.83,
+		'C': 10.42,
+		'D': 10.52,
+		'E': 8.83,
+		'G': 9.72,
+		'H': 8.83,
+		'I': 10.42,
+		'J': 10.52,
+		'K': 8.83,
+		'M': 9.72,
+		'N': 12.90,
+		'O': 11.83,
+		'P': 11.94
+	}
+
+	# Loop through the dictionary and apply the widths
+	for col_letter, width_value in column_widths.items():
+		ws.column_dimensions[col_letter].width = width_value
+
+	# Loop through rows starting from row 2 up to the last row with data
+	for row in range(2, ws.max_row + 1):
+		ws[f'B{row}'].alignment = left_alignment
+		ws[f'H{row}'].alignment = left_alignment
+
+	# Merge the cells foe extra time heading
+	ws.merge_cells('M11:P11')
+	ws['M11'].alignment = center_alignment
+
+	# Align cells for extra time
+	for row in ws['M12:P12']:
+		for cell in row:
+			cell.alignment = center_alignment
+
+	# Range M2:P9 yellow highlight
+	for row in ws['M2:P9']:
+		for cell in row:
+			cell.fill = yellow_fill
+
+
+	# Range M2:P9 border with thick outside border
+	for row in ws['M2:P9']:
+		for cell in row:
+			# Start by assuming the cell just needs regular thin inner borders
+			top_border = thin_side
+			bottom_border = thin_side
+			left_border = thin_side
+			right_border = thin_side
+			
+			# Check if the cell is on the TOP edge of our box
+			if cell.row == 2:
+				top_border = thick_side
+				
+			# Check if the cell is on the BOTTOM edge of our box
+			if cell.row == 9:
+				bottom_border = thick_side
+				
+			# Check if the cell is on the LEFT edge of our box
+			if cell.column_letter == 'M':
+				left_border = thick_side
+				
+			# Check if the cell is on the RIGHT edge of our box
+			if cell.column_letter == 'P':
+				right_border = thick_side
+				
+			# Apply the combined border to the cell
+			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
+
+	# 1. Define your styles
+	thick_side = Side(style='thick', color='000000')
+	thin_side = Side(style='thin', color='000000')
+	yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+
+	# ---------------------------------------------------------
+	# TASK 1: Thick outside border around merged cells M11:P11
+	# ---------------------------------------------------------
+	for row in ws['M11:P11']:
+		for cell in row:
+			# Top and bottom are thick for the whole merged block
+			top_border = thick_side
+			bottom_border = thick_side
+			
+			# cell.column returns an integer: M is 13, P is 16
+			left_border = thick_side if cell.column == 13 else None
+			right_border = thick_side if cell.column == 16 else None
+			
+			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
+
+
+	# ---------------------------------------------------------
+	# TASK 2 & 3: Borders for M12:P20 and Highlighting N & P
+	# ---------------------------------------------------------
+	for row in ws['M12:P20']:
+		for cell in row:
+			
+			# --- BORDER LOGIC ---
+			# Start by assuming normal (thin) borders inside the grid
+			top_border = thin_side
+			bottom_border = thin_side
+			left_border = thin_side
+			right_border = thin_side
+			
+			# Apply thick borders to the outside edges
+			if cell.row == 12:
+				top_border = thick_side
+			if cell.row == 20:
+				bottom_border = thick_side
+			if cell.column == 13: # Column M
+				left_border = thick_side
+			if cell.column == 16: # Column P
+				right_border = thick_side
+				
+			cell.border = Border(top=top_border, bottom=bottom_border, left=left_border, right=right_border)
+			
+			# --- HIGHLIGHT LOGIC ---
+			# Highlight columns N (14) and P (16), but only for rows 13 through 20
+			if cell.row >= 13 and cell.row <= 20:
+				if cell.column == 14 or cell.column == 16: 
+					cell.fill = yellow_fill
 
 
 
-	# from openpyxl.styles import Font
 
-	# # Create the bold font object
-	# bold_font = Font(bold=True)
-
-	# # Loop from row 2 to the last used row in the sheet
-	# for row_num in range(2, ws.max_row + 1):
-	# 	# Column 1 (A)
-    # ws.cell(row=row_num, column=1).font = bold_font
-    
-    # # Column 7 (G) - which corresponds to w2Badge
-    # ws.cell(row=row_num, column=7).font = bold_font
+	# recreate times excel book
+	# move stuff to config
 
 	wb.save('Carwash Times/Carwash Hours/Carwash Times.xlsx')
 	wb.close()
