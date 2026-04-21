@@ -29,20 +29,20 @@
 - [x] Tax
 - [x] Payslips 
 - [x] Copy for backup/keep
-- [ ] Automate Carwash hours
-	- [ ] File can be any name
+- [x] Automate Carwash hours
+	- [x] File can be any name
 	- [x] Add button to open file on side
 	- [x] Total and extra align center
 	- [x] Update carwash time function for new positions of data
-	- [ ] Add new function to payroll run
+	- [x] Add new functions to payroll run
 - [ ] Check messageboxs are all CTkMessagebox
 - [ ] Change program openning size
 - [x] Sort out payroll file errors if more that one file ing folder [make function that is call once in payroll.py file]
 - [ ] Add error handling to processor functions
-	-[ ] get imployee info function if return empty dic handel it (database.py)
+	-[ ] get employee info function if return empty dic handel it (database.py)
 - [ ] Clean up
 - [ ] Clean up unsed branchs (git)
 - [x] Changes branchs (main to orginal-program) and (refactor to main). Refactor now default branch gtihub
-- [ ] Tag code V2.0 be for deployment
+- [ ] Tag code V2.0 before deployment
 
 ---

@@ -4,7 +4,7 @@ import database as db
 from openpyxl import load_workbook
 from CTkMessagebox import CTkMessagebox
 from openpyxl.styles import Border, Side, Font, Alignment
-from config import (PAYROLL_FILE_LOC, PAYSLIP_TEMPLATE, PAYSLIP_FOLDER, COPY_FOLDER, WAGE_TIMES_FILE, PAYROLL_FILE_LOC, 
+from config import (DYNAMIC_FILE_LOC, PAYSLIP_TEMPLATE, PAYSLIP_FOLDER, COPY_FOLDER, WAGE_TIMES_FILE, 
                     ATT_ROSTER_FILE, CAS_ROSTER_FILE, CARWASH_FILE, TAX_RESULTS)
 
 
@@ -29,7 +29,7 @@ def get_employee_details(name_key, emp_info_dict):
 # --- MAIN FUNCTION ---
 def gen_payslips():
 	# Get payroll file
-	PAYROLL_FILE = PAYROLL_FILE_LOC()
+	PAYROLL_FILE = DYNAMIC_FILE_LOC('Payroll')
 
 	# Get employee information
 	employee_name_info = db.get_emp_info()
@@ -129,7 +129,7 @@ def copy_files():
     dest_folder = COPY_FOLDER
     
 	# Get payroll file
-    PAYROLL_FILE = PAYROLL_FILE_LOC()
+    PAYROLL_FILE = DYNAMIC_FILE_LOC('Payroll')
     
     # List of source files
     files_to_copy = [

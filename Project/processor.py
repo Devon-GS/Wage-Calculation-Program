@@ -5,9 +5,9 @@ import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Font
-from config import (CREATE_EXCEL,CREATE_CARWASH_TIMES, WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE,
-					CAS_ROSTER_FILE, BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, CARWASH_HOURS_FILE, 
-					COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
+from config import (CREATE_EXCEL,CREATE_CARWASH_TIMES, DYNAMIC_FILE_LOC, WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER,
+					ATT_ROSTER_FILE, CAS_ROSTER_FILE, BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, COLUMN_WIDTHS_ATT, 
+					COLUMN_WIDTHS_TOTALS ,COL_DIFF)
 
 # --- Helper Functions ---
 def clear_excel():
@@ -746,7 +746,7 @@ def carwash_work_hours():
 	CREATE_CARWASH_TIMES()
 	
 	# Read data from carwash hours 
-	df = pd.read_excel(CARWASH_HOURS_FILE, header=None, usecols='A:J', nrows=20)
+	df = pd.read_excel(DYNAMIC_FILE_LOC('Carwash'), header=None, usecols='A:J', nrows=20)
 	
 	# 1. FIX THE HEADERS
 	# Set the column names using the first row (index 0)

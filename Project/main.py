@@ -135,7 +135,7 @@ class WageApp(ctk.CTk):
 				command=self.run_payroll).grid(row=1, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Open Payroll File", fg_color="transparent", border_width=1,
-				command=lambda PAYROLL_FILE=config.PAYROLL_FILE_LOC(): os.startfile(PAYROLL_FILE)
+				command=lambda PAYROLL_FILE=config.DYNAMIC_FILE_LOC("Payroll"): os.startfile(PAYROLL_FILE)
 				).grid(row=2, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Calculate Tax", 
@@ -245,6 +245,7 @@ class WageApp(ctk.CTk):
 			processor.save_workbook(wb)
 
 			#  - Carwash Times -
+			processor.carwash_work_hours()
 			processor.carwash_times()
 
 			messagebox.showinfo("Success", "Wage program finished successfully")
@@ -274,7 +275,7 @@ class WageApp(ctk.CTk):
 
 	def run_payroll(self):
 		try:
-			PAYROLL_FILE = config.PAYROLL_FILE_LOC()
+			PAYROLL_FILE = config.DYNAMIC_FILE_LOC('Payroll')
 			if PAYROLL_FILE == None:
 				raise Exception('Error Occured with Payroll File')
 			
@@ -286,7 +287,7 @@ class WageApp(ctk.CTk):
 		
 	def run_tax(self):
 		try:
-			PAYROLL_FILE = config.PAYROLL_FILE_LOC()
+			PAYROLL_FILE = config.DYNAMIC_FILE_LOC('Payroll')
 			if PAYROLL_FILE == None:
 				raise Exception('Error Occured with Payroll File')
 			
