@@ -276,14 +276,17 @@ class WageApp(ctk.CTk):
 	def run_payroll(self):
 		try:
 			PAYROLL_FILE = config.DYNAMIC_FILE_LOC('Payroll')
+
 			if PAYROLL_FILE == None:
 				raise Exception('Error Occured with Payroll File')
-			
-			payroll_manager.run_payroll(PAYROLL_FILE)
-			messagebox.showinfo("Payroll", "Payroll Run Finished")
+			else:
+				payroll_manager.run_payroll(PAYROLL_FILE)
+				messagebox.showinfo("Payroll", "Payroll Run Finished")
 
-		except Exception as error:
-			messagebox.showerror("Error", error)
+		except Exception:
+			CTkMessagebox(title="Run Payroll", 
+				message=traceback.format_exc(),
+				icon="cancel")
 		
 	def run_tax(self):
 		try:

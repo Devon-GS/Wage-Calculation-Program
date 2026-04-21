@@ -96,8 +96,12 @@ def run_payroll(PAYROLL_FILE):
 		
 		wb.save(PAYROLL_FILE)
 		wb.close()
-	except Exception as error:
-		CTkMessagebox(title="Error", message=str(error), icon="cancel")
+	except Exception:
+		# CTkMessagebox(title="Error", message=str(error), icon="cancel")
+		import traceback
+		CTkMessagebox(title="Run Payroll", 
+				message=traceback.format_exc(),
+				icon="cancel")
 
 
 # =========================================================================================

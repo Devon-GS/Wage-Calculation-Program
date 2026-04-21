@@ -11,7 +11,7 @@
 - [x] 9. Generate payslips
 - [x] 10. Copy files for saving
 
-# Working and Errors
+# TODO
 
 - [x] Add no leeway on public holidays when calculating hours
 - [x] Add feature: If an employee who works both baker and cashier positions works as a cashier on a Sunday or public holiday, automatically calculate total hours and add to dict under labels `c_pub` and `c_sun`
@@ -35,14 +35,21 @@
 	- [x] Total and extra align center
 	- [x] Update carwash time function for new positions of data
 	- [x] Add new functions to payroll run
-- [ ] Check messageboxs are all CTkMessagebox
-- [ ] Change program openning size
 - [x] Sort out payroll file errors if more that one file ing folder [make function that is call once in payroll.py file]
 - [ ] Add error handling to processor functions
-	-[ ] get employee info function if return empty dic handel it (database.py)
+	- [ ] get employee info function if return empty dic handel it (database.py)
+	- [ ] Log traceback error messages (new folder Logs)
+	- [ ] Check messageboxs are all CTkMessagebox
+	- [ ] Push errors up to main
+- [ ] Change program openning size
 - [ ] Clean up
 - [ ] Clean up unsed branchs (git)
 - [x] Changes branchs (main to orginal-program) and (refactor to main). Refactor now default branch gtihub
 - [ ] Tag code V2.0 before deployment
+
+# Errors
+- Carwash times file must add formulas to extra time in config
+- Must add section to carwash hours for extra time worked
+- update functions to extract extra time from carwash hours and write to carwash times
 
 ---
