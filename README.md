@@ -1,4 +1,4 @@
-# 💼 Automated Payroll & Payslip Generator (v2.0.164)
+# 💼 Automated Payroll & Payslip Generator (v2.0.170)
 
 A Python-based automation tool designed to streamline payroll management. This programme automatically calculates employee hours, processes tax deductions, updates your payroll Excel sheets, and generates individual payslips.
 
@@ -102,17 +102,17 @@ python Project/main.py
 * **Performance Testing:** Verified that the "minimized code" results in faster load times and lower memory usage.
 
 ---
-## 🤖 Phases (v2.1 Testing and AI)
+## 🤖 Phases (v3.0 Testing and AI)
 
 ### Phase 1: v2.0 Testing & Error Resolution
 * **System Evaluation:** Conducted comprehensive testing on the v2.0 release to identify functional anomalies, edge cases, and unexpected behaviors.
 * **Bug Fixing:** Debugged and deployed targeted patches for all identified errors to ensure a stable baseline before further optimization.
 
-### Phase 2: AI-Driven Optimization (v2.1)
+### Phase 2: AI-Driven Optimization (v3.x)
 * **Algorithmic Correction:** Processed the stabilized v2.0 codebase through AI tools to detect deeper inefficiencies and automatically correct structural flaws.
 * **Runtime Minimization:** Minimized overall code footprint and streamlined functions to significantly reduce execution times and resource consumption.
 
-### Phase 3: v2.1 Validation & Accuracy Testing
+### Phase 3: v3.x Validation & Accuracy Testing
 * **Regression Testing:** Rigorously tested the newly optimized v2.1 build to ensure no new bugs were introduced during the AI refactoring process.
 * **Accuracy Verification:** Validated all system outputs to confirm that the minimized code maintains strict functional accuracy and reliability.
 ---
