@@ -37,10 +37,10 @@
 	- [x] Add new functions to payroll run
 - [x] Sort out payroll file errors if more that one file ing folder [make function that is call once in payroll.py file]
 - [ ] Add error handling to processor functions
-	- [ ] get employee info function if return empty dic handel it (database.py)
+	- [x] get employee info function if return empty dic handel it (database.py)
 	- [ ] Log traceback error messages (new folder Logs)
-	- [ ] Check messageboxs are all CTkMessagebox
-	- [ ] Push errors up to main
+	- [x] Check messageboxs are all CTkMessagebox
+	- [x] Push errors up to main
 - [ ] Change program openning size
 - [ ] Clean up
 - [ ] Clean up unsed branchs (git)

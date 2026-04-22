@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 import database as db
+import traceback
 
 
 def pop_up():
@@ -41,158 +42,191 @@ def pop_up():
 
 	# Add employee infornation
 	def save():
-		# Ask if sure
-		msg = CTkMessagebox(title="Add Employee", 
-				message="Are you sure you want to add an employee?",
-				icon="question", 
-				option_1="No", 
-				option_2="Yes")
-		
-		# Get response
-		response = msg.get()
+		try:
+			# Ask if sure
+			msg = CTkMessagebox(title="Add Employee", 
+					message="Are you sure you want to add an employee?",
+					icon="question", 
+					option_1="No", 
+					option_2="Yes")
+			
+			# Get response
+			response = msg.get()
 
-		if response == "Yes":
-			english_name = ename_entry.get().capitalize()
-			full_name = fname_entry.get().capitalize()
-			surname = sname_entry.get().capitalize()
-			id_pass = id_entry.get()
+			if response == "Yes":
+				english_name = ename_entry.get().capitalize()
+				full_name = fname_entry.get().capitalize()
+				surname = sname_entry.get().capitalize()
+				id_pass = id_entry.get()
 
-			# Add employee information
-			db.add_employees(english_name, full_name, surname, id_pass)
+				# Add employee information
+				db.add_employees(english_name, full_name, surname, id_pass)
 
-			# Clear entry boxes
-			ename_entry.delete(0, ctk.END)
-			fname_entry.delete(0, ctk.END)
-			sname_entry.delete(0, ctk.END)
-			id_entry.configure(state="normal") 
-			id_entry.delete(0, ctk.END)
-	
-		else:
-			CTkMessagebox(title="Add Employee", 
-				message="Operation Canceled",
+				# Clear entry boxes
+				ename_entry.delete(0, ctk.END)
+				fname_entry.delete(0, ctk.END)
+				sname_entry.delete(0, ctk.END)
+				id_entry.configure(state="normal") 
+				id_entry.delete(0, ctk.END)
+
+				CTkMessagebox(title="Add Employee", 
+					message="Added Employee Successfully",
+					icon="info")
+			else:
+				CTkMessagebox(title="Add Employee", 
+					message="Operation Canceled",
+					icon="cancel")
+		except Exception:
+			CTkMessagebox(title="Add Employee Error", 
+				message=traceback.format_exc(),
 				icon="cancel")
 
 	# Search employee
 	def search():
-		# Clear entry boxes
-		ename_entry.delete(0, ctk.END)
-		fname_entry.delete(0, ctk.END)
-		sname_entry.delete(0, ctk.END)
-		id_entry.configure(state="normal")
-		id_entry.delete(0, ctk.END)
+		try:
+			# Clear entry boxes
+			ename_entry.delete(0, ctk.END)
+			fname_entry.delete(0, ctk.END)
+			sname_entry.delete(0, ctk.END)
+			id_entry.configure(state="normal")
+			id_entry.delete(0, ctk.END)
 
-		# Start pop up
-		etop = ctk.CTkToplevel()
-		etop.attributes("-topmost", True)
-		etop.geometry("250x200")
-		etop.title("Edit Employee")
-		etop.configure(fg_color=("#f1f5f9", "#1e293b"))
+			# Start pop up
+			etop = ctk.CTkToplevel()
+			etop.attributes("-topmost", True)
+			etop.geometry("250x200")
+			etop.title("Edit Employee")
+			etop.configure(fg_color=("#f1f5f9", "#1e293b"))
 
-		# Prevent the window from opening behind the main app
-		etop.after(100, etop.lift)
-		etop.focus()
+			# Prevent the window from opening behind the main app
+			etop.after(100, etop.lift)
+			etop.focus()
 
-		# Configure the grid column weight
-		etop.columnconfigure(0, weight=1) 
+			# Configure the grid column weight
+			etop.columnconfigure(0, weight=1) 
 
-		# Get all Employee names
-		results = db.search_employees()
-		
-		# Make options fro drop down
-		options = list(results.keys())
+			# Get all Employee names
+			results = db.search_employees()
+			
+			# Make options fro drop down
+			options = list(results.keys())
 
-		# Function to handle the selection
-		def select_employee():
-			try:
-				choice = option_menu.get()
-				empolyee = db.employee_selected_option(results[choice])
+			# Function to handle the selection
+			def select_employee():
+				try:
+					choice = option_menu.get()
+					empolyee = db.employee_selected_option(results[choice])
 
-				ename_entry.insert(0, empolyee[0][0])
-				fname_entry.insert(0, empolyee[0][1])
-				sname_entry.insert(0, empolyee[0][2])
-				id_entry.insert(0, empolyee[0][3])
-				id_entry.configure(state="readonly") 
+					ename_entry.insert(0, empolyee[0][0])
+					fname_entry.insert(0, empolyee[0][1])
+					sname_entry.insert(0, empolyee[0][2])
+					id_entry.insert(0, empolyee[0][3])
+					id_entry.configure(state="readonly") 
 
-				etop.destroy()
-			except KeyError:
-				CTkMessagebox(title="Error", message='Please Select a Valid Employee', icon="cancel")			
+					etop.destroy()
+				except KeyError:
+					CTkMessagebox(title="Select Employee Error", 
+				   		message=traceback.format_exc(),
+						icon="cancel")			
 
-        # OptionMenu
-		option_menu = ctk.CTkOptionMenu(etop, 
-            values=options, 
-            # command=optionmenu_callback,                
-            fg_color="#4f46e5",                         
-            button_color="#4338ca",                    
-            button_hover_color="#3730a3"               
-        )
+			# OptionMenu
+			option_menu = ctk.CTkOptionMenu(etop, 
+				values=options, 
+				# command=optionmenu_callback,                
+				fg_color="#4f46e5",                         
+				button_color="#4338ca",                    
+				button_hover_color="#3730a3"               
+			)
 
-		option_menu.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 5))
+			option_menu.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 5))
 
-        # Default starting value
-		option_menu.set("Please Select") 
+			# Default starting value
+			option_menu.set("Please Select") 
 
-		ctk.CTkButton(etop, text="Yes", fg_color="#10b981", hover_color="#059669", 
-					font=label_font, command=select_employee).grid(row=2, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
-		
-		
-		ctk.CTkButton(etop, text="Exit", fg_color="#ef4444", hover_color="#b91c1c", 
-					font=label_font, command=etop.destroy).grid(row=3, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
+			ctk.CTkButton(etop, text="Yes", fg_color="#10b981", hover_color="#059669", 
+						font=label_font, command=select_employee).grid(row=2, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
+			
+			
+			ctk.CTkButton(etop, text="Exit", fg_color="#ef4444", hover_color="#b91c1c", 
+						font=label_font, command=etop.destroy).grid(row=3, column=0, columnspan=2, sticky="ew", padx=20, pady=(20, 5))
+		except Exception:
+			CTkMessagebox(title="Search Employee Error", 
+				   		message=traceback.format_exc(),
+						icon="cancel")	
 
 	def update():
-		# Ask if sure
-		msg = CTkMessagebox(title="Update Employee", 
-				message="Are you sure you want to update the employee?",
-				icon="question", 
-				option_1="No", 
-				option_2="Yes")
-		
-		# Get response
-		response = msg.get()
+		try:
+			# Ask if sure
+			msg = CTkMessagebox(title="Update Employee", 
+					message="Are you sure you want to update the employee?",
+					icon="question", 
+					option_1="No", 
+					option_2="Yes")
+			
+			# Get response
+			response = msg.get()
 
 
-		if response == 'Yes':
-			english_name = ename_entry.get().capitalize()
-			full_name = fname_entry.get().capitalize()
-			surname = sname_entry.get().capitalize()
-			id_pass = id_entry.get()
+			if response == 'Yes':
+				english_name = ename_entry.get().capitalize()
+				full_name = fname_entry.get().capitalize()
+				surname = sname_entry.get().capitalize()
+				id_pass = id_entry.get()
 
-			db.update_employees(english_name, full_name, surname, id_pass)
+				db.update_employees(english_name, full_name, surname, id_pass)
 
-			ename_entry.delete(0, ctk.END)
-			fname_entry.delete(0, ctk.END)
-			sname_entry.delete(0, ctk.END)
-			id_entry.configure(state="normal")
-			id_entry.delete(0, ctk.END)
-		else:
-			CTkMessagebox(title="Update Employee", 
-				message="Operation Canceled",
-				icon="cancel")
+				ename_entry.delete(0, ctk.END)
+				fname_entry.delete(0, ctk.END)
+				sname_entry.delete(0, ctk.END)
+				id_entry.configure(state="normal")
+				id_entry.delete(0, ctk.END)
+
+				CTkMessagebox(title="Update Employee", 
+					message="Updated Employee Successfully",
+					icon="info")
+			else:
+				CTkMessagebox(title="Update Employee", 
+					message="Operation Canceled",
+					icon="cancel")
+		except Exception:
+			CTkMessagebox(title="Update Employee Error", 
+				   		message=traceback.format_exc(),
+						icon="cancel")
 
 	def delete():
-		# Ask if sure
-		msg = CTkMessagebox(title="Delete Employee", 
-				message="Are you sure you want to delete the employee?",
-				icon="question", 
-				option_1="No", 
-				option_2="Yes")
-		
-		# Get response
-		response = msg.get()
+		try:
+			# Ask if sure
+			msg = CTkMessagebox(title="Delete Employee", 
+					message="Are you sure you want to delete the employee?",
+					icon="question", 
+					option_1="No", 
+					option_2="Yes")
+			
+			# Get response
+			response = msg.get()
 
-		if response == 'Yes':
-			id_pass = id_entry.get()
+			if response == 'Yes':
+				id_pass = id_entry.get()
 
-			db.delete_employees(id_pass)
+				db.delete_employees(id_pass)
 
-			ename_entry.delete(0, ctk.END)
-			fname_entry.delete(0, ctk.END)
-			sname_entry.delete(0, ctk.END)
-			id_entry.configure(state="normal")
-			id_entry.delete(0, ctk.END)
-		else:
-			CTkMessagebox(title="Delete Employee", 
-				message="Operation Canceled",
-				icon="cancel")
+				ename_entry.delete(0, ctk.END)
+				fname_entry.delete(0, ctk.END)
+				sname_entry.delete(0, ctk.END)
+				id_entry.configure(state="normal")
+				id_entry.delete(0, ctk.END)
+
+				CTkMessagebox(title="Delete Employee", 
+					message="Deleted Employee Successfully",
+					icon="info")
+			else:
+				CTkMessagebox(title="Delete Employee", 
+					message="Operation Canceled",
+					icon="cancel")
+		except Exception:
+			CTkMessagebox(title="Delete Employee Error", 
+				   		message=traceback.format_exc(),
+						icon="cancel")
 
 	def clear():
 		ename_entry.delete(0, ctk.END)

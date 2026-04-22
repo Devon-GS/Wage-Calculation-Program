@@ -208,7 +208,7 @@ class WageApp(ctk.CTk):
 					icon="info")
 		except Exception:
 			CTkMessagebox(title="Public Holidays Error", 
-					message= traceback.format_exc(),
+					message=traceback.format_exc(),
 					icon="cancel")
 
 	def run_wages(self):
@@ -269,7 +269,7 @@ class WageApp(ctk.CTk):
 					icon="info")
 		except Exception:
 			CTkMessagebox(title="Run Wages Error", 
-					message= traceback.format_exc(),
+					message=traceback.format_exc(),
 					icon="cancel")
 
 	def run_recal(self):
@@ -294,7 +294,7 @@ class WageApp(ctk.CTk):
 					icon="info")
 		except Exception:
 			CTkMessagebox(title="Recalculation Wages Error", 
-					message= traceback.format_exc(),
+					message=traceback.format_exc(),
 					icon="cancel")
 
 	def run_payroll(self):
@@ -307,7 +307,7 @@ class WageApp(ctk.CTk):
 				payroll_manager.run_payroll(PAYROLL_FILE)
 
 				CTkMessagebox(title="Run Payroll Success", 
-					message= "Run Payroll Finished Successfully",
+					message="Run Payroll Finished Successfully",
 					icon="info")
 		except Exception:
 			CTkMessagebox(title="Run Payroll Error", 
@@ -322,7 +322,7 @@ class WageApp(ctk.CTk):
 			
 			payroll_manager.tax(PAYROLL_FILE)
 			CTkMessagebox(title="Run Tax Success", 
-					message= "Run Tax Finished Successfully",
+					message= "Run Tax Finished t ",
 					icon="info")
 		except Exception:
 			CTkMessagebox(title="Run Tax Error", 

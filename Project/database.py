@@ -62,130 +62,109 @@ def get_public_holidays():
 def add_employees(ename, fname, sname, id):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			if ename == '' or sname == '' or id == '':
-				raise ValueError('First Name, Surname and ID Cannot Be Blank!')
-			else:
-				# Check to see if non english name
-				if fname == '':
-					fname = '0'
+		
+		if ename == '' or sname == '' or id == '':
+			raise ValueError('First Name, Surname and ID Cannot Be Blank!')
+		else:
+			# Check to see if non english name
+			if fname == '':
+				fname = '0'
 
-				query = """INSERT INTO employeeNames (englishName, fullName, Surname, idPass)
-						VALUES (?, ?, ?, ?)"""
+			query = """INSERT INTO employeeNames (englishName, fullName, Surname, idPass)
+					VALUES (?, ?, ?, ?)"""
+			
+			c.execute(query, (ename, fname, sname, id))
+			con.commit()
 				
-				c.execute(query, (ename, fname, sname, id))
-				con.commit()
-				CTkMessagebox(title="Success", message="Employee Added Successfully", icon="info")
-
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
-
 def search_employees():
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			c.execute("SELECT englishName, idPass FROM employeeNames")
-			
-			records = c.fetchall()
+		
+		c.execute("SELECT englishName, idPass FROM employeeNames")
+		
+		records = c.fetchall()
 
-			# Dic
-			results = {}
+		# Dic
+		results = {}
 
-			# Made records in to dic
-			for x in records:
-				results[x[0]] = x[1]
+		# Made records in to dic
+		for x in records:
+			results[x[0]] = x[1]
 			
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
-	
 	return results
 
 def employee_selected_option(id):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			c.execute(f"""SELECT englishName,
-								fullName,
-								Surname,
-								idPass
-							FROM
-								employeeNames
-							WHERE
-								idpass = {id}
-					""")
-							
-			record = c.fetchall()
-			
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
-	
+		
+		c.execute(f"""SELECT englishName,
+							fullName,
+							Surname,
+							idPass
+						FROM
+							employeeNames
+						WHERE
+							idpass = {id}
+				""")
+						
+		record = c.fetchall()
+
 	return record
 
 def update_employees(ename, fname, sname, id):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			# Check to see if non english name
-			if fname == '':
-				fname = '0'
 
-			c.execute(f'''UPDATE employeeNames SET
-							englishName = :ename,
-							fullName = :fname,
-							surname = :sname
+		# Check to see if non english name
+		if fname == '':
+			fname = '0'
 
-							WHERE idPass = :id''',
-							{
-								'ename' : ename,
-								'fname' : fname,
-								'sname' : sname,
-								'id' : id
-							})
+		c.execute(f'''UPDATE employeeNames SET
+						englishName = :ename,
+						fullName = :fname,
+						surname = :sname
 
-			con.commit()
-			CTkMessagebox(title="Update Employee", message="Employee Update Successfuly", icon="info")
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
+						WHERE idPass = :id''',
+						{
+							'ename' : ename,
+							'fname' : fname,
+							'sname' : sname,
+							'id' : id
+						})
+		con.commit()
 
 def delete_employees(id):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			c.execute(f'''DELETE FROM employeeNames WHERE idPass = :id''',
-							{
-								'id' : id
-							})
-
-			con.commit()
-			CTkMessagebox(title="Delete Employee", message="Employee Deleted Successfuly", icon="info")
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
+		
+		c.execute(f'''DELETE FROM employeeNames WHERE idPass = :id''',
+						{
+							'id' : id
+						})
+		con.commit()
 			
 def bulk_add_employees():
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			# Get employee info from bulk file
-			employee_names_file = 'Templates/Bulk_Employee_Add.csv'
-			employee_info = pd.read_csv(employee_names_file)
-			employee_list = employee_info.values.tolist()
+		
+		# Get employee info from bulk file
+		employee_names_file = 'Templates/Bulk_Employee_Add.csv'
+		employee_info = pd.read_csv(employee_names_file)
+		employee_list = employee_info.values.tolist()
 
-			# Loop through and add to database
-			for x in employee_list:
-				ename = str(x[0]).strip()
-				fname = str(x[1]).strip()
-				sname = str(x[2]).strip()
-				id = str(x[3]).strip()
+		# Loop through and add to database
+		for x in employee_list:
+			ename = str(x[0]).strip()
+			fname = str(x[1]).strip()
+			sname = str(x[2]).strip()
+			id = str(x[3]).strip()
 
-				query = """INSERT INTO employeeNames (englishName, fullName, Surname, idPass)
-							VALUES (?, ?, ?, ?)"""
-					
-				c.execute(query, (ename, fname, sname, id))
+			query = """INSERT INTO employeeNames (englishName, fullName, Surname, idPass)
+						VALUES (?, ?, ?, ?)"""
+				
+			c.execute(query, (ename, fname, sname, id))
 
-				con.commit()
-			CTkMessagebox(title="Bulk Add", message="Bulk Add Complete Successfuly", icon="info")
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
+			con.commit()
 			
 # --- EMPLOYEE INFO FOR PAYSLIPS ---
 def get_emp_info():
