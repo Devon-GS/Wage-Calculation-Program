@@ -18,6 +18,8 @@ git checkout original-program
 ```
 
 ## 🚀 What's New in Version 2.0
+ **📢 Current Status:** We have officially moved to the testing phase for v2. We are actively evaluating the system and fixing bugs.
+ 
 The application has undergone a major architectural and visual overhaul:
 - **Modernized GUI:** Completely redesigned using **CustomTkinter**, replacing the older layout with a sleek, responsive, and dark-mode-ready interface.
 - **Architecture:** The backend has been fully refactored into a robust **structure**, eliminating redundancy through **centralized logic** and **reusable code patterns**.
