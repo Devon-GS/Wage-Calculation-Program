@@ -22,8 +22,7 @@ def initialize_tables():
 		c.execute("CREATE TABLE IF NOT EXISTS publicHolidays (date TEXT)")
 
 		con.commit()
-		CTkMessagebox(title="Success", message="Successfully Initialized The Database", icon="info")
-
+	
 def clear_session_data(table=None):
 	with closing(get_connection()) as con:
 		c = con.cursor()
@@ -42,27 +41,21 @@ def clear_session_data(table=None):
 def public_holidays_db(holidays):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			clear_session_data('publicHolidays')
+		
+		clear_session_data('publicHolidays')
 
-			c.executemany(f"INSERT INTO publicHolidays (date) VALUES (?)", holidays)
-			con.commit()
-
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
+		c.executemany(f"INSERT INTO publicHolidays (date) VALUES (?)", holidays)
+		con.commit()
 
 def get_public_holidays():
 	# public_holidays = []
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			c.execute("SELECT * FROM publicHolidays")
+		
+		c.execute("SELECT * FROM publicHolidays")
 			
-			public_holidays = [records[0] for records in c.fetchall()]
+		public_holidays = [records[0] for records in c.fetchall()]
 
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
-	
 	return public_holidays
 
 # --- EMPLOYEE MANAGEMENT --- 
@@ -196,27 +189,22 @@ def bulk_add_employees():
 			
 # --- EMPLOYEE INFO FOR PAYSLIPS ---
 def get_emp_info():
-	try:
-		with closing(get_connection()) as con:
-			c = con.cursor()
+	with closing(get_connection()) as con:
+		c = con.cursor()
+	
+		c.execute("SELECT * FROM employeeNames")
+		records = c.fetchall()
 		
-			c.execute("SELECT * FROM employeeNames")
-			records = c.fetchall()
+		# Convert the list of tuples into a dictionary
+		emp_dict = {}
+		for row in records:
+			# Get employee name as key
+			excel_name_key = row[0].strip() 
 			
-			# Convert the list of tuples into a dictionary
-			emp_dict = {}
-			for row in records:
-				# Get employee name as key
-				excel_name_key = row[0].strip() 
-				
-				# Assign the whole row as the value for this key
-				emp_dict[excel_name_key] = row
+			# Assign the whole row as the value for this key
+			emp_dict[excel_name_key] = row
 
-			return emp_dict
-
-	except Exception as error:
-		CTkMessagebox(title="Error", message=error, icon="cancel")
-		return {}  # Return an empty dictionary if the DB fails to prevent crashing
+		return emp_dict
 
 # --- ADD SHIFTS ---
 def add_shifts(shifts, role, week):
@@ -227,83 +215,67 @@ def add_shifts(shifts, role, week):
 		else:
 			table = "rosterCashier"
 
-		try:
-			query = f"""INSERT INTO {table} (name, badge, day, date, shift, week)
-							VALUES (?, ?, ?, ?, ?, ?)"""
-			
-			# Loop through shift info and add to database
-			for x in shifts:
-				c.execute(query, (x[0], x[1], x[2], x[3], x[4], x[5]))
-				con.commit()
-
-			# CTkMessagebox(title="Add Shifts", message=f"Added {role} shifts for {week[:4] + " " + week[4:]} Successfuly", icon="info")
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
+		query = f"""INSERT INTO {table} (name, badge, day, date, shift, week)
+						VALUES (?, ?, ?, ?, ?, ?)"""
+		
+		# Loop through shift info and add to database
+		for x in shifts:
+			c.execute(query, (x[0], x[1], x[2], x[3], x[4], x[5]))
+			con.commit()
 
 #  -- ADD CLOCK TIMES --
 def add_clock_times(clock_times):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			c.executemany(f"INSERT INTO uniclox (badge, date, time) VALUES (?, ?, ?)", clock_times)
-			con.commit()
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
+
+		c.executemany(f"INSERT INTO uniclox (badge, date, time) VALUES (?, ?, ?)", clock_times)
+		con.commit()
 
 # --- GET SHIFT TIMES FOR EXCEL ---
 def get_shift_times_db(roster, week):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			if roster == "Attendant":
-				table = 'rosterAttendant'
-			else:
-				table = 'rosterCashier'
+		
+		if roster == "Attendant":
+			table = 'rosterAttendant'
+		else:
+			table = 'rosterCashier'
 
-			c.execute(f"SELECT * FROM {table} WHERE week=?", (week,))
-							
-			records = c.fetchall()
+		c.execute(f"SELECT * FROM {table} WHERE week=?", (week,))
+						
+		records = c.fetchall()
 
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
-
-		return records
+	return records
 	
 # --- GET CLOCK TIMES ---
 def get_clock_times():
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			c.execute("SELECT * FROM uniclox")
-			
-			clocks = c.fetchall()
 
-		except Exception as error:
-			CTkMessagebox(title="Error", message=error, icon="cancel")
+		c.execute("SELECT * FROM uniclox")
 		
-		return clocks
+		clocks = c.fetchall()
+	
+	return clocks
 	
 # --- ADD CARWASH TIMES ---
 def carwash_db(data):
 	with closing(get_connection()) as con:
 		c = con.cursor()
-		try:
-			query = """INSERT INTO carwashTotal (name, badge, normal, sunday, public, extra)
-						VALUES (:name, :badge, :n_hours, :s_hours, 0, :amount)"""
+	
+		query = """INSERT INTO carwashTotal (name, badge, normal, sunday, public, extra)
+					VALUES (:name, :badge, :n_hours, :s_hours, 0, :amount)"""
+	
+		records = []
 		
-			records = []
-			
-			# Add badge to data, so SQL has access
-			for badge, emp_data in data.items():
-				emp_data['badge'] = badge 
-				records.append(emp_data)
+		# Add badge to data, so SQL has access
+		for badge, emp_data in data.items():
+			emp_data['badge'] = badge 
+			records.append(emp_data)
 
-			c.executemany(query, records)			
-			
-			con.commit()
-
-		except Exception as error:
-			CTkMessagebox(title="Database Error", message=str(error), icon="cancel")
+		c.executemany(query, records)			
+		
+		con.commit()
 
 # --- ADD TOTAL HOURS ---
 def add_total_hours_db(totals, role):
@@ -329,15 +301,11 @@ def add_total_hours_db(totals, role):
 	query = f"INSERT INTO {table} {cols} VALUES ({placeholders})"
 
 	# Database Operation
-	try:
-		with closing(get_connection()) as con:
-			c = con.cursor()
-			
-			c.executemany(query, data_list)
-			con.commit()
-
-	except Exception as error:
-		CTkMessagebox(title="Error", message=str(error), icon="cancel")
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		
+		c.executemany(query, data_list)
+		con.commit()
 
 # --- Get TOTAL HOURS ---
 def get_total_hours():
@@ -349,19 +317,14 @@ def get_total_hours():
 		'SELECT * FROM cashierTotal'           
 	]
 
-	try:
-		# Ensure you have imported closing and get_connection is defined
-		with closing(get_connection()) as con:
-			c = con.cursor()
-			for query in querys:
-				c.execute(query)
-				rec = c.fetchall()
-				# Append the results to our list
-				all_hours.extend(rec) 
-			
-			# Return the data so you can use it outside the function
-			return all_hours
-			
-	except sqlite3.Error as error:
-		# Ensure CTkMessagebox is imported
-		CTkMessagebox(title="Database Error", message=str(error), icon="cancel")
+	# Ensure you have imported closing and get_connection is defined
+	with closing(get_connection()) as con:
+		c = con.cursor()
+		for query in querys:
+			c.execute(query)
+			rec = c.fetchall()
+			# Append the results to our list
+			all_hours.extend(rec) 
+		
+		# Return the data so you can use it outside the function
+		return all_hours

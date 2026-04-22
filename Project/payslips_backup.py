@@ -2,7 +2,6 @@ import shutil
 import pandas as pd
 import database as db
 from openpyxl import load_workbook
-from CTkMessagebox import CTkMessagebox
 from openpyxl.styles import Border, Side, Font, Alignment
 from config import (DYNAMIC_FILE_LOC, PAYSLIP_TEMPLATE, PAYSLIP_FOLDER, COPY_FOLDER, WAGE_TIMES_FILE, 
                     ATT_ROSTER_FILE, CAS_ROSTER_FILE, CARWASH_FILE, TAX_RESULTS)
@@ -145,6 +144,6 @@ def copy_files():
         try:
             shutil.copy2(file_path, dest_folder)
         except FileNotFoundError:
-            CTkMessagebox(title="Error", message="Could Not Find File", icon="cancel")
-        except Exception as error:
-            CTkMessagebox(title="Error", message=error, icon="cancel")
+            raise FileExistsError("Could Not Find File")
+        except Exception:
+            raise

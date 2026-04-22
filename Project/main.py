@@ -1,6 +1,5 @@
 import customtkinter as ctk
 from employee_info import pop_up
-from tkinter import messagebox
 from CTkMessagebox import CTkMessagebox
 import os
 import traceback
@@ -167,36 +166,50 @@ class WageApp(ctk.CTk):
 		
 	# --- Logic Wrappers ---
 	def init_sys(self):
-		msg = CTkMessagebox(title="Initialize Database", 
-				message="Are you sure you want Initialize the database?",
-				icon="question", 
-				option_1="No", 
-				option_2="Yes")
-		
-		# Get response
-		response = msg.get()
-
-		if response == 'Yes':
-			db.initialize_tables()
-		else:
-			CTkMessagebox(title="Initialize Database", 
-				message="Operation Canceled",
-				icon="cancel")
+		try:
+			msg = CTkMessagebox(title="Initialize Database", 
+					message="Are you sure you want Initialize the database?",
+					icon="question", 
+					option_1="No", 
+					option_2="Yes")
 			
-	def public_holidays(self):
-		msg = CTkMessagebox(title="Public Holidays", 
-				message="Do you want edit public holidays or update database?",
-				icon="question", 
-				option_1="Update", 
-				option_2="Edit")
-		
-		# Get response
-		response = msg.get()
+			# Get response
+			response = msg.get()
 
-		if response == 'Edit':
-			os.startfile(config.PUBLIC_HOILIDAY_FILE)
-		else:
-			processor.collect_public_holidays()
+			if response == 'Yes':
+				db.initialize_tables()
+				CTkMessagebox(title="Success", message="Successfully Initialized The Database", icon="info")
+			else:
+				CTkMessagebox(title="Initialize Database", 
+					message="Operation Canceled",
+					icon="cancel")
+		except Exception:
+			CTkMessagebox(title="Initialize Database Error", 
+					message= traceback.format_exc(),
+					icon="cancel")
+		
+	def public_holidays(self):
+		try:
+			msg = CTkMessagebox(title="Public Holidays", 
+					message="Do you want edit public holidays or update database?",
+					icon="question", 
+					option_1="Update", 
+					option_2="Edit")
+			
+			# Get response
+			response = msg.get()
+
+			if response == 'Edit':
+				os.startfile(config.PUBLIC_HOILIDAY_FILE)
+			else:
+				processor.collect_public_holidays()
+				CTkMessagebox(title="Public Holidays Update", 
+					message="Update Successful",
+					icon="info")
+		except Exception:
+			CTkMessagebox(title="Public Holidays Error", 
+					message= traceback.format_exc(),
+					icon="cancel")
 
 	def run_wages(self):
 		try:
@@ -250,10 +263,14 @@ class WageApp(ctk.CTk):
 			#  - Carwash Times -
 			processor.carwash_work_hours()
 			processor.carwash_times()
-
-			messagebox.showinfo("Success", "Wage program finished successfully")
+			
+			CTkMessagebox(title="Run Wages Success", 
+					message= "Wage program Finished Successfully",
+					icon="info")
 		except Exception:
-			messagebox.showerror("Error", traceback.format_exc())
+			CTkMessagebox(title="Run Wages Error", 
+					message= traceback.format_exc(),
+					icon="cancel")
 
 	def run_recal(self):
 		try:
@@ -272,9 +289,13 @@ class WageApp(ctk.CTk):
 			# - Save Workbook -
 			processor.save_workbook(wb)
 
-			messagebox.showinfo("Success", "Recalculation finished successfully")
+			CTkMessagebox(title="Recalculation Wages Success", 
+					message= "Recalculation of Wages Finished Successfully",
+					icon="info")
 		except Exception:
-			messagebox.showerror("Error", traceback.format_exc())
+			CTkMessagebox(title="Recalculation Wages Error", 
+					message= traceback.format_exc(),
+					icon="cancel")
 
 	def run_payroll(self):
 		try:
@@ -284,10 +305,12 @@ class WageApp(ctk.CTk):
 				raise Exception('Error Occured with Payroll File')
 			else:
 				payroll_manager.run_payroll(PAYROLL_FILE)
-				messagebox.showinfo("Payroll", "Payroll Run Finished")
 
+				CTkMessagebox(title="Run Payroll Success", 
+					message= "Run Payroll Finished Successfully",
+					icon="info")
 		except Exception:
-			CTkMessagebox(title="Run Payroll", 
+			CTkMessagebox(title="Run Payroll Error", 
 				message=traceback.format_exc(),
 				icon="cancel")
 		
@@ -298,19 +321,32 @@ class WageApp(ctk.CTk):
 				raise Exception('Error Occured with Payroll File')
 			
 			payroll_manager.tax(PAYROLL_FILE)
-			messagebox.showinfo("Tax", "Tax logic finished.")
-
-		except Exception as error:
-			messagebox.showerror("Error", error)
+			CTkMessagebox(title="Run Tax Success", 
+					message= "Run Tax Finished Successfully",
+					icon="info")
+		except Exception:
+			CTkMessagebox(title="Run Tax Error", 
+				message=traceback.format_exc(),
+				icon="cancel")
 		
 	def run_payslips(self):
-		doc_generator.gen_payslips()
-		os.startfile(config.PAYSLIP_FOLDER)
+		try:
+			doc_generator.gen_payslips()
+			os.startfile(config.PAYSLIP_FOLDER)
+		except Exception:
+			CTkMessagebox(title="Run Payslip Generator Error", 
+				message=traceback.format_exc(),
+				icon="cancel")
 	
 	def run_backup(self):
-		doc_generator.copy_files()
-		os.startfile(config.COPY_FOLDER)
-
+		try:
+			doc_generator.copy_files()
+			os.startfile(config.COPY_FOLDER)
+		except Exception:
+			CTkMessagebox(title="Run Backup Error", 
+				message=traceback.format_exc(),
+				icon="cancel")
+	
 	def change_appearance_mode(self, new_mode):
 		ctk.set_appearance_mode(new_mode)
 

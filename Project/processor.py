@@ -4,7 +4,7 @@ import pandas as pd
 import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
-from openpyxl.styles import Alignment, Font
+from openpyxl.styles import Alignment
 from config import (CREATE_EXCEL,CREATE_CARWASH_TIMES, DYNAMIC_FILE_LOC, RECALCULATE_EXCEL_FORMULAS, WAGE_TIMES_FILE, 
 					PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE, CAS_ROSTER_FILE, BADGE_NUMBER_FILE, 
 					BAKER_CASHIER_FILE, CARWASH_FILE, COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
@@ -90,7 +90,6 @@ def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 	3. is_in = Clock in or out
 	4. Check if Sunday or public holiday and gives no leeway
 	"""
-
 	# Check if manual clock for recaculation
 	if type(clock_hours) != str:
 		clock_hours = clock_hours.strftime("%H:%M")
@@ -153,10 +152,7 @@ def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 			else: 
 				return h + 0.75, flag
 		return float(roster_h), flag
-
-
 # --- Helper Functions End ---
-
 
 # --- Step 1: Roster to Database ---
 def roster_shift_to_db(role="Attendant", week="WeekOne"):
@@ -171,125 +167,121 @@ def roster_shift_to_db(role="Attendant", week="WeekOne"):
 	badges = get_badge_mapping()
 	
 	# Load the Roster via Pandas
-	try:
-		if role == "Attendant" and week == "WeekOne":
-			# Columns used
-			cols = "B:I"
+	if role == "Attendant" and week == "WeekOne":
+		# Columns used
+		cols = "B:I"
 
-			# Dates slice
-			drow = 0
-			d_col_start = 1
-			d_col_end = 8
+		# Dates slice
+		drow = 0
+		d_col_start = 1
+		d_col_end = 8
 
-			# Week times slice
-			wrow = 2
-			wrow_end = 17
+		# Week times slice
+		wrow = 2
+		wrow_end = 17
 
-		# Att week two
-		elif role == "Attendant" and week == "WeekTwo":
-			# Columns used
-			cols = "B:I"
-			
-			# Dates slice
-			drow = 28
-			d_col_start = 1
-			d_col_end = 8
-
-			# Week times slice
-			wrow = 30
-			wrow_end = 45
-
-		# Cashier week one 
-		elif role == "Cashier" and week == "WeekOne":
-			# Columns used
-			cols = "B:I"
-			
-			# Dates slice
-			drow = 3
-			d_col_start = 1
-			d_col_end = 8
-
-			# Week times slice
-			wrow = 5
-			wrow_end = 11
-
-			# Week times slice (bakers)
-			wbrow = 31
-			wbrow_end = 33
+	# Att week two
+	elif role == "Attendant" and week == "WeekTwo":
+		# Columns used
+		cols = "B:I"
 		
-		# Cashier week two 
-		elif role == "Cashier" and week == "WeekTwo":
-			# Columns used
-			cols = "B:I"
-			
-			# Dates slice
-			drow = 34
-			d_col_start = 1
-			d_col_end = 8
+		# Dates slice
+		drow = 28
+		d_col_start = 1
+		d_col_end = 8
 
-			# Week times slice
-			wrow = 14
-			wrow_end = 20
+		# Week times slice
+		wrow = 30
+		wrow_end = 45
 
-			# Week times slice (bakers)
-			wbrow = 36	
-			wbrow_end = 38
+	# Cashier week one 
+	elif role == "Cashier" and week == "WeekOne":
+		# Columns used
+		cols = "B:I"
 		
-		# Get times from excel
-		df = pd.read_excel(file_path, header=None, usecols=cols, nrows=46)
-		data = df.fillna(0)
+		# Dates slice
+		drow = 3
+		d_col_start = 1
+		d_col_end = 8
 
-		# Extract the dates  
-		week_dates = data.iloc[drow, d_col_start : d_col_end]
+		# Week times slice
+		wrow = 5
+		wrow_end = 11
 
-		# Extract the employee schedule block
-		if role == "Cashier":
-			cashier_times = data.iloc[wrow : wrow_end].copy()
-			
-			# Add bakers 
-			baker_times = data.iloc[wbrow : wbrow_end]
-
-			# Combine them
-			week_times = pd.concat([cashier_times, baker_times])
-		else:
-			week_times = data.iloc[wrow : wrow_end]		
-
-		# Create an empty list to store the final tuples
-		schedule_list = []
-
-		# Iterate through every row in the week_times dataframe
-		for index, row in week_times.iterrows():
-			name = row[1]  # Column 0 (Excel column B) contains the employee names
-			
-			# Check if we have a valid name (skip empty rows filled with 0)
-			if str(name) != 'nan' and name != 0:
-				
-				# Iterate over the column indices where we know the dates are (1 through 7)
-				for col_idx in week_dates.index:
-					shift = row[col_idx]
-			
-					# If the employee actually has a shift that day (not 0)
-					if shift != 0 and str(shift) != 'nan':
-						date_obj = week_dates[col_idx]
-
-						# Convert the string/object to a reliable pandas datetime object
-						dt_obj = pd.to_datetime(date_obj, dayfirst=True, errors='coerce')
-						
-						# Format the date and day (assuming date_obj is a datetime object)
-						if pd.notna(dt_obj):
-							day_name = dt_obj.strftime("%A").capitalize()  # e.g., "Monday"
-							date_str = dt_obj.strftime("%d/%m/%Y")    # e.g., "03/03/2026"
-
-							# Get badge
-							badge_id = badges.get(name, "NOT FOUND")
-
-							schedule_list.append((name, badge_id, day_name, date_str, shift, week))
+		# Week times slice (bakers)
+		wbrow = 31
+		wbrow_end = 33
 	
-		# Add shifts to database
-		db.add_shifts(schedule_list, role, week)
+	# Cashier week two 
+	elif role == "Cashier" and week == "WeekTwo":
+		# Columns used
+		cols = "B:I"
+		
+		# Dates slice
+		drow = 34
+		d_col_start = 1
+		d_col_end = 8
 
-	except Exception as e:
-		print(f"Error initializing roster: {e}")
+		# Week times slice
+		wrow = 14
+		wrow_end = 20
+
+		# Week times slice (bakers)
+		wbrow = 36	
+		wbrow_end = 38
+	
+	# Get times from excel
+	df = pd.read_excel(file_path, header=None, usecols=cols, nrows=46)
+	data = df.fillna(0)
+
+	# Extract the dates  
+	week_dates = data.iloc[drow, d_col_start : d_col_end]
+
+	# Extract the employee schedule block
+	if role == "Cashier":
+		cashier_times = data.iloc[wrow : wrow_end].copy()
+		
+		# Add bakers 
+		baker_times = data.iloc[wbrow : wbrow_end]
+
+		# Combine them
+		week_times = pd.concat([cashier_times, baker_times])
+	else:
+		week_times = data.iloc[wrow : wrow_end]		
+
+	# Create an empty list to store the final tuples
+	schedule_list = []
+
+	# Iterate through every row in the week_times dataframe
+	for index, row in week_times.iterrows():
+		name = row[1]  # Column 0 (Excel column B) contains the employee names
+		
+		# Check if we have a valid name (skip empty rows filled with 0)
+		if str(name) != 'nan' and name != 0:
+			
+			# Iterate over the column indices where we know the dates are (1 through 7)
+			for col_idx in week_dates.index:
+				shift = row[col_idx]
+		
+				# If the employee actually has a shift that day (not 0)
+				if shift != 0 and str(shift) != 'nan':
+					date_obj = week_dates[col_idx]
+
+					# Convert the string/object to a reliable pandas datetime object
+					dt_obj = pd.to_datetime(date_obj, dayfirst=True, errors='coerce')
+					
+					# Format the date and day (assuming date_obj is a datetime object)
+					if pd.notna(dt_obj):
+						day_name = dt_obj.strftime("%A").capitalize()  # e.g., "Monday"
+						date_str = dt_obj.strftime("%d/%m/%Y")    # e.g., "03/03/2026"
+
+						# Get badge
+						badge_id = badges.get(name, "NOT FOUND")
+
+						schedule_list.append((name, badge_id, day_name, date_str, shift, week))
+
+	# Add shifts to database
+	db.add_shifts(schedule_list, role, week)
 
 # --- Step 2: Clock Collection (Logic from att_clock_times.py) ---
 def collect_clock_times():
