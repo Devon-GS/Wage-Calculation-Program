@@ -34,7 +34,26 @@ class WageApp(ctk.CTk):
 
 		# --- Configuration ---
 		self.title("Bracken Hill Fuel Wages Caclulator v2.0")
-		self.geometry("900x600")
+
+		# Define window dimensions
+		window_width = 900
+		window_height = 900
+
+		# Get the screen width and height
+		screen_width = self.winfo_screenwidth()
+		screen_height = self.winfo_screenheight()
+
+		# Calculate the x and y coordinates to center the window
+		x_coordinate = int((screen_width / 2) - (window_width / 2))
+		y_coordinate = int((screen_height / 2) - (window_height / 2))
+
+		# Set the geometry (Format: "WidthxHeight+X+Y")
+		self.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+		
+		# Start app on top
+		self.lift()
+		self.attributes("-topmost", True)
+		self.after(10, lambda: self.attributes("-topmost", False))
 
 		# Create Layout
 		self.grid_columnconfigure(1, weight=1)

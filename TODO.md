@@ -41,12 +41,12 @@
 	- [x] Log traceback error messages (new folder Logs)
 	- [x] Check messageboxs are all CTkMessagebox
 	- [x] Push errors up to main
-- [ ] Change program openning size
-- [ ] Clean up
-- [ ] Clean up unsed branchs (git)
+- [x] Change program openning size
+- [x] Clean up
+- [x] Clean up unsed branchs (git)
 - [x] Fix position of imports in order
 - [x] Changes branchs (main to orginal-program) and (refactor to main). Refactor now default branch gtihub
-- [ ] Tag code V2.0 before deployment
+- [x] Tag code V2.0 before deployment
 
 # Errors
 - [x] Carwash times file must add formulas to extra time in config
