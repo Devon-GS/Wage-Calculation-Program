@@ -36,9 +36,9 @@
 	- [x] Update carwash time function for new positions of data
 	- [x] Add new functions to payroll run
 - [x] Sort out payroll file errors if more that one file ing folder [make function that is call once in payroll.py file]
-- [ ] Add error handling to processor functions
+- [x] Add error handling to processor functions
 	- [x] get employee info function if return empty dic handel it (database.py)
-	- [ ] Log traceback error messages (new folder Logs)
+	- [x] Log traceback error messages (new folder Logs)
 	- [x] Check messageboxs are all CTkMessagebox
 	- [x] Push errors up to main
 - [ ] Change program openning size

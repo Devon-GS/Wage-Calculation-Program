@@ -3,6 +3,9 @@ from employee_info import pop_up
 from CTkMessagebox import CTkMessagebox
 import os
 import traceback
+import logging
+from logging.handlers import RotatingFileHandler
+
 
 # Import logic files
 import config
@@ -10,6 +13,15 @@ import database as db
 import processor as processor
 import payroll_logic as payroll_manager
 import payslips_backup as doc_generator
+
+# Configure level, format, and pass the RotatingFileHandler directly
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        RotatingFileHandler("Logs/errors.log", maxBytes=5 * 1024 * 1024, backupCount=1)
+    ]
+)
 
 # Set the visual theme
 ctk.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
@@ -185,8 +197,9 @@ class WageApp(ctk.CTk):
 					icon="cancel")
 		except Exception:
 			CTkMessagebox(title="Initialize Database Error", 
-					message= traceback.format_exc(),
+					message=traceback.format_exc(),
 					icon="cancel")
+			logging.warning(traceback.format_exc())
 		
 	def public_holidays(self):
 		try:
@@ -210,6 +223,7 @@ class WageApp(ctk.CTk):
 			CTkMessagebox(title="Public Holidays Error", 
 					message=traceback.format_exc(),
 					icon="cancel")
+			logging.warning(traceback.format_exc())
 
 	def run_wages(self):
 		try:
@@ -271,6 +285,7 @@ class WageApp(ctk.CTk):
 			CTkMessagebox(title="Run Wages Error", 
 					message=traceback.format_exc(),
 					icon="cancel")
+			logging.warning(traceback.format_exc())
 
 	def run_recal(self):
 		try:
@@ -296,6 +311,7 @@ class WageApp(ctk.CTk):
 			CTkMessagebox(title="Recalculation Wages Error", 
 					message=traceback.format_exc(),
 					icon="cancel")
+			logging.warning(traceback.format_exc())
 
 	def run_payroll(self):
 		try:
@@ -313,6 +329,7 @@ class WageApp(ctk.CTk):
 			CTkMessagebox(title="Run Payroll Error", 
 				message=traceback.format_exc(),
 				icon="cancel")
+			logging.warning(traceback.format_exc())
 		
 	def run_tax(self):
 		try:
@@ -328,6 +345,7 @@ class WageApp(ctk.CTk):
 			CTkMessagebox(title="Run Tax Error", 
 				message=traceback.format_exc(),
 				icon="cancel")
+			logging.warning(traceback.format_exc())
 		
 	def run_payslips(self):
 		try:
@@ -337,6 +355,7 @@ class WageApp(ctk.CTk):
 			CTkMessagebox(title="Run Payslip Generator Error", 
 				message=traceback.format_exc(),
 				icon="cancel")
+			logging.warning(traceback.format_exc())
 	
 	def run_backup(self):
 		try:
@@ -346,6 +365,7 @@ class WageApp(ctk.CTk):
 			CTkMessagebox(title="Run Backup Error", 
 				message=traceback.format_exc(),
 				icon="cancel")
+			logging.warning(traceback.format_exc())
 	
 	def change_appearance_mode(self, new_mode):
 		ctk.set_appearance_mode(new_mode)
