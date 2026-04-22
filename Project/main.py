@@ -106,8 +106,11 @@ class WageApp(ctk.CTk):
 		# --- Card 2: Processing ---
 		self.ops_card = ctk.CTkFrame(self.main_container)
 		self.ops_card.pack(fill="x", pady=10)
-		
+
 		ctk.CTkLabel(self.ops_card, text="Data Processing", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
+
+		ctk.CTkButton(self.ops_card, text="Open/Update Carwash Extra Time", 
+				command=lambda: os.startfile(config.DYNAMIC_FILE_LOC('Carwash'))).pack(fill="x", padx=20, pady=5)
 		
 		ctk.CTkButton(self.ops_card, text="RUN WAGE TIME CALCULATION", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
 				command=self.run_wages).pack(fill="x", padx=20, pady=5)
@@ -115,7 +118,7 @@ class WageApp(ctk.CTk):
 		ctk.CTkButton(self.ops_card, text="Recalculate Hours", command=self.run_recal).pack(fill="x", padx=20, pady=5)
 
 		ctk.CTkButton(self.ops_card, text="Open Wage Times Sheet", fg_color="transparent", border_width=1, 
-				command=lambda: os.startfile(config.WAGE_TIMES_FILE)).pack(fill="x", padx=20, pady=(5, 15))
+				command=lambda: os.startfile(config.WAGE_TIMES_FILE)).pack(fill="x", padx=20, pady=(5, 15))		
 
 		# --- Card 3: Payroll and Taxes ---
 		self.pay_card = ctk.CTkFrame(self.main_container)

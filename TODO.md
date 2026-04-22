@@ -44,12 +44,14 @@
 - [ ] Change program openning size
 - [ ] Clean up
 - [ ] Clean up unsed branchs (git)
+- [ ] Fix position of imports in order
 - [x] Changes branchs (main to orginal-program) and (refactor to main). Refactor now default branch gtihub
 - [ ] Tag code V2.0 before deployment
 
 # Errors
-- Carwash times file must add formulas to extra time in config
-- Must add section to carwash hours for extra time worked
-- update functions to extract extra time from carwash hours and write to carwash times
+- [x] Carwash times file must add formulas to extra time in config
+- [x] Must add section to carwash hours for extra time worked
+- [x] update functions to extract extra time from carwash hours and write to carwash times
+- [x] Add button under Data processing to open carwash hours file
 
 ---

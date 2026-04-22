@@ -1,28 +1,11 @@
 import os
+import xlwings as xw
 from pathlib import Path
 from openpyxl import Workbook 
 from openpyxl.styles import Alignment, Font, Border, Side,  NamedStyle, PatternFill
 
 # --- GET FILES WITH DYNAMIC NAMES ---
-
-def PAYROLL_FILE_LOC(section):
-	cwd = Path(__file__).parent 
-	excel_file = cwd / "Payroll"
-
-	folder = Path(excel_file)
-	
-	# Search for Excel files and filter out hidden/temp files
-	excel_files = folder.glob("*.xlsx*")
-	valid_files =[file for file in excel_files if not file.name.startswith("~$")]
-	
-	# Check only one file in folder 
-	if len(valid_files) == 1:
-		return str(valid_files[0].resolve())	
-	elif len(valid_files) == 0:
-		return None
-	else: 
-		return None
-
+# Get payroll and carwash hours
 def DYNAMIC_FILE_LOC(section):
 	cwd = Path(__file__).parent 
 
@@ -246,5 +229,18 @@ def CREATE_CARWASH_TIMES():
 	apply_box_borders('M11:P11')
 	apply_box_borders('M12:P20')
 
+	# 8. ADD FORMULAS FOR EXTRA TIME
+	# Loop through rows 13 to 20
+	for row_num in range(13, 21):
+		ws[f'P{row_num}'].value = f"=O{row_num}*50"
+
 	# SAVE WORKBOOK
 	wb.save(CARWASH_FILE)
+
+# --- HELPER FUNCTIONS FOR EXCEL ---
+def RECALCULATE_EXCEL_FORMULAS(filepath):
+	"""Opens and saves an Excel file in the background to force formula recalculation."""
+	with xw.App(visible=False) as app:
+		wb = app.books.open(filepath)
+		wb.save()
+		wb.close()

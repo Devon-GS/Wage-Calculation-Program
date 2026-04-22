@@ -5,9 +5,9 @@ import database as db
 from datetime import datetime, timedelta, time
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Font
-from config import (CREATE_EXCEL,CREATE_CARWASH_TIMES, DYNAMIC_FILE_LOC, WAGE_TIMES_FILE, PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER,
-					ATT_ROSTER_FILE, CAS_ROSTER_FILE, BADGE_NUMBER_FILE, BAKER_CASHIER_FILE, CARWASH_FILE, COLUMN_WIDTHS_ATT, 
-					COLUMN_WIDTHS_TOTALS ,COL_DIFF)
+from config import (CREATE_EXCEL,CREATE_CARWASH_TIMES, DYNAMIC_FILE_LOC, RECALCULATE_EXCEL_FORMULAS, WAGE_TIMES_FILE, 
+					PUBLIC_HOILIDAY_FILE, UNICLOX_FOLDER, ATT_ROSTER_FILE, CAS_ROSTER_FILE, BADGE_NUMBER_FILE, 
+					BAKER_CASHIER_FILE, CARWASH_FILE, COLUMN_WIDTHS_ATT, COLUMN_WIDTHS_TOTALS ,COL_DIFF)
 
 # --- Helper Functions ---
 def clear_excel():
@@ -756,9 +756,22 @@ def carwash_work_hours():
 	# This is the second row in the excel sheet (index 1)
 	badge_row = df.iloc[1]
 
+	# EXTRACT EXTRA TIMES ROW
+	# Check if Row 18 (index 17) actually exists in the dataframe
+	if len(df) > 17:
+		extra_times_row = df.iloc[17]
+		# Map the names to their extra times, ignore NaN column names
+		extra_times_map = {str(k).strip(): v for k, v in extra_times_row.to_dict().items() if pd.notna(k)}
+	else:
+		extra_times_map = {}
+	
+
 	# 3. EXTRACT THE DATA ROWS
 	# These are the dates and hours (everything from index 2 onwards)
-	data_rows = df.iloc[2:].copy()
+	data_rows = df.iloc[2:17].copy()
+
+	# Drop any completely empty rows 
+	data_rows = data_rows.dropna(subset=['DATE'])
 
 	# 4. DYNAMICALLY IDENTIFY NAME COLUMNS
 	# Take all columns after 'TOTAL' (index 2 onwards) 
@@ -806,6 +819,11 @@ def carwash_work_hours():
 			carwash_total_hours[badge]['sun'] = 0
 			carwash_total_hours[badge]['norm'] = 0
 
+			# Add extra time
+			extra_val = extra_times_map.get(name, 0)
+			# Fallback to 0 if the cell was empty/NaN
+			carwash_total_hours[badge]['extra'] = extra_val if pd.notna(extra_val) else 0
+
 		# Add name and date and total norm and sun hours
 		carwash_total_hours[badge]['name'] = name 
 		carwash_total_hours[badge]['date'][date] = hours
@@ -814,7 +832,6 @@ def carwash_work_hours():
 			carwash_total_hours[badge]['sun'] += hours
 		else: 
 			carwash_total_hours[badge]['norm'] += hours 
-
 
 	# -- WRITE WEEK DAY TIMES TO EXCEL (CARWASH_FILE) --- 
 	# Constants 
@@ -865,14 +882,17 @@ def carwash_work_hours():
 		# Write Extra Details block
 		ws.cell(row=extra_row, column=SUMMARY_COL, value=info['name'])
 		ws.cell(row=extra_row, column=SUMMARY_COL + 1, value=badge)
+		ws.cell(row=extra_row, column=SUMMARY_COL + 2, value=info.get('extra', 0)) 
 		
 		total_row += 1
 		extra_row += 1
 
-		wb.save(CARWASH_FILE)
-		wb.close()
+	wb.save(CARWASH_FILE)
+	wb.close()
 
 def carwash_times():
+	RECALCULATE_EXCEL_FORMULAS(CARWASH_FILE)
+	
 	# Load the workbook
 	wb = load_workbook(CARWASH_FILE, data_only=True)
 	
@@ -892,11 +912,13 @@ def carwash_times():
 				}
 
 		# 3. Add extra time
-		for _, ebadge, _, amount in ws.iter_rows(min_row=13, max_row=20, min_col=13, max_col=16, values_only=True):
-			if ebadge in data:
-				data[ebadge]['amount'] = amount
+		for _, badge, _, amount in ws.iter_rows(min_row=13, max_row=20, min_col=13, max_col=16, values_only=True):
+			if badge in data:
+				data[badge]['amount'] = amount
 
 		# Add carwash times to database
 		db.carwash_db(data)
 	finally:
 		wb.close()
+
+carwash_times()

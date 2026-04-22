@@ -1,12 +1,11 @@
 import os
 import re
-import xlwings as xw
 import database as db
 import pandas as pd
 from openpyxl.utils import get_column_letter
 from CTkMessagebox import CTkMessagebox
 from openpyxl import load_workbook
-from config import TAX_RATES_FILE, TAX_RESULTS
+from config import TAX_RATES_FILE, TAX_RESULTS, RECALCULATE_EXCEL_FORMULAS
 
 
 def run_payroll(PAYROLL_FILE):
@@ -119,13 +118,6 @@ def clean_currency(x):
 	except (ValueError, TypeError):
 		return 0
 
-def recalculate_excel_formulas(filepath):
-	"""Opens and saves an Excel file in the background to force formula recalculation."""
-	with xw.App(visible=False) as app:
-		book = app.books.open(filepath)
-		book.save()
-		book.close()
-
 def get_tax_amount(gross_wage, tax_brackets):
 	"""Calculates tax payable based on the brackets provided."""
 	for _, row in tax_brackets.iterrows():
@@ -139,7 +131,7 @@ def get_tax_amount(gross_wage, tax_brackets):
 
 def tax(PAYROLL_FILE):
 	# 1. Recalculate initial formulas in Payroll file
-	recalculate_excel_formulas(PAYROLL_FILE)
+	RECALCULATE_EXCEL_FORMULAS(PAYROLL_FILE)
 
 	# 2. Read in data
 	df_tax = pd.read_excel(TAX_RATES_FILE)
@@ -221,4 +213,4 @@ def tax(PAYROLL_FILE):
 	wb_dot.close()
 
 	# 7. Final recalculation of formulas
-	recalculate_excel_formulas(PAYROLL_FILE)
+	RECALCULATE_EXCEL_FORMULAS(PAYROLL_FILE)
