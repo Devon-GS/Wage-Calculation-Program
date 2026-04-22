@@ -1,9 +1,10 @@
-import customtkinter as ctk
-from employee_info import pop_up
-from CTkMessagebox import CTkMessagebox
+
 import os
 import traceback
 import logging
+import customtkinter as ctk
+from employee_info import pop_up
+from CTkMessagebox import CTkMessagebox
 from logging.handlers import RotatingFileHandler
 
 

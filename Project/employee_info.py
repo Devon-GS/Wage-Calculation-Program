@@ -1,7 +1,7 @@
+import traceback
+import database as db
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
-import database as db
-import traceback
 
 
 def pop_up():

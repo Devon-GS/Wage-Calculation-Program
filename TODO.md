@@ -44,7 +44,7 @@
 - [ ] Change program openning size
 - [ ] Clean up
 - [ ] Clean up unsed branchs (git)
-- [ ] Fix position of imports in order
+- [x] Fix position of imports in order
 - [x] Changes branchs (main to orginal-program) and (refactor to main). Refactor now default branch gtihub
 - [ ] Tag code V2.0 before deployment
 
