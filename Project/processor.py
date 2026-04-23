@@ -149,8 +149,10 @@ def adjust_time(clock_hours, roster_h, day, date, holidays, is_in):
 				return h + 0.25, flag
 			elif m <= 45: 
 				return h + 0.50, flag
-			else: 
+			elif m > 45 and m <= 56:
 				return h + 0.75, flag
+			else: 
+				return h + 1, flag
 		return float(roster_h), flag
 # --- Helper Functions End ---
 
