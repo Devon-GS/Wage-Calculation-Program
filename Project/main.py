@@ -169,7 +169,7 @@ class WageApp(ctk.CTk):
 				command=self.run_payroll).grid(row=1, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Open Payroll File", fg_color="transparent", border_width=1,
-				command=lambda PAYROLL_FILE=config.DYNAMIC_FILE_LOC("Payroll"): os.startfile(PAYROLL_FILE)
+				command=lambda: os.startfile(config.DYNAMIC_FILE_LOC("Payroll"))
 				).grid(row=2, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Calculate Tax", 
