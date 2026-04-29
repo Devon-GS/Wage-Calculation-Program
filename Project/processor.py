@@ -822,6 +822,11 @@ def carwash_work_hours():
 		carwash_total_hours[badge]['name'] = name 
 		carwash_total_hours[badge]['date'][date] = hours
 
+		# Check if no work due to rain
+		if str(hours).lower() == 'rain':
+			hours = 0
+
+		# Add hours
 		if date.strftime('%A') == 'Sunday':
 			carwash_total_hours[badge]['sun'] += hours
 		else: 
