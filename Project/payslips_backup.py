@@ -4,7 +4,7 @@ import database as db
 from openpyxl import load_workbook
 from openpyxl.styles import Border, Side, Font, Alignment
 from config import (DYNAMIC_FILE_LOC, PAYSLIP_TEMPLATE, PAYSLIP_FOLDER, COPY_FOLDER, WAGE_TIMES_FILE, 
-                    ATT_ROSTER_FILE, CAS_ROSTER_FILE, CARWASH_FILE, TAX_RESULTS)
+                    ATT_ROSTER_FILE, CAS_ROSTER_FILE, CARWASH_FILE, TAX_RESULTS, CARWASH_HOURS_FILE)
 
 
 # =================================================================================================
@@ -137,7 +137,8 @@ def copy_files():
         ATT_ROSTER_FILE,
         CAS_ROSTER_FILE,
         CARWASH_FILE,
-        TAX_RESULTS
+        TAX_RESULTS,
+        CARWASH_HOURS_FILE
     ]
     
     for file_path in files_to_copy:
