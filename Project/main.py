@@ -359,7 +359,7 @@ class WageApp(ctk.CTk):
 			
 			payroll_manager.tax(PAYROLL_FILE)
 			CTkMessagebox(title="Run Tax Success", 
-					message= "Run Tax Finished t ",
+					message= "Run Tax Finished Successfully",
 					icon="info")
 		except Exception:
 			CTkMessagebox(title="Run Tax Error", 
