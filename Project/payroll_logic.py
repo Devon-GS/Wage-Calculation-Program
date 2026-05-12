@@ -182,7 +182,7 @@ def tax(PAYROLL_FILE):
 
 	names_done = set()
 
-	for col in range(3, ws_dot.max_column):
+	for col in range(3, ws_dot.max_column - 1):
 		col_letter = get_column_letter(col)
 		name = ws_dot[f'{col_letter}1'].value
 		uif = ws_dot[f'{col_letter}23'].value
