@@ -2,6 +2,7 @@
 import os
 import traceback
 import logging
+import threading
 import customtkinter as ctk
 from employee_info import pop_up
 from CTkMessagebox import CTkMessagebox
@@ -162,20 +163,24 @@ class WageApp(ctk.CTk):
 
 		ctk.CTkButton(self.pay_grid, text="Open Payroll Folder", fg_color="transparent", border_width=1,
 				command=lambda: os.startfile(config.PAYROLL_FOLDER)
-				).grid(row=0, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+				).pack(fill="x", padx=20, pady=5)
+		# .grid(row=0, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="RUN PAYROLL", height=40, font=ctk.CTkFont(weight="bold"), 
 				fg_color="#10b981", hover_color="#059669", 
-				command=self.run_payroll).grid(row=1, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+				command=self.run_payroll).pack(fill="x", padx=20, pady=5)
+		# .grid(row=1, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Open Payroll File", fg_color="transparent", border_width=1,
 				command=lambda: os.startfile(config.DYNAMIC_FILE_LOC("Payroll"))
-				).grid(row=2, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
+				).pack(fill="x", padx=20, pady=5)
+		# .grid(row=2, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Calculate Tax", 
-				command=self.run_tax).grid(row=3, column=0, columnspan=2, padx=(0, 5), sticky="ew")
+				command=self.run_tax).pack(fill="x", padx=20, pady=5)
+		# .grid(row=3, column=0, columnspan=2, padx=(0, 5), sticky="ew")
 		
-		self.pay_grid.grid_columnconfigure((0, 1), weight=1)
+		# self.pay_grid.grid_columnconfigure((0, 1), weight=1)
 		
 		# --- Card 4: Finalization ---
 		self.final_card = ctk.CTkFrame(self.main_container)
@@ -186,15 +191,16 @@ class WageApp(ctk.CTk):
 		
 		self.final_grid = ctk.CTkFrame(self.final_card, fg_color="transparent")
 		self.final_grid.pack(fill="x", padx=20, pady=(0, 15))
-		
 
 		ctk.CTkButton(self.final_grid, text="Generate Slips", fg_color="#4f46e5", 
-				command=self.run_payslips).grid(row=0, column=0, padx=(5, 0), sticky="ew")
+				command=self.run_payslips).pack(side=ctk.LEFT, fill="x", expand=True, padx=20)
+		# .grid(row=0, column=0, padx=(5, 0), sticky="ew")
 		
 		ctk.CTkButton(self.final_grid, text="Copy For Back Up", fg_color="#4f46e5", 
-				command=self.run_backup).grid(row=0, column=1, padx=(5, 0), sticky="ew")
+				command=self.run_backup).pack(side=ctk.LEFT, fill="x", expand=True)
+		# .grid(row=0, column=1, padx=(5, 0), sticky="ew")
 		
-		self.final_grid.grid_columnconfigure((0, 1), weight=1)
+		# self.final_grid.grid_columnconfigure((0, 1), weight=1)
 		
 	# --- Logic Wrappers ---
 	def init_sys(self):
@@ -246,6 +252,36 @@ class WageApp(ctk.CTk):
 			logging.warning(traceback.format_exc())
 
 	def run_wages(self):
+		"""1. Triggered by your UI button. Starts animation and thread."""
+		# Start the loading animation
+		self.loading_spinner = ctk.CTkProgressBar(self.ops_card, mode="indeterminate", width=150)
+
+		self.loading_spinner.pack(pady=10) # Adjust packing to your layout
+		self.loading_spinner.start()
+
+		# Disable run button and other widgets
+		# Hide data processing
+		for child in self.ops_card.winfo_children():
+			if isinstance(child, ctk.CTkButton):		 
+				# 1. Save the exact pack settings (padding, side, etc.)
+				child._ops_card_info = child.pack_info() 
+				
+				# 2. Hide the button
+				child.pack_forget()   
+
+		# Save and hide pay card
+		self.pay_card_info = self.ops_card.pack_info()
+		self.pay_card.pack_forget()  
+
+		# Save and hide final card
+		self.final_card_info = self.final_card.pack_info()
+		self.final_card.pack_forget()       
+
+		# Start the heavy lifting in a background thread
+		threading.Thread(target=self._run_wages_background, daemon=True).start()
+
+	def _run_wages_background(self):
+		"""2. This runs in the background so the UI doesn't freeze."""
 		try:
 			# - Clear Excel -
 			processor.clear_excel()
@@ -262,7 +298,7 @@ class WageApp(ctk.CTk):
 			processor.roster_shift_to_db("Cashier", "WeekOne")
 			processor.roster_shift_to_db("Cashier", "WeekTwo")
 
-				# - Collect Clocks -
+			# - Collect Clocks -
 			processor.collect_clock_times()
 
 			# - Shifts -
@@ -270,7 +306,6 @@ class WageApp(ctk.CTk):
 			processor.sync_shifts_to_excel(wb, 'Att Week Two')
 			processor.sync_shifts_to_excel(wb, 'Cashier Week One')
 			processor.sync_shifts_to_excel(wb, 'Cashier Week Two')
-
 
 			# - Clock -
 			processor.sync_clocks_to_excel(wb, 'Att Week One')
@@ -298,14 +333,49 @@ class WageApp(ctk.CTk):
 			processor.carwash_work_hours()
 			processor.carwash_times()
 			
+			# SUCCESS: Safely tell the main thread to show success message
+			if self.winfo_exists():
+				self.after(0, self._on_wages_complete, True, None)
+
+		except Exception:
+			# ERROR: Safely tell the main thread to show error message
+			error_trace = traceback.format_exc()
+			logging.warning(error_trace)
+			
+			if self.winfo_exists():
+				self.after(0, self._on_wages_complete, False, error_trace)
+
+	def _on_wages_complete(self, success, error_trace):
+		"""3. Runs on the main GUI thread to clean up and show messageboxes."""
+		# Stop and hide the loading animation
+		self.loading_spinner.stop()
+		self.loading_spinner.pack_forget()
+
+		# Show and re-enable all buttons inside ops frame
+		for child in self.ops_card.winfo_children():
+			if isinstance(child, ctk.CTkButton):
+				
+				# 1. Bring it back using the saved settings
+				if hasattr(child, "_ops_card_info"):
+					child.pack(**child._ops_card_info)  
+
+		# Show and re-enable all buttons inside pay frame
+		if hasattr(self, "pay_card_info"):
+			self.pay_card.pack(**self.pay_card_info) 
+
+		# Show and re-enable all buttons inside final frame
+		if hasattr(self, "final_card_info"):
+			self.final_card.pack(**self.final_card_info) 
+
+		# Show the messagebox safely on the main thread
+		if success:
 			CTkMessagebox(title="Run Wages Success", 
 					message= "Wage program Finished Successfully",
 					icon="info")
-		except Exception:
+		else:
 			CTkMessagebox(title="Run Wages Error", 
-					message=traceback.format_exc(),
+					message=error_trace,
 					icon="cancel")
-			logging.warning(traceback.format_exc())
 
 	def run_recal(self):
 		try:
