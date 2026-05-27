@@ -651,7 +651,7 @@ def cal_total_hours(wb, role="Attendant"):
 					ws.cell(row=row, column=14, value=w_totals[name_total]['csun'])
 					ws.cell(row=row, column=15, value=w_totals[name_total]['cpub'])
 
-				# Add two weeks to totals dic
+				# Add two weeks together to totals dic
 				if role == "Attendant":
 					totals.setdefault(name_total, {'badge':0, 'std': 0, 'sun': 0, 'pub': 0, 'nc': 0})
 				else:
@@ -681,7 +681,7 @@ def cal_total_hours(wb, role="Attendant"):
 		ws.cell(row=current_row, column=2, value=hours['std'])
 		ws.cell(row=current_row, column=3, value=hours['sun'])
 		ws.cell(row=current_row, column=4, value=hours['pub'])
-		if hours['nc'] == 1:
+		if hours['nc'] >= 1:
 			ws.cell(row=current_row, column=5, value="No Clock")
 		else:
 			ws.cell(row=current_row, column=5, value="")
