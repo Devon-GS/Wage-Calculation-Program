@@ -5,10 +5,20 @@ from pathlib import Path
 from openpyxl import Workbook 
 from openpyxl.styles import Alignment, Font, Border, Side,  NamedStyle, PatternFill
 
+
+# Check if runing script of exe for base location
+if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle (the PyInstaller .exe)
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    # If the application is run as a normal Python script
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # --- GET FILES WITH DYNAMIC NAMES ---
 # Get payroll and carwash hours
 def DYNAMIC_FILE_LOC(section):
-	cwd = Path(__file__).parent 
+	# cwd = Path(__file__).parent 
+	cwd = Path(BASE_DIR) 
 
 	if section == 'Payroll':
 		excel_file = cwd / "Payroll"
@@ -30,16 +40,12 @@ def DYNAMIC_FILE_LOC(section):
 		return None
 
 # --- GET ALL STATIC DIRECTORIES --
-DB_PATH = "wageTimes.db"
-WAGE_TIMES_FILE = "Wage Times.xlsx"
+# DB_PATH = "wageTimes.db"
+# WAGE_TIMES_FILE = "Wage Times.xlsx"
 
-# Check if runing script of exe for base location
-if getattr(sys, 'frozen', False):
-    # If the application is run as a bundle (the PyInstaller .exe)
-    BASE_DIR = os.path.dirname(sys.executable)
-else:
-    # If the application is run as a normal Python script
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "wageTimes.db")
+WAGE_TIMES_FILE = os.path.join(BASE_DIR, "Wage Times.xlsx")
+
 
 BAKER_CASHIER_FILE = os.path.join(BASE_DIR, "Baker Cashier", "Baker Cashier Work.xlsx")
 BADGE_NUMBER_FILE = os.path.join(BASE_DIR, "Badge Numbers", "Badges.xlsx")

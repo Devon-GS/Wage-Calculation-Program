@@ -34,7 +34,7 @@ class WageApp(ctk.CTk):
 		super().__init__()
 
 		# --- Configuration ---
-		self.title("Bracken Hill Fuel Wages Caclulator v2.0.183")
+		self.title("Bracken Hill Fuel Wages Caclulator v2.0.185")
 
 		# # Define window dimensions
 		# window_width = 900
