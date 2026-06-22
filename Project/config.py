@@ -1,4 +1,5 @@
 import os
+import sys
 import xlwings as xw
 from pathlib import Path
 from openpyxl import Workbook 
@@ -32,8 +33,13 @@ def DYNAMIC_FILE_LOC(section):
 DB_PATH = "wageTimes.db"
 WAGE_TIMES_FILE = "Wage Times.xlsx"
 
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Check if runing script of exe for base location
+if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle (the PyInstaller .exe)
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    # If the application is run as a normal Python script
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 BAKER_CASHIER_FILE = os.path.join(BASE_DIR, "Baker Cashier", "Baker Cashier Work.xlsx")
 BADGE_NUMBER_FILE = os.path.join(BASE_DIR, "Badge Numbers", "Badges.xlsx")
