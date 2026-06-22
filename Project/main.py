@@ -34,7 +34,7 @@ class WageApp(ctk.CTk):
 		super().__init__()
 
 		# --- Configuration ---
-		self.title("Bracken Hill Fuel Wages Caclulator v2.0.182")
+		self.title("Bracken Hill Fuel Wages Caclulator v2.0.183")
 
 		# # Define window dimensions
 		# window_width = 900
@@ -245,7 +245,9 @@ class WageApp(ctk.CTk):
 			# Get response
 			response = msg.get()
 
-			if response == 'Edit':
+			if response == None:
+				pass
+			elif response == 'Edit':
 				os.startfile(config.PUBLIC_HOILIDAY_FILE)
 			else:
 				processor.collect_public_holidays()

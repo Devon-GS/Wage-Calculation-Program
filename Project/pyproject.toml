@@ -1,0 +1,20 @@
+[project]
+name = "wage-program"
+version = "2.0.0"
+description = "Calculate wages times and payments"
+authors = [
+    {name = "Devon",email = "ds.pydev@gmail.com"}
+]
+requires-python = ">=3.10"
+dependencies = [
+    "customtkinter (>=5.2.2,<6.0.0)",
+    "pandas (==2.3.3)",
+    "ctkmessagebox (==2.7)",
+    "xlwings (==0.33.16)",
+    "openpyxl (==3.1.5)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
