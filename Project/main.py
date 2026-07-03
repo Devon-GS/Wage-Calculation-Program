@@ -260,34 +260,58 @@ class WageApp(ctk.CTk):
 					icon="cancel")
 			logging.warning(traceback.format_exc())
 
+	# #########################################################
+	# RUN WAGES
+	# #########################################################
 	def run_wages(self):
-		"""1. Triggered by your UI button. Starts animation and thread."""
-		# Start the loading animation
-		self.loading_spinner = ctk.CTkProgressBar(self.ops_card, mode="indeterminate", width=150)
+		try:
+			msg = CTkMessagebox(title="Run Wages", 
+					message="Are you sure you want Run Wages?",
+					icon="question", 
+					option_1="No", 
+					option_2="Yes")
+			
+			# Get response
+			response = msg.get()
 
-		self.loading_spinner.pack(pady=10) # Adjust packing to your layout
-		self.loading_spinner.start()
+			if response == 'Yes':
+				"""1. Triggered by your UI button. Starts animation and thread."""
+				# Start the loading animation
+				self.loading_spinner = ctk.CTkProgressBar(self.ops_card, mode="indeterminate", width=150)
 
-		# Disable run button and other widgets
-		# Hide data processing
-		for child in self.ops_card.winfo_children():
-			if isinstance(child, ctk.CTkButton):		 
-				# 1. Save the exact pack settings (padding, side, etc.)
-				child._ops_card_info = child.pack_info() 
-				
-				# 2. Hide the button
-				child.pack_forget()   
+				self.loading_spinner.pack(pady=10) # Adjust packing to your layout
+				self.loading_spinner.start()
 
-		# Save and hide pay card
-		self.pay_card_info = self.ops_card.pack_info()
-		self.pay_card.pack_forget()  
+				# Disable run button and other widgets
+				# Hide data processing
+				for child in self.ops_card.winfo_children():
+					if isinstance(child, ctk.CTkButton):		 
+						# 1. Save the exact pack settings (padding, side, etc.)
+						child._ops_card_info = child.pack_info() 
+						
+						# 2. Hide the button
+						child.pack_forget()   
 
-		# Save and hide final card
-		self.final_card_info = self.final_card.pack_info()
-		self.final_card.pack_forget()       
+				# Save and hide pay card
+				self.pay_card_info = self.ops_card.pack_info()
+				self.pay_card.pack_forget()  
 
-		# Start the heavy lifting in a background thread
-		threading.Thread(target=self._run_wages_background, daemon=True).start()
+				# Save and hide final card
+				self.final_card_info = self.final_card.pack_info()
+				self.final_card.pack_forget()       
+
+				# Start the heavy lifting in a background thread
+				threading.Thread(target=self._run_wages_background, daemon=True).start()
+		
+			else:
+				CTkMessagebox(title="Run Wages", 
+					message="Operation Canceled",
+					icon="cancel")
+		except Exception:
+			CTkMessagebox(title="Run Wages Error", 
+					message=traceback.format_exc(),
+					icon="cancel")
+			logging.warning(traceback.format_exc())
 
 	def _run_wages_background(self):
 		"""2. This runs in the background so the UI doesn't freeze."""
@@ -386,70 +410,128 @@ class WageApp(ctk.CTk):
 					message=error_trace,
 					icon="cancel")
 
+	# #########################################################
+	# RECALCULATE WAGES
+	# #########################################################
 	def run_recal(self):
 		try:
-			# - Load Workbook -
-			wb = processor.load_excel()
-			# - Calculate Hours -
-			processor.calculate_hours(wb, 'Att Week One')
-			processor.calculate_hours(wb, 'Att Week Two')
-			processor.calculate_hours(wb, 'Cashier Week One')
-			processor.calculate_hours(wb, 'Cashier Week Two')
+			msg = CTkMessagebox(title="Reclculate Wages", 
+					message="Are you sure you want Recalculate Wages?",
+					icon="question", 
+					option_1="No", 
+					option_2="Yes")
+			
+			# Get response
+			response = msg.get()
 
-			# - Calculate Total Hours -
-			processor.cal_total_hours(wb)
-			processor.cal_total_hours(wb, "Cashiers")
+			if response == 'Yes':
+				# - Load Workbook -
+				wb = processor.load_excel()
+				# - Calculate Hours -
+				processor.calculate_hours(wb, 'Att Week One')
+				processor.calculate_hours(wb, 'Att Week Two')
+				processor.calculate_hours(wb, 'Cashier Week One')
+				processor.calculate_hours(wb, 'Cashier Week Two')
 
-			# - Save Workbook -
-			processor.save_workbook(wb)
+				# - Calculate Total Hours -
+				processor.cal_total_hours(wb)
+				processor.cal_total_hours(wb, "Cashiers")
 
-			CTkMessagebox(title="Recalculation Wages Success", 
-					message= "Recalculation of Wages Finished Successfully",
-					icon="info")
+				# - Save Workbook -
+				processor.save_workbook(wb)
+
+				CTkMessagebox(title="Recalculation Wages Success", 
+						message= "Recalculation of Wages Finished Successfully",
+						icon="info")
+					
+			else:
+				CTkMessagebox(title="Reclculate Wages", 
+					message="Operation Canceled",
+					icon="cancel")
 		except Exception:
-			CTkMessagebox(title="Recalculation Wages Error", 
+			CTkMessagebox(title="Reclculate Wages Error", 
 					message=traceback.format_exc(),
 					icon="cancel")
 			logging.warning(traceback.format_exc())
 
+	# #########################################################
+	# PAYROLL
+	# #########################################################
 	def run_payroll(self):
-		#  - Carwash Times -
-		processor.carwash_work_hours()
-		processor.carwash_times()
-
-		try:
-			PAYROLL_FILE = config.DYNAMIC_FILE_LOC('Payroll')
-
-			if PAYROLL_FILE == None:
-				raise Exception('Error Occured with Payroll File')
-			else:
-				payroll_manager.run_payroll(PAYROLL_FILE)
-
-				CTkMessagebox(title="Run Payroll Success", 
-					message="Run Payroll Finished Successfully",
-					icon="info")
-		except Exception:
-			CTkMessagebox(title="Run Payroll Error", 
-				message=traceback.format_exc(),
-				icon="cancel")
-			logging.warning(traceback.format_exc())
+		msg = CTkMessagebox(title="Run Payroll", 
+				message="Are you sure you want to Run Payroll?",
+				icon="question", 
+				option_1="No", 
+				option_2="Yes")
 		
-	def run_tax(self):
-		try:
-			PAYROLL_FILE = config.DYNAMIC_FILE_LOC('Payroll')
-			if PAYROLL_FILE == None:
-				raise Exception('Error Occured with Payroll File')
+		# Get response
+		response = msg.get()
+
+		if response == 'Yes':
+			#  - Run Carwash Times -
+			processor.carwash_work_hours()
+			processor.carwash_times()
+
+			try:
+				PAYROLL_FILE = config.DYNAMIC_FILE_LOC('Payroll')
+
+				if PAYROLL_FILE == None:
+					raise Exception('Error Occured with Payroll File')
+				else:
+					payroll_manager.run_payroll(PAYROLL_FILE)
+
+					CTkMessagebox(title="Run Payroll Success", 
+						message="Run Payroll Finished Successfully",
+						icon="info")
+					
+			except Exception:
+				CTkMessagebox(title="Run Payroll Error", 
+					message=traceback.format_exc(),
+					icon="cancel")
+				logging.warning(traceback.format_exc())
 			
-			payroll_manager.tax(PAYROLL_FILE)
-			CTkMessagebox(title="Run Tax Success", 
-					message= "Run Tax Finished Successfully",
-					icon="info")
-		except Exception:
-			CTkMessagebox(title="Run Tax Error", 
-				message=traceback.format_exc(),
+		else:
+			CTkMessagebox(title="Run Payroll", 
+				message="Operation Canceled",
 				icon="cancel")
-			logging.warning(traceback.format_exc())
+
+	# #########################################################
+	# TAX CALCULATION
+	# #########################################################	
+	def run_tax(self):
+		msg = CTkMessagebox(title="Tax Calculation", 
+				message="Are you sure you want to Calculate Tax?",
+				icon="question", 
+				option_1="No", 
+				option_2="Yes")
 		
+		# Get response
+		response = msg.get()
+
+		if response == 'Yes':
+			try:
+				PAYROLL_FILE = config.DYNAMIC_FILE_LOC('Payroll')
+				if PAYROLL_FILE == None:
+					raise Exception('Error Occured with Payroll File')
+				
+				payroll_manager.tax(PAYROLL_FILE)
+				CTkMessagebox(title="Run Tax Success", 
+						message= "Run Tax Finished Successfully",
+						icon="info")
+			except Exception:
+				CTkMessagebox(title="Run Tax Error", 
+					message=traceback.format_exc(),
+					icon="cancel")
+				logging.warning(traceback.format_exc())
+			
+		else:
+			CTkMessagebox(title="Calculate Tax", 
+				message="Operation Canceled",
+				icon="cancel")
+			
+	# #########################################################
+	# GENERATE PAYSLIPS
+	# #########################################################	
 	def run_payslips(self):
 		try:
 			doc_generator.gen_payslips()
@@ -460,6 +542,9 @@ class WageApp(ctk.CTk):
 				icon="cancel")
 			logging.warning(traceback.format_exc())
 	
+	# #########################################################
+	# BACKUP FILES FOR SAVING
+	# #########################################################
 	def run_backup(self):
 		try:
 			doc_generator.copy_files()
