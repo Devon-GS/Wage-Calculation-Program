@@ -338,9 +338,9 @@ class WageApp(ctk.CTk):
 			# - Save Workbook -
 			processor.save_workbook(wb)
 
-			#  - Carwash Times -
-			processor.carwash_work_hours()
-			processor.carwash_times()
+			# #  - Carwash Times -
+			# processor.carwash_work_hours()
+			# processor.carwash_times()
 			
 			# SUCCESS: Safely tell the main thread to show success message
 			if self.winfo_exists():
@@ -413,6 +413,10 @@ class WageApp(ctk.CTk):
 			logging.warning(traceback.format_exc())
 
 	def run_payroll(self):
+		#  - Carwash Times -
+		processor.carwash_work_hours()
+		processor.carwash_times()
+
 		try:
 			PAYROLL_FILE = config.DYNAMIC_FILE_LOC('Payroll')
 
