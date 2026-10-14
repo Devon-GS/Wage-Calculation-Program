@@ -78,14 +78,14 @@ class WageApp(ctk.CTk):
 								command=self.init_sys).grid(row=1, column=0, padx=20, pady=10)
 
 		self.btn_files = ctk.CTkButton(self.sidebar_frame, text="Open Folder", fg_color="transparent", border_width=1, 
-								command=lambda: os.startfile(".")).grid(row=2, column=0, padx=20, pady=10)
+								command=lambda: os.startfile("."), text_color=("black", "white")).grid(row=2, column=0, padx=20, pady=10)
 
 		self.btn_carwash = ctk.CTkButton(self.sidebar_frame, text="Open Carwash Folder", fg_color="transparent", border_width=1, 
-								command=lambda: os.startfile(config.CARWASH_FOLDER)).grid(row=3, column=0, padx=20, pady=10)
+								command=lambda: os.startfile(config.CARWASH_FOLDER), text_color=("black", "white")).grid(row=3, column=0, padx=20, pady=10)
 
 		self.appearance_mode_label = ctk.CTkLabel(self.sidebar_frame, text="Appearance:", anchor="w")
 		self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(150, 0))
-		self.appearance_mode_optionemenu = ctk.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"], command=self.change_appearance_mode)
+		self.appearance_mode_optionemenu = ctk.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark"], command=self.change_appearance_mode)
 		self.appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
 		self.appearance_mode_optionemenu.set("Dark")
 
@@ -160,7 +160,7 @@ class WageApp(ctk.CTk):
 		ctk.CTkButton(self.ops_button_frame, text="Recalculate Hours", command=self.run_recal).pack(fill="x", padx=20, pady=5)
 
 		ctk.CTkButton(self.ops_button_frame, text="Open Wage Times Sheet", fg_color="transparent", border_width=1, 
-				command=lambda: os.startfile(config.WAGE_TIMES_FILE)).pack(fill="x", padx=20, pady=(5, 15))	
+				command=lambda: os.startfile(config.WAGE_TIMES_FILE), text_color=("black", "white")).pack(fill="x", padx=20, pady=(5, 15))	
 
 		# --- Card 3: Payroll and Taxes ---
 		self.pay_card = ctk.CTkFrame(self.main_container)
@@ -172,7 +172,7 @@ class WageApp(ctk.CTk):
 		self.pay_grid.pack(fill="x", padx=20, pady=(0, 15))
 
 		ctk.CTkButton(self.pay_grid, text="Open Payroll Folder", fg_color="transparent", border_width=1,
-				command=lambda: os.startfile(config.PAYROLL_FOLDER)
+				command=lambda: os.startfile(config.PAYROLL_FOLDER), text_color=("black", "white")
 				).pack(fill="x", padx=20, pady=5)
 		# .grid(row=0, column=0,columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
@@ -182,7 +182,7 @@ class WageApp(ctk.CTk):
 		# .grid(row=1, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
 		ctk.CTkButton(self.pay_grid, text="Open Payroll File", fg_color="transparent", border_width=1,
-				command=lambda: os.startfile(config.DYNAMIC_FILE_LOC("Payroll"))
+				command=lambda: os.startfile(config.DYNAMIC_FILE_LOC("Payroll")), text_color=("black", "white")
 				).pack(fill="x", padx=20, pady=5)
 		# .grid(row=2, column=0, columnspan=2, padx=(5), pady=(0, 15) ,sticky="ew")
 		
