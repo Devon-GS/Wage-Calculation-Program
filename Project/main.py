@@ -77,11 +77,14 @@ class WageApp(ctk.CTk):
 		self.btn_init = ctk.CTkButton(self.sidebar_frame, text="Initialize Database",
 								command=self.init_sys).grid(row=1, column=0, padx=20, pady=10)
 
+		self.btn_logs = ctk.CTkButton(self.sidebar_frame, text="Open Log Folder", fg_color="transparent", border_width=1, 
+										command=lambda: os.startfile("Logs"), text_color=("black", "white")).grid(row=2, column=0, padx=20, pady=10)
+
 		self.btn_files = ctk.CTkButton(self.sidebar_frame, text="Open Folder", fg_color="transparent", border_width=1, 
-								command=lambda: os.startfile("."), text_color=("black", "white")).grid(row=2, column=0, padx=20, pady=10)
+								command=lambda: os.startfile("."), text_color=("black", "white")).grid(row=3, column=0, padx=20, pady=10)
 
 		self.btn_carwash = ctk.CTkButton(self.sidebar_frame, text="Open Carwash Folder", fg_color="transparent", border_width=1, 
-								command=lambda: os.startfile(config.CARWASH_FOLDER), text_color=("black", "white")).grid(row=3, column=0, padx=20, pady=10)
+								command=lambda: os.startfile(config.CARWASH_FOLDER), text_color=("black", "white")).grid(row=4, column=0, padx=20, pady=10)
 
 		self.appearance_mode_label = ctk.CTkLabel(self.sidebar_frame, text="Appearance:", anchor="w")
 		self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(150, 0))

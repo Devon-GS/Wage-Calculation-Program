@@ -2,6 +2,8 @@ import traceback
 import database as db
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
+import csv
+import os
 
 
 def pop_up():
@@ -61,6 +63,32 @@ def pop_up():
 
 				# Add employee information
 				db.add_employees(english_name, full_name, surname, id_pass)
+
+				# Add to Bulk_Employee_Add.csv
+				csv_file = os.path.join("Templates", "Bulk_Employee_Add.csv")
+				file_exists = os.path.exists(csv_file)
+				
+				# Write '0' if full_name is empty to match the template style
+				csv_full_name = full_name if full_name else "0"
+
+				# Check if the file ends with a newline character
+				needs_newline = False
+				if file_exists:
+					with open(csv_file, "rb") as f:
+						f.seek(0, 2) # Go to the end of the file
+						if f.tell() > 0:
+							f.seek(-1, 2) # Check the very last character
+							if f.read(1) not in (b'\n', b'\r'):
+								needs_newline = True
+
+				with open(csv_file, mode="a", newline="", encoding="utf-8") as f:
+					if needs_newline:
+						f.write("\n")
+
+					writer = csv.writer(f)
+					if not file_exists:
+						writer.writerow(["English Name", "Full Name", "Surname ", "ID / Passport"])
+					writer.writerow([english_name, csv_full_name, surname, id_pass])
 
 				# Clear entry boxes
 				ename_entry.delete(0, ctk.END)
@@ -166,14 +194,35 @@ def pop_up():
 			# Get response
 			response = msg.get()
 
-
 			if response == 'Yes':
 				english_name = ename_entry.get().capitalize()
 				full_name = fname_entry.get().capitalize()
 				surname = sname_entry.get().capitalize()
 				id_pass = id_entry.get()
 
+				# Update database
 				db.update_employees(english_name, full_name, surname, id_pass)
+
+				# Update in Bulk_Employee_Add.csv
+				csv_file = os.path.join("Templates", "Bulk_Employee_Add.csv")
+				if os.path.exists(csv_file):
+					with open(csv_file, mode="r", newline="", encoding="utf-8") as f:
+						reader = csv.reader(f)
+						rows = list(reader)
+
+					csv_full_name = full_name if full_name else "0"
+
+					updated_rows = []
+					for row in rows:
+						if len(row) >= 4 and row[3].strip() == id_pass.strip():
+							# Replace matching row with updated details
+							updated_rows.append([english_name, csv_full_name, surname, id_pass])
+						else:
+							updated_rows.append(row)
+
+					with open(csv_file, mode="w", newline="", encoding="utf-8") as f:
+						writer = csv.writer(f)
+						writer.writerows(updated_rows)
 
 				ename_entry.delete(0, ctk.END)
 				fname_entry.delete(0, ctk.END)
@@ -209,6 +258,20 @@ def pop_up():
 				id_pass = id_entry.get()
 
 				db.delete_employees(id_pass)
+
+				# Remove from Bulk_Employee_Add.csv
+				csv_file = os.path.join("Templates", "Bulk_Employee_Add.csv")
+				if os.path.exists(csv_file):
+					with open(csv_file, mode="r", newline="", encoding="utf-8") as f:
+						reader = csv.reader(f)
+						rows = list(reader)
+					
+					with open(csv_file, mode="w", newline="", encoding="utf-8") as f:
+						writer = csv.writer(f)
+						for row in rows:
+							if len(row) >= 4 and row[3].strip() == id_pass.strip():
+								continue  # Skip deleting employee
+							writer.writerow(row)
 
 				ename_entry.delete(0, ctk.END)
 				fname_entry.delete(0, ctk.END)
