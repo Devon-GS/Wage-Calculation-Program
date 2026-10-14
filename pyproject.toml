@@ -1,20 +1,17 @@
 [project]
-name = "wage-calculation-program"
-version = "0.1.0"
-description = "Calculate wage times, salaries, taxes and creates payslips"
+name = "wage-program"
+version = "2.0.0"
+description = "Calculate wages times and payments"
 authors = [
     {name = "Devon",email = "ds.pydev@gmail.com"}
 ]
-license = {text = "MIT"}
-readme = "README.md"
-requires-python = ">=3.10, <3.16"
+requires-python = ">=3.10"
 dependencies = [
-    "pandas (>=2.3.3,<3.0.0)",
-    "openpyxl (>=3.1.5,<4.0.0)",
-    "xlwings (>=0.33.16,<0.34.0)",
-    "pillow (>=12.0.0,<13.0.0)",
     "customtkinter (>=5.2.2,<6.0.0)",
-    "ctkmessagebox (>=2.7,<3.0)",
+    "pandas (==2.3.3)",
+    "ctkmessagebox (==2.7)",
+    "xlwings (==0.33.16)",
+    "openpyxl (==3.1.5)",
 ]
 
 [tool.poetry]
@@ -23,8 +20,3 @@ package-mode = false
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[dependency-groups]
-dev = [
-    "pyinstaller (>=6.21.0,<7.0.0)"
-]

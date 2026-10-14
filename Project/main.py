@@ -148,16 +148,19 @@ class WageApp(ctk.CTk):
 
 		ctk.CTkLabel(self.ops_card, text="Data Processing", font=ctk.CTkFont(weight="bold")).pack(anchor="w", padx=20, pady=10)
 
-		ctk.CTkButton(self.ops_card, text="Open/Update Carwash Extra Time", 
+		self.ops_button_frame = ctk.CTkFrame(self.ops_card, fg_color="transparent")
+		self.ops_button_frame.pack(fill="x")
+
+		ctk.CTkButton(self.ops_button_frame, text="Open/Update Carwash Extra Time", 
 				command=lambda: os.startfile(config.DYNAMIC_FILE_LOC('Carwash'))).pack(fill="x", padx=20, pady=5)
 		
-		ctk.CTkButton(self.ops_card, text="RUN WAGE TIME CALCULATION", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
+		ctk.CTkButton(self.ops_button_frame, text="RUN WAGE TIME CALCULATION", height=40, font=ctk.CTkFont(weight="bold"), fg_color="#10b981", hover_color="#059669", 
 				command=self.run_wages).pack(fill="x", padx=20, pady=5)
 		
-		ctk.CTkButton(self.ops_card, text="Recalculate Hours", command=self.run_recal).pack(fill="x", padx=20, pady=5)
+		ctk.CTkButton(self.ops_button_frame, text="Recalculate Hours", command=self.run_recal).pack(fill="x", padx=20, pady=5)
 
-		ctk.CTkButton(self.ops_card, text="Open Wage Times Sheet", fg_color="transparent", border_width=1, 
-				command=lambda: os.startfile(config.WAGE_TIMES_FILE)).pack(fill="x", padx=20, pady=(5, 15))		
+		ctk.CTkButton(self.ops_button_frame, text="Open Wage Times Sheet", fg_color="transparent", border_width=1, 
+				command=lambda: os.startfile(config.WAGE_TIMES_FILE)).pack(fill="x", padx=20, pady=(5, 15))	
 
 		# --- Card 3: Payroll and Taxes ---
 		self.pay_card = ctk.CTkFrame(self.main_container)
@@ -283,22 +286,14 @@ class WageApp(ctk.CTk):
 				self.loading_spinner.start()
 
 				# Disable run button and other widgets
-				# Hide data processing
-				for child in self.ops_card.winfo_children():
-					if isinstance(child, ctk.CTkButton):		 
-						# 1. Save the exact pack settings (padding, side, etc.)
-						child._ops_card_info = child.pack_info() 
-						
-						# 2. Hide the button
-						child.pack_forget()   
+				# Hide data processing buttons
+				self.ops_button_frame.pack_forget()
 
-				# Save and hide pay card
-				self.pay_card_info = self.ops_card.pack_info()
+				# Hide pay card
 				self.pay_card.pack_forget()  
 
-				# Save and hide final card
-				self.final_card_info = self.final_card.pack_info()
-				self.final_card.pack_forget()       
+				# Hide final card
+				self.final_card.pack_forget()              
 
 				# Start the heavy lifting in a background thread
 				threading.Thread(target=self._run_wages_background, daemon=True).start()
@@ -380,25 +375,18 @@ class WageApp(ctk.CTk):
 
 	def _on_wages_complete(self, success, error_trace):
 		"""3. Runs on the main GUI thread to clean up and show messageboxes."""
-		# Stop and hide the loading animation
+		# Stop and destroy the loading animation
 		self.loading_spinner.stop()
-		self.loading_spinner.pack_forget()
+		self.loading_spinner.destroy()
 
-		# Show and re-enable all buttons inside ops frame
-		for child in self.ops_card.winfo_children():
-			if isinstance(child, ctk.CTkButton):
-				
-				# 1. Bring it back using the saved settings
-				if hasattr(child, "_ops_card_info"):
-					child.pack(**child._ops_card_info)  
+		# Show and re-enable buttons inside ops frame
+		self.ops_button_frame.pack(fill="x")
 
-		# Show and re-enable all buttons inside pay frame
-		if hasattr(self, "pay_card_info"):
-			self.pay_card.pack(**self.pay_card_info) 
+		# Show and re-enable pay frame
+		self.pay_card.pack(fill="x", pady=10) 
 
-		# Show and re-enable all buttons inside final frame
-		if hasattr(self, "final_card_info"):
-			self.final_card.pack(**self.final_card_info) 
+		# Show and re-enable final frame
+		self.final_card.pack(fill="x", pady=10)  
 
 		# Show the messagebox safely on the main thread
 		if success:

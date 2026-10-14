@@ -919,5 +919,3 @@ def carwash_times():
 		db.carwash_db(data)
 	finally:
 		wb.close()
-
-carwash_times()
